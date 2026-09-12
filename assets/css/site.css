@@ -136,7 +136,7 @@ a { color: var(--green-700); }
   opacity: .85; margin: 0; font-weight: 600;
 }
 .masthead.is-compact .show {
-  font-family: "Titan One", var(--font);
+  font-family: "Bree Serif", Georgia, serif;
   font-size: 1.15rem; font-weight: 400; letter-spacing: .01em;
   color: var(--show-green);
 }
