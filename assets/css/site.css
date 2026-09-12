@@ -25,6 +25,7 @@
   --radius: 14px;
   --shadow: 0 1px 2px rgba(20, 51, 31, .06), 0 8px 24px rgba(20, 51, 31, .06);
   --wrap: 1020px;
+  --navh: 50px;   /* height of the sticky nav bar; sticky headers park below it */
   --font: "Lexend", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   color-scheme: light;
@@ -206,7 +207,7 @@ p.lead { font-size: 1.05rem; }
 /* ---------- Calendar ---------- */
 details.month { margin: 26px 0 0; }
 .month-label {
-  position: sticky; top: 48px; z-index: 5;
+  position: sticky; top: var(--navh); z-index: 5;
   background: var(--bg); cursor: pointer; list-style: none;
   display: flex; align-items: baseline; gap: 10px;
   font-size: .8rem; letter-spacing: .18em; text-transform: uppercase;
@@ -294,6 +295,10 @@ details.month:not([open]) > .events { display: none; }
 .event.is-past { opacity: .5; }
 .event.is-next { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft), var(--shadow); }
 
+@media (max-width: 700px) {
+  :root { --navh: 86px; }   /* the nav wraps onto two rows here */
+}
+
 @media (max-width: 560px) {
   .event { grid-template-columns: 1fr; }
   .event .date {
@@ -304,7 +309,7 @@ details.month:not([open]) > .events { display: none; }
   .event .date .num { font-size: 1.15rem; }
   .blocks { grid-template-columns: 1fr; gap: 0; }
   .blocks .bwhat { margin-bottom: 6px; }
-  .month-label { top: 92px; }
+
 }
 
 /* ---------- Checklist ---------- */
@@ -352,18 +357,22 @@ details.month:not([open]) > .events { display: none; }
 .filter:hover { border-color: var(--green-500); }
 .filter.is-on { background: var(--green-700); border-color: var(--green-700); color: #fff; }
 
-.table-scroll { overflow-x: auto; }
+/* No overflow here: a scroll container would trap the sticky header inside the
+   table instead of parking it under the navigation bar. */
+.table-scroll { border: 1px solid var(--line); border-radius: var(--radius); }
 table.cast {
   width: 100%; border-collapse: separate; border-spacing: 0;
   background: var(--bg-raised);
-  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
 }
 table.cast th {
-  position: sticky; top: 48px; z-index: 10;
+  position: sticky; top: var(--navh); z-index: 10;
   text-align: left; background: var(--green-700); color: #fff;
   font-size: .76rem; letter-spacing: .12em; text-transform: uppercase;
   padding: 11px 14px; white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
 }
+table.cast th:first-child { border-top-left-radius: var(--radius); }
+table.cast th:last-child { border-top-right-radius: var(--radius); }
 table.cast td { padding: 10px 14px; vertical-align: top; }
 table.cast tbody.member > tr.first > td { border-top: 2px solid var(--line); }
 table.cast tbody.member > tr.more > td { border-top: 1px dashed var(--line); }

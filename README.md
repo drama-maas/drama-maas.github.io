@@ -8,17 +8,20 @@ plain HTML; all content is read at load time from the JSON files in `data/`.
 ## Files
 
 ```
-index.html          Entry page: announcements, links & folders, both calendars
+index.html          Home: announcements and links & folders
+calendar.html       Drama Club calendar and the spring performance schedule
+performances.html   Show dates, built from the performance:true events
 cast.html           Cast list with search and a track filter
 boosters.html       Join the Boosters: membership, donation, committees
 data/site.json      Header, contacts, announcements, study hall sign-up address
 data/links.json     Links & folders section
-data/calendar.json  Both calendars plus the "Still To Be Confirmed" list
+data/calendar.json  Both calendars
 data/cast.json      Cast list, one entry per person with their roles and tracks
 data/boosters.json  Boosters page
 assets/css/site.css Styling (light and dark)
 assets/js/site.js   Reads the JSON files and draws the pages
 assets/img/         Logos
+STILL-TO-BE-CONFIRMED.md  Boosters' running to-do list, repo only
 .nojekyll           Tells GitHub Pages to serve the files as-is
 ```
 

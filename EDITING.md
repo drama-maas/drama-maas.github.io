@@ -8,9 +8,16 @@ website updates itself a minute or two later.
 | --- | --- |
 | The yellow bookmark bar, the sponsor/boosters/questions boxes, the Announcements | `data/site.json` |
 | The "Links & Folders" buttons (Google Drive folders, SignUpGenius, etc.) | `data/links.json` |
-| Rehearsal dates, show dates, study hall coverage, the "Still To Be Confirmed" list | `data/calendar.json` |
+| Rehearsal dates, show dates, study hall coverage | `data/calendar.json` |
 | The cast list | `data/cast.json` |
 | The Join the Boosters page | `data/boosters.json` |
+
+The site has five pages: Home, Calendar, Performances, Cast List and Boosters. The
+Performances page builds itself from the calendar, listing every date marked
+`"performance": true`, so there is no separate file to keep in step.
+
+The boosters' running to-do list is no longer on the website. It lives in
+`STILL-TO-BE-CONFIRMED.md` in the repository, where you can tick items off.
 
 ## Making an edit, step by step
 
@@ -95,7 +102,7 @@ In `data/calendar.json`, find the right month and copy an existing event:
 - `day`, `month` and `weekday` are what people actually see on the date chip. Write a range
   like `"15-16"` for a two-night run.
 - `performance` set to `true` gives the date the pink show-date styling and a "Performance"
-  badge. Use it for Mystery Dinner and the April shows.
+  badge, and puts it on the Performances page. Use it for Mystery Dinner and the April shows.
 - `track` puts a coloured Castle or Storybook pill next to the title, the same pills used on
   the cast list. Leave it as `""` for a date that involves everybody.
 - `blocks` is the schedule. Each one is a time and what happens then. Add or remove as many
@@ -148,10 +155,10 @@ In `data/cast.json`, each person has one or more `parts`:
 Each role gets its own line in the table, lined up with its own track and its own
 description, so a student with three roles reads as three separate lines under their name.
 
-The **Castle Track** and **Storybook Track** buttons above the table show only the people
-whose role actually changes between the two weekends. Everyone performs both weekends, so a
-`Both` role is not the answer to "who are the leads that night" and stays out of those two
-lists. **Still TBD** shows the roles waiting on a decision.
+The **Castle Track** and **Storybook Track** buttons above the table keep everybody on
+screen and simply hide the other track's version of a role. Pick Castle and a double-cast
+student shows their Castle role, with their Storybook role tucked away. Roles played both
+weekends stay put under either button.
 
 When the September 16 roles are settled, replace the `TBD` entries with real names and delete
 the `pending` section near the bottom of the file.

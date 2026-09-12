@@ -141,8 +141,7 @@ function renderAnnouncements(site, calendarData) {
       line.appendChild(document.createTextNode('  ' + (b.what || '')));
       card.appendChild(line);
     });
-    const anchor = link('#calendars', 'See the calendar »', 'more');
-    card.appendChild(anchor);
+    card.appendChild(link('calendar.html', 'See the calendar »', 'more'));
     upGrid.appendChild(card);
   });
   host.appendChild(upGrid);
@@ -278,16 +277,90 @@ function renderCalendars(data, site) {
     host.appendChild(section);
   });
 
-  if (data.openItems) {
-    const section = el('section');
-    section.id = 'todo';
-    section.appendChild(el('h2', null, data.openItems.heading));
-    if (data.openItems.intro) section.appendChild(el('p', 'section-intro', data.openItems.intro));
-    const ul = el('ul', 'checklist');
-    (data.openItems.items || []).forEach(item => ul.appendChild(el('li', null, item)));
-    section.appendChild(ul);
-    host.appendChild(section);
+}
+
+/* ---------- performances ---------- */
+
+function renderPerformances(data, site) {
+  const host = slot('performances');
+  if (!host) return;
+  host.innerHTML = '';
+  const today = todayISO();
+
+  const shows = [];
+  (data.calendars || []).forEach(cal =>
+    (cal.months || []).forEach(month =>
+      (month.events || []).forEach(ev => {
+        if (ev.performance) shows.push(ev);
+      })));
+  shows.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+
+  const upcoming = shows.filter(ev => !ev.date || ev.date >= today);
+  const past = shows.filter(ev => ev.date && ev.date < today);
+
+  const card = ev => {
+    const box = el('article', 'event is-show' + (ev.date && ev.date < today ? ' is-past' : ''));
+    const chip = el('div', 'date');
+    chip.appendChild(el('div', 'mon', ev.month || ''));
+    chip.appendChild(el('div', 'num', ev.day || ''));
+    if (ev.weekday) chip.appendChild(el('div', 'wd', ev.weekday));
+    box.appendChild(chip);
+
+    const body = el('div', 'body');
+    const head = el('div', 'head');
+    head.appendChild(el('span', 'badge', '★ Performance'));
+    head.appendChild(el('span', 'title', ev.title));
+    if (ev.track) {
+      head.appendChild(el('span', 'track track-' + (TRACK_CLASS[ev.track] || 'both'), ev.track));
+    }
+    body.appendChild(head);
+    if ((ev.blocks || []).length) {
+      const blocks = el('div', 'blocks');
+      ev.blocks.forEach(b => {
+        blocks.appendChild(el('div', 'btime', b.time || ''));
+        blocks.appendChild(el('div', 'bwhat', b.what || ''));
+      });
+      body.appendChild(blocks);
+    }
+    box.appendChild(body);
+    return box;
+  };
+
+  const section = el('section');
+  section.appendChild(el('h2', null, 'Show dates'));
+  section.appendChild(el('p', 'section-intro',
+    'Every performance date in one place. The full rehearsal calendar lives on the Calendar page.'));
+
+  if (upcoming.length) {
+    const list = el('div', 'events');
+    upcoming.forEach((ev, i) => {
+      const box = card(ev);
+      if (i === 0) box.classList.add('is-next');
+      list.appendChild(box);
+    });
+    section.appendChild(list);
+  } else {
+    section.appendChild(el('p', 'section-intro', 'No performances are scheduled right now.'));
   }
+  host.appendChild(section);
+
+  if (past.length) {
+    const done = el('section');
+    const box = el('details', 'month is-done');
+    const head = el('summary', 'month-label');
+    head.appendChild(el('span', 'month-name', 'Already performed'));
+    head.appendChild(el('span', 'month-count', past.length + (past.length === 1 ? ' show' : ' shows')));
+    box.appendChild(head);
+    const list = el('div', 'events');
+    past.forEach(ev => list.appendChild(card(ev)));
+    box.appendChild(list);
+    done.appendChild(box);
+    host.appendChild(done);
+  }
+
+  const back = el('p', 'section-intro');
+  back.appendChild(link('calendar.html', 'See the full rehearsal calendar »'));
+  host.appendChild(back);
 }
 
 /* ---------- cast ---------- */
@@ -321,10 +394,9 @@ function renderCast(data) {
   let activeTrack = 'All';
   const buttons = [];
   [
-    ['All', 'Everyone'],
+    ['All', 'Both tracks'],
     ['Castle', 'Castle Track'],
-    ['Storybook', 'Storybook Track'],
-    ['TBD', 'Still TBD']
+    ['Storybook', 'Storybook Track']
   ].forEach(([value, label]) => {
     const b = el('button', 'filter' + (value === 'All' ? ' is-on' : ''), label);
     b.type = 'button';
@@ -354,12 +426,19 @@ function renderCast(data) {
   scroll.appendChild(table);
   host.appendChild(scroll);
 
-  // One <tbody> per person, one <tr> per role. The actor cell spans their roles,
-  // so each role sits on the same line as its own track and description.
-  const groups = (data.members || []).map(m => {
-    const parts = m.parts && m.parts.length ? m.parts : [{ role: '', track: 'Both', description: '' }];
-    const group = el('tbody', 'member');
+  // One <tbody> per person, one <tr> per role, so each role sits on the same line as
+  // its own track and description. Rows are rebuilt when the filter changes, because
+  // the actor cell spans however many roles are currently on show.
+  const members = (data.members || []).map(m => ({
+    actor: m.actor,
+    parts: m.parts && m.parts.length ? m.parts : [{ role: '', track: 'Both', description: '' }],
+    group: el('tbody', 'member'),
+    search: (m.actor + ' ' + (m.parts || []).map(p => p.role).join(' ')).toLowerCase()
+  }));
+  members.forEach(m => table.appendChild(m.group));
 
+  function fillGroup(m, parts) {
+    m.group.innerHTML = '';
     parts.forEach((p, i) => {
       const tr = el('tr', i === 0 ? 'first' : 'more');
       if (i === 0) {
@@ -387,38 +466,48 @@ function renderCast(data) {
       descCell.textContent = p.description || '';
       tr.appendChild(descCell);
 
-      group.appendChild(tr);
+      m.group.appendChild(tr);
     });
-
-    group.dataset.search = (m.actor + ' ' + parts.map(p => p.role).join(' ')).toLowerCase();
-    group.dataset.tracks = parts.map(p => p.track).join('|');
-    table.appendChild(group);
-    return group;
-  });
+  }
 
   const NOTES = {
-    All: '',
-    Castle: 'Everyone performs both weekends. These are the people whose role changes for the Castle Track, on stage as leads April 15-16, 2027.',
-    Storybook: 'Everyone performs both weekends. These are the people whose role changes for the Storybook Track, on stage as leads April 22-23, 2027.',
-    TBD: 'Roles that have not been settled yet.'
+    All: 'Everyone performs both weekends. Pick a track to hide the roles that belong to the other one.',
+    Castle: 'Showing the Castle Track, on stage as leads April 15-16, 2027. Roles played both weekends are still listed.',
+    Storybook: 'Showing the Storybook Track, on stage as leads April 22-23, 2027. Roles played both weekends are still listed.'
   };
+
+  // A role belongs on screen unless it is the other track's version of a part.
+  const partVisible = p =>
+    activeTrack === 'All' || p.track === activeTrack || p.track === 'Both' || p.track === 'TBD';
 
   function apply() {
     const q = input.value.trim().toLowerCase();
     let shown = 0;
-    groups.forEach(g => {
-      const trackOK = activeTrack === 'All' || g.dataset.tracks.split('|').includes(activeTrack);
-      const textOK = !q || g.dataset.search.includes(q);
-      const match = trackOK && textOK;
-      g.hidden = !match;
-      if (match) shown++;
+    members.forEach(m => {
+      const parts = m.parts.filter(partVisible);
+      const match = parts.length > 0 && (!q || m.search.includes(q));
+      m.group.hidden = !match;
+      if (match) {
+        fillGroup(m, parts);
+        shown++;
+      } else {
+        m.group.innerHTML = '';
+      }
     });
     count.textContent = shown + (shown === 1 ? ' person' : ' people');
     note.textContent = NOTES[activeTrack] || '';
     note.hidden = !note.textContent;
+
+    // Filtering can shorten the page under the reader's feet. Bring the controls
+    // back into view rather than leaving them stranded above the window.
+    if (started && controls.getBoundingClientRect().top < 0) {
+      controls.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
   }
+  let started = false;
   input.addEventListener('input', apply);
   apply();
+  started = true;
 
   if (data.pending) {
     const section = el('section');
@@ -524,12 +613,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderChrome(site);
 
     let calendarData = null;
-    if (slot('calendars') || slot('announcements')) {
+    if (slot('calendars') || slot('announcements') || slot('performances')) {
       calendarData = await loadJSON('data/calendar.json');
     }
     renderAnnouncements(site, calendarData);
     if (slot('links')) renderLinks(await loadJSON('data/links.json'));
     if (slot('calendars')) renderCalendars(calendarData, site);
+    if (slot('performances')) renderPerformances(calendarData, site);
     if (slot('cast')) renderCast(await loadJSON('data/cast.json'));
     if (slot('boosters')) renderBoosters(await loadJSON('data/boosters.json'));
   } catch (err) {
