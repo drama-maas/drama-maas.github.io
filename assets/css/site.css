@@ -354,6 +354,38 @@ details.month:not([open]) > .events { display: none; }
 }
 
 /* ---------- Cast page ---------- */
+
+/* Wide screens: the banner hangs to the right of the proclamation.
+   Phones: his initial goes behind the text instead, since a tall banner
+   would push the reading column into a sliver. */
+.cast-head {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px 28px;
+  align-items: start; margin-bottom: 8px;
+}
+.cast-intro { position: relative; min-width: 0; }
+.cast-intro p { position: relative; z-index: 1; }
+.cast-intro p:first-of-type { margin-top: 0; }
+
+.cast-banner {
+  width: 132px; height: auto; align-self: start;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .25));
+}
+
+.cast-watermark { display: none; }
+.cast-watermark svg {
+  width: 100%; height: 100%; display: block;
+}
+
+@media (max-width: 760px) {
+  .cast-head { display: block; }
+  .cast-banner { display: none; }
+  .cast-watermark {
+    display: block; position: absolute; z-index: 0;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    height: 92%; width: auto; aspect-ratio: 338 / 773;
+    color: var(--ink); opacity: .12; pointer-events: none;
+  }
+}
 .legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 18px 0 4px; }
 .legend-item { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--ink-soft); }
 

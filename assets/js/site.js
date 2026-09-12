@@ -390,7 +390,28 @@ function renderCast(data) {
   if (!host) return;
   host.innerHTML = '';
 
-  (data.intro || []).forEach(p => host.appendChild(el('p', null, p)));
+  // Lord Farquaad's banner beside the proclamation on a wide screen; on a phone
+  // his initial sits behind the text as a watermark instead.
+  const head = el('div', 'cast-head');
+  const intro = el('div', 'cast-intro');
+  const mark = el('div', 'cast-watermark');
+  mark.setAttribute('aria-hidden', 'true');
+  mark.innerHTML =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 338 773" focusable="false">' +
+    '<path d="M337.421 77.4141L266.711 148.124L200 81.4131V255.703H300V255.994L299.711 ' +
+    '255.703L266.711 289.036H200V672.355L100 772.355V289.036H0V287.733L31.71 255.703H100V160.006' +
+    'L260.006 0L337.421 77.4141Z" fill="currentColor"/></svg>';
+  intro.appendChild(mark);
+  (data.intro || []).forEach(p => intro.appendChild(el('p', null, p)));
+
+  const banner = el('img', 'cast-banner');
+  banner.src = 'assets/img/farquaad-banner.svg';
+  banner.alt = '';
+  banner.setAttribute('aria-hidden', 'true');
+
+  head.appendChild(intro);
+  head.appendChild(banner);
+  host.appendChild(head);
 
   const legend = el('div', 'legend');
   Object.entries(data.tracks || {}).forEach(([name, text]) => {
