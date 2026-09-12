@@ -26,6 +26,7 @@
   --shadow: 0 1px 2px rgba(20, 51, 31, .06), 0 8px 24px rgba(20, 51, 31, .06);
   --wrap: 1020px;
   --navh: 50px;   /* height of the sticky nav bar; sticky headers park below it */
+  --show-green: #a9d49a;   /* the show title in the slim header */
   --font: "Lexend", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   color-scheme: light;
@@ -134,10 +135,14 @@ a { color: var(--green-700); }
   font-size: .74rem; letter-spacing: .14em; text-transform: uppercase;
   opacity: .85; margin: 0; font-weight: 600;
 }
-.masthead.is-compact .show { font-size: 1.05rem; font-weight: 700; }
+.masthead.is-compact .show {
+  font-family: "Titan One", var(--font);
+  font-size: 1.15rem; font-weight: 400; letter-spacing: .01em;
+  color: var(--show-green);
+}
 @media (max-width: 480px) {
   .masthead.is-compact .school { font-size: .62rem; letter-spacing: .1em; }
-  .masthead.is-compact .show { font-size: .95rem; }
+  .masthead.is-compact .show { font-size: 1.02rem; }
 }
 
 /* ---------- Nav ---------- */

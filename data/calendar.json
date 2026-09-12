@@ -396,7 +396,7 @@
               "month": "Apr",
               "weekday": "Wed",
               "performance": true,
-              "title": "🎭 In-school performance medley",
+              "title": "🎭 In-school medley",
               "blocks": [
                 {
                   "time": "9:00-10:00am",
@@ -412,7 +412,7 @@
               "month": "Apr",
               "weekday": "Thu-Fri",
               "performance": true,
-              "title": "🎭 Performances - Castle Track leads",
+              "title": "🎭 Castle Track leads",
               "blocks": [
                 {
                   "time": "5:30pm",
@@ -459,7 +459,7 @@
               "month": "Apr",
               "weekday": "Thu-Fri",
               "performance": true,
-              "title": "🎭 Performances - Storybook Track leads",
+              "title": "🎭 Storybook Track leads",
               "blocks": [
                 {
                   "time": "5:30pm",
