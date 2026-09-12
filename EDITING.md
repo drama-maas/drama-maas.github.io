@@ -39,7 +39,10 @@ You do not have to maintain these by hand:
 - **Coming up** on the home page always shows the next few calendar events, counted from
   today's date. Keep the calendar right and this stays right.
 - **Past dates** fade out and the next date coming up gets a gold "Next up" badge.
-- **Study hall** shows a green **Sign up** button on any date with no volunteer named.
+- **Finished months** fold themselves shut once every date in them has passed. Anyone can
+  click the month heading to open it again.
+- **Study hall** shows a green **Sign up** button on any future date with no volunteer named.
+  Once the date has passed the button disappears, since nobody can still sign up for it.
 
 ## Common jobs
 
@@ -73,6 +76,7 @@ In `data/calendar.json`, find the right month and copy an existing event:
   "weekday": "Wed",
   "performance": false,
   "title": "Whole Cast Rehearsal",
+  "track": "",
   "blocks": [
     { "time": "2:00-3:30pm", "what": "6th grade" },
     { "time": "3:30-5:30pm", "what": "Everyone else" }
@@ -92,6 +96,8 @@ In `data/calendar.json`, find the right month and copy an existing event:
   like `"15-16"` for a two-night run.
 - `performance` set to `true` gives the date the pink show-date styling and a "Performance"
   badge. Use it for Mystery Dinner and the April shows.
+- `track` puts a coloured Castle or Storybook pill next to the title, the same pills used on
+  the cast list. Leave it as `""` for a date that involves everybody.
 - `blocks` is the schedule. Each one is a time and what happens then. Add or remove as many
   as you need.
 
@@ -103,7 +109,7 @@ Find the date in `data/calendar.json` and write the name in `volunteer`:
 | --- | --- |
 | `"volunteer": "Jane Smith"` | Study hall 12:45-2:00pm  Jane Smith |
 | `"volunteer": ""` | Needs a volunteer, plus a green **Sign up** button |
-| `"volunteer": "none"` | Not needed this day |
+| `"volunteer": "none"` | Not needed this day. Use this only when study hall truly is not running. |
 | `"studyHall": null` | Nothing at all (use this on performance dates) |
 
 The **Sign up** button goes to the SignUpGenius page. That address is stored once, in
@@ -138,6 +144,14 @@ In `data/cast.json`, each person has one or more `parts`:
 | `Storybook` | Leads April 22-23, 2027 |
 | `Both` | Played both weekends. Use this for any role that is not track-specific. |
 | `TBD` | Not settled yet |
+
+Each role gets its own line in the table, lined up with its own track and its own
+description, so a student with three roles reads as three separate lines under their name.
+
+The **Castle Track** and **Storybook Track** buttons above the table show only the people
+whose role actually changes between the two weekends. Everyone performs both weekends, so a
+`Both` role is not the answer to "who are the leads that night" and stays out of those two
+lists. **Still TBD** shows the roles waiting on a decision.
 
 When the September 16 roles are settled, replace the `TBD` entries with real names and delete
 the `pending` section near the bottom of the file.

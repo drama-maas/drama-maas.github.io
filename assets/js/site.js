@@ -44,6 +44,9 @@ function showError(target, err) {
 
 const slot = id => document.getElementById(id);
 
+/* Track names and the CSS class that colours their pill. */
+const TRACK_CLASS = { Castle: 'castle', Storybook: 'storybook', Both: 'both', TBD: 'tbd' };
+
 function todayISO() {
   const d = new Date();
   return d.getFullYear() + '-' +
@@ -170,23 +173,25 @@ function renderLinks(data) {
 
 /* ---------- calendar ---------- */
 
-function renderStudyHall(sh, signupUrl) {
+function renderStudyHall(sh, signupUrl, isPast) {
   if (!sh) return null;
-  const row = el('div', 'study');
-  const label = el('span', 'study-label', 'Study hall' + (sh.time ? ' ' + sh.time : ''));
-  row.appendChild(label);
-
   const name = (sh.volunteer || '').trim();
-  if (name.toLowerCase() === 'none') {
+  const none = name.toLowerCase() === 'none';
+
+  // A past date with nobody named has nothing useful left to say.
+  if (isPast && !name) return sh.note ? el('div', 'study study-note', sh.note) : null;
+
+  const row = el('div', 'study');
+  row.appendChild(el('span', 'study-label', 'Study hall' + (sh.time ? ' ' + sh.time : '')));
+
+  if (none) {
     row.appendChild(el('span', 'study-none', 'Not needed this day'));
   } else if (name) {
     row.appendChild(el('span', 'study-name', name));
   } else {
     row.classList.add('is-open');
     row.appendChild(el('span', 'study-open', 'Needs a volunteer'));
-    if (signupUrl) {
-      row.appendChild(link(signupUrl, 'Sign up »', 'study-signup'));
-    }
+    if (signupUrl) row.appendChild(link(signupUrl, 'Sign up »', 'study-signup'));
   }
   if (sh.note) row.appendChild(el('div', 'study-note', sh.note));
   return row;
@@ -207,12 +212,23 @@ function renderCalendars(data, site) {
     if (cal.intro) section.appendChild(el('p', 'section-intro', cal.intro));
 
     (cal.months || []).forEach(month => {
-      section.appendChild(el('div', 'month-label', month.name));
+      const events = month.events || [];
+      const done = events.length > 0 && events.every(ev => ev.date && ev.date < today);
+
+      const box = el('details', 'month' + (done ? ' is-done' : ''));
+      box.open = !done;
+      const head = el('summary', 'month-label');
+      head.appendChild(el('span', 'month-name', month.name));
+      head.appendChild(el('span', 'month-count',
+        done ? events.length + ' dates · all done' : events.length + ' dates'));
+      box.appendChild(head);
+
       const list = el('div', 'events');
 
-      (month.events || []).forEach(ev => {
+      events.forEach(ev => {
+        const isPast = !!(ev.date && ev.date < today);
         const card = el('article', 'event' + (ev.performance ? ' is-show' : ''));
-        if (ev.date && ev.date < today) {
+        if (isPast) {
           card.classList.add('is-past');
         } else if (ev.date && !nextMarked) {
           card.classList.add('is-next');
@@ -226,11 +242,14 @@ function renderCalendars(data, site) {
         card.appendChild(chip);
 
         const body = el('div', 'body');
-        const head = el('div', 'head');
-        if (ev.performance) head.appendChild(el('span', 'badge', '★ Performance'));
-        if (card.classList.contains('is-next')) head.appendChild(el('span', 'badge next', 'Next up'));
-        head.appendChild(el('span', 'title', ev.title));
-        body.appendChild(head);
+        const line = el('div', 'head');
+        if (ev.performance) line.appendChild(el('span', 'badge', '★ Performance'));
+        if (card.classList.contains('is-next')) line.appendChild(el('span', 'badge next', 'Next up'));
+        line.appendChild(el('span', 'title', ev.title));
+        if (ev.track) {
+          line.appendChild(el('span', 'track track-' + (TRACK_CLASS[ev.track] || 'both'), ev.track));
+        }
+        body.appendChild(line);
 
         if (ev.titleUrl) {
           const p = el('div', 'event-link');
@@ -247,13 +266,14 @@ function renderCalendars(data, site) {
           body.appendChild(blocks);
         }
 
-        const sh = renderStudyHall(ev.studyHall, signupUrl);
+        const sh = renderStudyHall(ev.studyHall, signupUrl, isPast);
         if (sh) body.appendChild(sh);
 
         card.appendChild(body);
         list.appendChild(card);
       });
-      section.appendChild(list);
+      box.appendChild(list);
+      section.appendChild(box);
     });
     host.appendChild(section);
   });
@@ -271,8 +291,6 @@ function renderCalendars(data, site) {
 }
 
 /* ---------- cast ---------- */
-
-const TRACK_CLASS = { Castle: 'castle', Storybook: 'storybook', Both: 'both', TBD: 'tbd' };
 
 function renderCast(data) {
   const host = slot('cast');
@@ -302,11 +320,16 @@ function renderCast(data) {
   filters.setAttribute('aria-label', 'Filter by track');
   let activeTrack = 'All';
   const buttons = [];
-  ['All', 'Castle', 'Storybook'].forEach(name => {
-    const b = el('button', 'filter' + (name === 'All' ? ' is-on' : ''), name === 'All' ? 'All tracks' : name + ' Track');
+  [
+    ['All', 'Everyone'],
+    ['Castle', 'Castle Track'],
+    ['Storybook', 'Storybook Track'],
+    ['TBD', 'Still TBD']
+  ].forEach(([value, label]) => {
+    const b = el('button', 'filter' + (value === 'All' ? ' is-on' : ''), label);
     b.type = 'button';
     b.addEventListener('click', () => {
-      activeTrack = name;
+      activeTrack = value;
       buttons.forEach(x => x.classList.toggle('is-on', x === b));
       apply();
     });
@@ -318,6 +341,9 @@ function renderCast(data) {
   controls.appendChild(count);
   host.appendChild(controls);
 
+  const note = el('p', 'filter-note');
+  host.appendChild(note);
+
   const scroll = el('div', 'table-scroll');
   const table = el('table', 'cast');
   const thead = el('thead');
@@ -325,58 +351,71 @@ function renderCast(data) {
   ['Actor', 'Role', 'Track', 'Description'].forEach(h => hr.appendChild(el('th', null, h)));
   thead.appendChild(hr);
   table.appendChild(thead);
-  const tbody = el('tbody');
-  table.appendChild(tbody);
   scroll.appendChild(table);
   host.appendChild(scroll);
 
-  const rows = (data.members || []).map(m => {
-    const parts = m.parts || [];
-    const tr = el('tr');
+  // One <tbody> per person, one <tr> per role. The actor cell spans their roles,
+  // so each role sits on the same line as its own track and description.
+  const groups = (data.members || []).map(m => {
+    const parts = m.parts && m.parts.length ? m.parts : [{ role: '', track: 'Both', description: '' }];
+    const group = el('tbody', 'member');
 
-    const actorCell = el('td', 'actor');
-    actorCell.setAttribute('data-label', 'Actor');
-    actorCell.textContent = m.actor;
-    tr.appendChild(actorCell);
+    parts.forEach((p, i) => {
+      const tr = el('tr', i === 0 ? 'first' : 'more');
+      if (i === 0) {
+        const actorCell = el('td', 'actor');
+        actorCell.rowSpan = parts.length;
+        actorCell.appendChild(el('span', 'actor-name', m.actor));
+        if (parts.length > 1) {
+          actorCell.appendChild(el('span', 'actor-count', parts.length + ' roles'));
+        }
+        tr.appendChild(actorCell);
+      }
 
-    const roleCell = el('td', 'role');
-    roleCell.setAttribute('data-label', 'Role');
-    const trackCell = el('td', 'track-col');
-    trackCell.setAttribute('data-label', 'Track');
-    const descCell = el('td', 'desc');
-    descCell.setAttribute('data-label', 'Description');
+      const roleCell = el('td', 'role');
+      roleCell.setAttribute('data-label', 'Role');
+      roleCell.textContent = p.role;
+      tr.appendChild(roleCell);
 
-    parts.forEach(p => {
-      roleCell.appendChild(el('div', 'role-line', p.role));
-      const badge = el('div', 'track-line');
-      badge.appendChild(el('span', 'track track-' + (TRACK_CLASS[p.track] || 'both'), p.track));
-      trackCell.appendChild(badge);
-      descCell.appendChild(el('div', 'line', p.description || ' '));
+      const trackCell = el('td', 'track-col');
+      trackCell.setAttribute('data-label', 'Track');
+      trackCell.appendChild(el('span', 'track track-' + (TRACK_CLASS[p.track] || 'both'), p.track));
+      tr.appendChild(trackCell);
+
+      const descCell = el('td', 'desc');
+      descCell.setAttribute('data-label', 'Description');
+      descCell.textContent = p.description || '';
+      tr.appendChild(descCell);
+
+      group.appendChild(tr);
     });
 
-    tr.appendChild(roleCell);
-    tr.appendChild(trackCell);
-    tr.appendChild(descCell);
-
-    tr.dataset.search = (m.actor + ' ' + parts.map(p => p.role).join(' ')).toLowerCase();
-    tr.dataset.tracks = parts.map(p => p.track).join(' ');
-    tbody.appendChild(tr);
-    return tr;
+    group.dataset.search = (m.actor + ' ' + parts.map(p => p.role).join(' ')).toLowerCase();
+    group.dataset.tracks = parts.map(p => p.track).join('|');
+    table.appendChild(group);
+    return group;
   });
+
+  const NOTES = {
+    All: '',
+    Castle: 'Everyone performs both weekends. These are the people whose role changes for the Castle Track, on stage as leads April 15-16, 2027.',
+    Storybook: 'Everyone performs both weekends. These are the people whose role changes for the Storybook Track, on stage as leads April 22-23, 2027.',
+    TBD: 'Roles that have not been settled yet.'
+  };
 
   function apply() {
     const q = input.value.trim().toLowerCase();
     let shown = 0;
-    rows.forEach(tr => {
-      const tracks = tr.dataset.tracks;
-      const trackOK = activeTrack === 'All' ||
-        tracks.includes(activeTrack) || tracks.includes('Both');
-      const textOK = !q || tr.dataset.search.includes(q);
+    groups.forEach(g => {
+      const trackOK = activeTrack === 'All' || g.dataset.tracks.split('|').includes(activeTrack);
+      const textOK = !q || g.dataset.search.includes(q);
       const match = trackOK && textOK;
-      tr.hidden = !match;
+      g.hidden = !match;
       if (match) shown++;
     });
     count.textContent = shown + (shown === 1 ? ' person' : ' people');
+    note.textContent = NOTES[activeTrack] || '';
+    note.hidden = !note.textContent;
   }
   input.addEventListener('input', apply);
   apply();
