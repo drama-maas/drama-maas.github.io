@@ -328,8 +328,11 @@ function renderPerformances(data, site) {
 
   const section = el('section');
   section.appendChild(el('h2', null, 'Show dates'));
-  section.appendChild(el('p', 'section-intro',
-    'Every performance date in one place. The full rehearsal calendar lives on the Calendar page.'));
+  const intro = el('p', 'section-intro');
+  intro.appendChild(document.createTextNode('See '));
+  intro.appendChild(link('calendar.html', 'calendar'));
+  intro.appendChild(document.createTextNode(' for rehearsal dates and times'));
+  section.appendChild(intro);
 
   if (upcoming.length) {
     const list = el('div', 'events');
@@ -358,9 +361,6 @@ function renderPerformances(data, site) {
     host.appendChild(done);
   }
 
-  const back = el('p', 'section-intro');
-  back.appendChild(link('calendar.html', 'See the full rehearsal calendar »'));
-  host.appendChild(back);
 }
 
 /* ---------- cast ---------- */
@@ -398,7 +398,8 @@ function renderCast(data) {
     ['Castle', 'Castle Track'],
     ['Storybook', 'Storybook Track']
   ].forEach(([value, label]) => {
-    const b = el('button', 'filter' + (value === 'All' ? ' is-on' : ''), label);
+    const b = el('button',
+      'filter filter-' + (TRACK_CLASS[value] || 'all') + (value === 'All' ? ' is-on' : ''), label);
     b.type = 'button';
     b.addEventListener('click', () => {
       activeTrack = value;

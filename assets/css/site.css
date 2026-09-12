@@ -354,8 +354,14 @@ details.month:not([open]) > .events { display: none; }
   background: var(--bg-raised); color: var(--ink);
   border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px;
 }
-.filter:hover { border-color: var(--green-500); }
+.filter:hover { border-color: var(--green-500); box-shadow: 0 0 0 3px var(--bg-sunken); }
 .filter.is-on { background: var(--green-700); border-color: var(--green-700); color: #fff; }
+
+/* Each track button wears its own colour: a ring on hover, filled once chosen. */
+.filter-castle:hover { border-color: var(--plum); box-shadow: 0 0 0 3px var(--plum-soft); }
+.filter-castle.is-on { background: var(--plum); border-color: var(--plum); color: #fff; }
+.filter-storybook:hover { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-soft); }
+.filter-storybook.is-on { background: var(--pink); border-color: var(--pink); color: #fff; }
 
 /* No overflow here: a scroll container would trap the sticky header inside the
    table instead of parking it under the navigation bar. */
