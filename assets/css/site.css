@@ -96,7 +96,7 @@ a { color: var(--green-700); }
   background: linear-gradient(180deg, var(--green-700), var(--green-900));
   color: #fff;
   text-align: center;
-  padding: 28px 20px 34px;
+  padding: 24px 20px 16px;
 }
 .masthead a { color: #fff; }
 .masthead .school {
@@ -112,7 +112,7 @@ a { color: var(--green-700); }
 }
 .masthead .season {
   font-size: .85rem; letter-spacing: .18em; text-transform: uppercase;
-  opacity: .85; margin: 12px 0 4px;
+  opacity: .85; margin: 8px 0 0;
 }
 .masthead h1 {
   font-size: clamp(1.6rem, 5vw, 2.4rem);
@@ -179,6 +179,8 @@ a { color: var(--green-700); }
 
 /* ---------- Sections ---------- */
 section { margin: 40px 0; scroll-margin-top: 70px; }
+main > section:first-of-type, main > div:first-of-type > section:first-of-type { margin-top: 22px; }
+main > div:first-of-type > .jump-bar { margin-top: 18px; }
 h2 {
   font-size: clamp(1.3rem, 3.4vw, 1.75rem);
   margin: 0 0 6px;
