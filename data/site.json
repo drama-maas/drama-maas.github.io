@@ -1,0 +1,58 @@
+{
+  "_comment": "Basic information shown on every page. Edit the text between the quotes only.",
+
+  "school": "Mesa Academy for Advanced Studies",
+  "clubName": "Drama Club",
+  "season": "2026-27 spring musical",
+  "showTitle": "Shrek The Musical JR.",
+  "bookmarkBanner": "Bookmark this page - it gets updated and links to everything you need!",
+
+  "studyHallSignupUrl": "https://www.signupgenius.com/go/60B0C4DAAAC2AA3F49-65327333-study#/",
+
+  "contacts": [
+    {
+      "icon": "🏫",
+      "label": "School sponsor",
+      "name": "Robyn McFarland",
+      "detail": "rfmcfarland@mpsaz.org",
+      "url": "mailto:rfmcfarland@mpsaz.org"
+    },
+    {
+      "icon": "🙏",
+      "label": "Want to help?",
+      "name": "Join the Boosters!",
+      "detail": "Membership, committees and donations",
+      "url": "boosters.html"
+    },
+    {
+      "icon": "❓",
+      "label": "Questions?",
+      "name": "drama.maas@gmail.com",
+      "detail": "Drama Club Boosters",
+      "url": "mailto:drama.maas@gmail.com"
+    }
+  ],
+
+  "announcements": {
+    "heading": "Announcements",
+    "upcomingHeading": "Coming up",
+    "upcomingCount": 3,
+    "upcomingEmpty": "Nothing else on the calendar right now.",
+    "items": [
+      {
+        "icon": "📋",
+        "title": "Shrek cast list is posted",
+        "detail": "See the Cast List page for roles and tracks.",
+        "url": "cast.html"
+      },
+      {
+        "date": "September 16",
+        "icon": "📢",
+        "title": "Mandatory parent meeting",
+        "detail": "5:00-5:30 p.m., MAAS MPR, right after the whole cast rehearsal."
+      }
+    ]
+  },
+
+  "footerNote": "Questions about this website? Email drama.maas@gmail.com."
+}

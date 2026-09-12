@@ -1,0 +1,839 @@
+{
+  "_comment": "Cast list. Each person has a list of 'parts'. 'track' must be one of: Castle, Storybook, Both, TBD. Use Both for a role played in both weekends.",
+  "heading": "Cast List",
+  "subheading": "Shrek The Musical JR.",
+  "tracks": {
+    "Castle": "Castle Track - leads on April 15-16, 2027",
+    "Storybook": "Storybook Track - leads on April 22-23, 2027",
+    "Both": "Played in both weekends",
+    "TBD": "Track not settled yet"
+  },
+  "intro": [
+    "Thank you for auditioning! We are very sad to say goodbye to 17 friends. If it were at all possible to have that many kids on stage, we would have made it happen. Cutoff was determined by time of registration, not exclusively by talent. We wish we could keep everyone. They all did such a great job!",
+    "With so many talented performers, we are delighted to announce double casting for the roles of: Shrek, Fiona (human, ogre, teen and young), Donkey, Farquaad, and Dragon. We have one cast - everyone performs both weekends - with the Castle Track taking the leads April 15-16, 2027 and the Storybook Track taking the leads April 22-23, 2027.",
+    "By order of Lord Farquaad, the cast list is as follows:"
+  ],
+  "members": [
+    {
+      "actor": "Delainey Abajian",
+      "parts": [
+        {
+          "role": "Evil Queen",
+          "track": "Both",
+          "description": "Just because she gave her stepkid an apple. Really?"
+        }
+      ]
+    },
+    {
+      "actor": "Revelle Abernethy",
+      "parts": [
+        {
+          "role": "Pied Piper",
+          "track": "Both",
+          "description": "Can't get his rats to make music with him."
+        }
+      ]
+    },
+    {
+      "actor": "Rya Atanasova",
+      "parts": [
+        {
+          "role": "Jiminy Cricket",
+          "track": "Both",
+          "description": "Pinocchio's conscience."
+        }
+      ]
+    },
+    {
+      "actor": "Bianca Baker",
+      "parts": [
+        {
+          "role": "Young Fiona",
+          "track": "Castle",
+          "description": "Young Fiona and Teen Fiona are younger, but not smaller, versions of Human Fiona. Extra solo in \"Got you Beat\"."
+        },
+        {
+          "role": "Flopsy",
+          "track": "Storybook",
+          "description": "Peter Rabbit's pesky sister."
+        }
+      ]
+    },
+    {
+      "actor": "Noah Barnett",
+      "parts": [
+        {
+          "role": "Little Pig 3",
+          "track": "Both",
+          "description": "The classic three little pigs with a German twist. Plus lines during intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Andrea Beas",
+      "parts": [
+        {
+          "role": "Cottontail",
+          "track": "Both",
+          "description": "Peter Rabbit's pesky sister."
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Brixton Berlet",
+      "parts": [
+        {
+          "role": "Pinocchio or Ugly Duckling",
+          "track": "Both",
+          "description": "Pinocchio: The wooden boy who cannot tell a lie without being belied by his growing nose. Pinocchio begins in a sour mood about his second-class status but ends the story as a natural leader among the Fairy Tale Things. Plus lines during intermission show. Ugly Duckling: He may be bitter about his unfortunate appearance, but he does find camaraderie among his fellow fairy tale outcasts. Plus lines during intermission show. Role to be confirmed September 16."
+        }
+      ]
+    },
+    {
+      "actor": "Zemira Carr",
+      "parts": [
+        {
+          "role": "Storyteller 3",
+          "track": "Both",
+          "description": "Onstage the most — backup to all, and gorgeous to boot! These characters are five characters combined to create 6 unique personalities onstage. Combined roles of Duloc Dancers, soloists, Dragon's knights, princesses and grumpy old men."
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "James Carter III",
+      "parts": [
+        {
+          "role": "Peter Rabbit",
+          "track": "Both",
+          "description": "Flopsy, Mopsy, and Cottontail's little brother. Always eating their carrots"
+        }
+      ]
+    },
+    {
+      "actor": "Jackson Chesney",
+      "parts": [
+        {
+          "role": "Captain Of The Guard",
+          "track": "Both",
+          "description": "Barking orders, taking names. This guy knows he's in charge."
+        }
+      ]
+    },
+    {
+      "actor": "Brock Clayton",
+      "parts": [
+        {
+          "role": "Peter Pan",
+          "track": "Both",
+          "description": "The boy who never grew up, and he continues to act the part in this story. Plus lines during intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Rachel Cornia",
+      "parts": [
+        {
+          "role": "Little Pig 1",
+          "track": "Both",
+          "description": "The classic three little pigs with a German twist. Plus lines during intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Clara Cornia",
+      "parts": [
+        {
+          "role": "Baby Bear",
+          "track": "Both",
+          "description": "Hangs on Mama a LOT. Lines in intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Ryan Cramer",
+      "parts": [
+        {
+          "role": "Stage Crew",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Elizabeth Decker",
+      "parts": [
+        {
+          "role": "Dragon",
+          "track": "Castle",
+          "description": "She is a ferocious fire-breathing dragon but finds a surprising love in Donkey."
+        }
+      ]
+    },
+    {
+      "actor": "Clara Decker",
+      "parts": [
+        {
+          "role": "Flopsy",
+          "track": "Castle",
+          "description": "Peter Rabbit's pesky sister."
+        }
+      ]
+    },
+    {
+      "actor": "Reagan Ducommun",
+      "parts": [
+        {
+          "role": "Human Fiona",
+          "track": "Storybook",
+          "description": "She may appear to be an ideal princess straight from the fairy tale books, but there is more to her than that stereotypical image. She is an audacious young lady with a wonderful sense of humor and — surprisingly — manners akin to those of a teenage boy."
+        },
+        {
+          "role": "Flora",
+          "track": "Castle",
+          "description": "Sleeping Beauty's personal entourage."
+        }
+      ]
+    },
+    {
+      "actor": "Victor Durate",
+      "parts": [
+        {
+          "role": "Frog Prince",
+          "track": "Both",
+          "description": "Before or after the kiss — actor's choice."
+        }
+      ]
+    },
+    {
+      "actor": "Roman Esmaeili",
+      "parts": [
+        {
+          "role": "Lord Farquaad",
+          "track": "Storybook",
+          "description": "A very short man with gargantuan ambition! He is solely interested in gaining as much power as possible."
+        },
+        {
+          "role": "Ensemble",
+          "track": "Castle",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Natalie Flood",
+      "parts": [
+        {
+          "role": "Storyteller 2",
+          "track": "Both",
+          "description": "Onstage the most — backup to all, and gorgeous to boot! These characters are five characters combined to create 6 unique personalities onstage. Combined roles of Duloc Dancers, soloists, Dragon's knights, princesses and grumpy old men."
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Salome Goitom",
+      "parts": [
+        {
+          "role": "Storyteller 4",
+          "track": "Both",
+          "description": "Onstage the most — backup to all, and gorgeous to boot! These characters are five characters combined to create 6 unique personalities onstage. Combined roles of Duloc Dancers, soloists, Dragon's knights, princesses and grumpy old men."
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Molly Green",
+      "parts": [
+        {
+          "role": "Bo Peep",
+          "track": "Both",
+          "description": "Bonnets and sheep, gotta have 'em!"
+        }
+      ]
+    },
+    {
+      "actor": "Juliette Habeeb",
+      "parts": [
+        {
+          "role": "Donkey",
+          "track": "Storybook",
+          "description": "A brash, loud, fast-talking animal with no concept of \"quiet time.\" This actor also plays an ensemble character in the Castle Cast."
+        }
+      ]
+    },
+    {
+      "actor": "Raelynn Hanna",
+      "parts": [
+        {
+          "role": "Mama Bear",
+          "track": "Both",
+          "description": "Hates to be dirty. Lines in intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Sophia Harper",
+      "parts": [
+        {
+          "role": "Blind Mouse 1",
+          "track": "Both",
+          "description": "Donkey’s backup crew, plus lines during intermission show."
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Mia Harper",
+      "parts": [
+        {
+          "role": "Tinkerbell",
+          "track": "Both",
+          "description": "Hey, look who else is green!"
+        }
+      ]
+    },
+    {
+      "actor": "Gema Hernandez",
+      "parts": [
+        {
+          "role": "Magic Mirror",
+          "track": "Both",
+          "description": "Why aren't you on the wall? Get back in your case, Mister!"
+        }
+      ]
+    },
+    {
+      "actor": "Holly Hom",
+      "parts": [
+        {
+          "role": "Wicked Witch",
+          "track": "Both",
+          "description": "A big personality! Lines in intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Paul Ibrahim",
+      "parts": [
+        {
+          "role": "Guard 5",
+          "track": "Both",
+          "description": "Farquad's brute squad — sort of."
+        }
+      ]
+    },
+    {
+      "actor": "Aurora Jensen",
+      "parts": [
+        {
+          "role": "Dragon",
+          "track": "Storybook",
+          "description": "She is a ferocious fire-breathing dragon but finds a surprising love in Donkey."
+        },
+        {
+          "role": "Swan Princess",
+          "track": "Castle",
+          "description": "A beautiful princess with a bit of a wing problem."
+        }
+      ]
+    },
+    {
+      "actor": "Eden Jess",
+      "parts": [
+        {
+          "role": "Red Riding Hood",
+          "track": "Both",
+          "description": "People think she hates Wolfie, but... does she?"
+        }
+      ]
+    },
+    {
+      "actor": "Cameron Johnson",
+      "parts": [
+        {
+          "role": "Teen Fiona",
+          "track": "Castle",
+          "description": "Young Fiona and Teen Fiona are younger, but not smaller, versions of Human Fiona."
+        },
+        {
+          "role": "Mama Ogre",
+          "track": "TBD",
+          "description": "Shrek's mom — until he's 7."
+        },
+        {
+          "role": "Ensemble",
+          "track": "TBD",
+          "description": "Cameron and Anna will decide whether Mama Ogre is played the same track as Teen Fiona with ensemble played on the opposite track or vice versa."
+        }
+      ]
+    },
+    {
+      "actor": "Paisley Kelly",
+      "parts": [
+        {
+          "role": "Snap",
+          "track": "Both",
+          "description": "Gingy's significant other"
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Elijah Kersee",
+      "parts": [
+        {
+          "role": "Lord Farquaad",
+          "track": "Castle",
+          "description": "A very short man with gargantuan ambition! He is solely interested in gaining as much power as possible."
+        },
+        {
+          "role": "Ensemble",
+          "track": "Storybook",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Abbi Lara",
+      "parts": [
+        {
+          "role": "Human Fiona",
+          "track": "Castle",
+          "description": "She may appear to be an ideal princess straight from the fairy tale books, but there is more to her than that stereotypical image. She is an audacious young lady with a wonderful sense of humor and — surprisingly — manners akin to those of a teenage boy."
+        },
+        {
+          "role": "Flora",
+          "track": "Storybook",
+          "description": "Sleeping Beauty's personal entourage."
+        }
+      ]
+    },
+    {
+      "actor": "Hunter Linford",
+      "parts": [
+        {
+          "role": "Guard 3",
+          "track": "Both",
+          "description": "Farquad's brute squad — sort of."
+        }
+      ]
+    },
+    {
+      "actor": "Tajna Luthera",
+      "parts": [
+        {
+          "role": "Merryweather",
+          "track": "Both",
+          "description": "Sleeping Beauty's personal entourage."
+        }
+      ]
+    },
+    {
+      "actor": "Essara Macias",
+      "parts": [
+        {
+          "role": "Edna the Elf",
+          "track": "Both",
+          "description": "Pointy ears and a soft heart."
+        }
+      ]
+    },
+    {
+      "actor": "Anna Margalis",
+      "parts": [
+        {
+          "role": "Teen Fiona",
+          "track": "Storybook",
+          "description": "Young Fiona and Teen Fiona are younger, but not smaller, versions of Human Fiona."
+        },
+        {
+          "role": "Mama Ogre",
+          "track": "TBD",
+          "description": "Shrek's mom — until he's 7."
+        },
+        {
+          "role": "Ensemble",
+          "track": "TBD",
+          "description": "Anna and Cameron will decide whether Mama Ogre is played the same track as Teen Fiona with ensemble played on the opposite track or vice versa."
+        }
+      ]
+    },
+    {
+      "actor": "Kayson Nguyen",
+      "parts": [
+        {
+          "role": "Guard 4",
+          "track": "Both",
+          "description": "Farquad's brute squad — sort of."
+        }
+      ]
+    },
+    {
+      "actor": "Lydia Norton",
+      "parts": [
+        {
+          "role": "Storyteller 5",
+          "track": "Both",
+          "description": "Onstage the most — backup to all, and gorgeous to boot! These characters are five characters combined to create 6 unique personalities onstage. Combined roles of Duloc Dancers, soloists, Dragon's knights, princesses and grumpy old men."
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Zoe Ogle",
+      "parts": [
+        {
+          "role": "Fox or Hound",
+          "track": "Both",
+          "description": "Fox and Hound are friends. Role to be confirmed September 16."
+        }
+      ]
+    },
+    {
+      "actor": "Alexis Pantier",
+      "parts": [
+        {
+          "role": "Ogre Fiona",
+          "track": "Castle",
+          "description": "Ogre Fiona is more delicate and vulnerable than her human counterpart."
+        },
+        {
+          "role": "Fauna",
+          "track": "Storybook",
+          "description": "Sleeping Beauty's personal entourage."
+        }
+      ]
+    },
+    {
+      "actor": "Bruce Petersen",
+      "parts": [
+        {
+          "role": "Hansel",
+          "track": "Both",
+          "description": "Loves his candy. Brother to Gretel."
+        }
+      ]
+    },
+    {
+      "actor": "Claire Petersen",
+      "parts": [
+        {
+          "role": "Puss in Boots",
+          "track": "Both",
+          "description": "Hey, look! It's a cat in boots! Who knew?"
+        }
+      ]
+    },
+    {
+      "actor": "Skylar Phillips",
+      "parts": [
+        {
+          "role": "Little Shrek",
+          "track": "Both",
+          "description": "In our version, Little Shrek has a small solo in the opening scene and returns during “I Think I Got You Beat” as a flashback."
+        }
+      ]
+    },
+    {
+      "actor": "Camille Pineda",
+      "parts": [
+        {
+          "role": "Storyteller 1",
+          "track": "Both",
+          "description": "Onstage the most — backup to all, and gorgeous to boot! These characters are five characters combined to create 6 unique personalities onstage. Combined roles of Duloc Dancers, soloists, Dragon's knights, princesses and grumpy old men."
+        },
+        {
+          "role": "Dance Team",
+          "track": "Both",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "actor": "Mason Polito",
+      "parts": [
+        {
+          "role": "Big Bad Wolf aka: Wolfie",
+          "track": "Both",
+          "description": "Lots of room for interpretation. Lines in intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Evie Porath",
+      "parts": [
+        {
+          "role": "Ogre Fiona",
+          "track": "Storybook",
+          "description": "Ogre Fiona is more delicate and vulnerable than her human counterpart."
+        },
+        {
+          "role": "Fauna",
+          "track": "Castle",
+          "description": "Sleeping Beauty's personal entourage."
+        }
+      ]
+    },
+    {
+      "actor": "Olive Rhodes",
+      "parts": [
+        {
+          "role": "Gretel",
+          "track": "Both",
+          "description": "Keeps her brother, Hansel, in line."
+        }
+      ]
+    },
+    {
+      "actor": "Grant Roberts",
+      "parts": [
+        {
+          "role": "Dwarf",
+          "track": "Both",
+          "description": "Farquaad's comparably short and grumpy father."
+        }
+      ]
+    },
+    {
+      "actor": "Reed Roberts",
+      "parts": [
+        {
+          "role": "Jeeves",
+          "track": "Both",
+          "description": "Farquaad's personal manservant and overall superfan. Also his announcer and wedding clergyman."
+        }
+      ]
+    },
+    {
+      "actor": "Emma Ross",
+      "parts": [
+        {
+          "role": "Mopsy",
+          "track": "Both",
+          "description": "Peter Rabbit's pesky sister."
+        }
+      ]
+    },
+    {
+      "actor": "Isaac Russo",
+      "parts": [
+        {
+          "role": "Little Pig 2",
+          "track": "Both",
+          "description": "The classic three little pigs with a German twist. Plus lines during intermission show."
+        }
+      ]
+    },
+    {
+      "actor": "Kate Schnuelle",
+      "parts": [
+        {
+          "role": "Fox or Hound",
+          "track": "Both",
+          "description": "Fox and Hound are friends. Role to be confirmed September 16."
+        }
+      ]
+    },
+    {
+      "actor": "Ian Skousen",
+      "parts": [
+        {
+          "role": "Guard 1",
+          "track": "Both",
+          "description": "Farquad's brute squad — sort of."
+        }
+      ]
+    },
+    {
+      "actor": "Charlotte Speights",
+      "parts": [
+        {
+          "role": "Guard 2",
+          "track": "Both",
+          "description": "Farquad's brute squad — sort of."
+        }
+      ]
+    },
+    {
+      "actor": "Nikki Taylor",
+      "parts": [
+        {
+          "role": "Shrek",
+          "track": "Storybook",
+          "description": "He may be a big, scary, green ogre to the rest of the world, but as the story reveals, he's really just a big fellow with a big heart."
+        },
+        {
+          "role": "Papa Ogre",
+          "track": "Castle",
+          "description": "Shrek's dad — until he's 7."
+        }
+      ]
+    },
+    {
+      "actor": "Ethan Tevis",
+      "parts": [
+        {
+          "role": "Rumpelstiltskin",
+          "track": "Both",
+          "description": "Say my name, say my name..."
+        }
+      ]
+    },
+    {
+      "actor": "Emerson Turner",
+      "parts": [
+        {
+          "role": "Donkey",
+          "track": "Castle",
+          "description": "A brash, loud, fast-talking animal with no concept of \"quiet time.\" This actor also plays an ensemble character in the Storybook Track."
+        }
+      ]
+    },
+    {
+      "actor": "Valerie Van Dine",
+      "parts": [
+        {
+          "role": "Pinocchio or Ugly Duckling",
+          "track": "Both",
+          "description": "Pinocchio: The wooden boy who cannot tell a lie without being belied by his growing nose. Pinocchio begins in a sour mood about his second-class status but ends the story as a natural leader among the Fairy Tale Things. Plus lines during intermission show. Ugly Duckling: He may be bitter about his unfortunate appearance, but he does find camaraderie among his fellow fairy tale outcasts. Plus lines during intermission show. Role to be confirmed September 16."
+        }
+      ]
+    },
+    {
+      "actor": "David Yauch",
+      "parts": [
+        {
+          "role": "Shrek",
+          "track": "Castle",
+          "description": "He may be a big, scary, green ogre to the rest of the world, but as the story reveals, he's really just a big fellow with a big heart."
+        },
+        {
+          "role": "Papa Ogre",
+          "track": "Storybook",
+          "description": "Shrek's dad — until he's 7."
+        }
+      ]
+    },
+    {
+      "actor": "Ellie Yauch",
+      "parts": [
+        {
+          "role": "Young Fiona",
+          "track": "Storybook",
+          "description": "Young Fiona and Teen Fiona are younger, but not smaller, versions of Human Fiona. Extra solo in \"Got you Beat\"."
+        },
+        {
+          "role": "Swan Princess",
+          "track": "Castle",
+          "description": "A beautiful princess with a little bit of a wing problem."
+        }
+      ]
+    },
+    {
+      "actor": "Robyn Zakharov",
+      "parts": [
+        {
+          "role": "Thumbelina",
+          "track": "Both",
+          "description": "Tiny but mighty."
+        }
+      ]
+    },
+    {
+      "actor": "TBD",
+      "parts": [
+        {
+          "role": "Storyteller 6",
+          "track": "Both",
+          "description": "Onstage the most — backup to all, and gorgeous to boot! These characters are five characters combined to create 6 unique personalities onstage. Combined roles of Duloc Dancers, soloists, Dragon's knights, princesses and grumpy old men. Role to be confirmed September 16 (see last page)."
+        }
+      ]
+    },
+    {
+      "actor": "TBD",
+      "parts": [
+        {
+          "role": "Gingy",
+          "track": "Both",
+          "description": "Run, run as fast as you can! Snap's significant other loves his gumdrop buttons. Plus lines during intermission show. Role to be confirmed September 16 (see last page)."
+        }
+      ]
+    },
+    {
+      "actor": "TBD",
+      "parts": [
+        {
+          "role": "Papa Bear",
+          "track": "Both",
+          "description": "Takes care of his family. Lines in intermission show. Role to be confirmed September 16 (see last page)."
+        }
+      ]
+    },
+    {
+      "actor": "TBD",
+      "parts": [
+        {
+          "role": "Blind Mouse 2",
+          "track": "Both",
+          "description": "Donkey’s backup crew, plus lines during intermission show. Role to be confirmed September 16 (see last page)."
+        }
+      ]
+    },
+    {
+      "actor": "TBD",
+      "parts": [
+        {
+          "role": "Blind Mouse 3",
+          "track": "Both",
+          "description": "Donkey’s backup crew, plus lines during intermission show. Role to be confirmed September 16 (see last page)."
+        }
+      ]
+    }
+  ],
+  "pending": {
+    "heading": "To be confirmed September 16",
+    "intro": "TBD actors for Gingy, Storyteller 6, Blind Mouse 2, Blind Mouse 3, and Papa Bear will be confirmed by the director on September 16, casting from the following:",
+    "names": [
+      "Estelle Addison (Dance Team)",
+      "Elodie DeHaven",
+      "Amelia Fish (Dance Team)",
+      "Piper Garrison (Dance Team)",
+      "Jeremy Manley"
+    ]
+  },
+  "closing": [
+    "With sincere thanks for putting yourself out there and sharing your talent with the casting directors,",
+    "Ms. Manley, Ms. McFarland, and Mr. Dixon",
+    "Any auditioners who don't see their name - please check with Ms. McFarland."
+  ]
+}

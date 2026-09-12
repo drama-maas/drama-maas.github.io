@@ -1,0 +1,375 @@
+{
+  "_comment": "Calendars. Each event has a date, a title, a list of time blocks, and a study hall entry. Set \"performance\" to true for a show date (pink styling). In \"studyHall\", leave \"volunteer\" empty to show a Sign up button, or write \"none\" if no study hall is needed that day.",
+
+  "calendars": [
+    {
+      "id": "club",
+      "heading": "Drama Club Calendar",
+      "intro": "Club meets on Wednesdays unless noted. Study hall runs before the club meeting.",
+      "months": [
+        {
+          "name": "September 2026",
+          "events": [
+            {
+              "date": "2026-09-09",
+              "day": "9",
+              "month": "Sep",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Shrek Auditions",
+              "titleUrl": "https://docs.google.com/document/d/1HijclK8-Eq-KVfF1fZgyobGl4nJyxPHtlSu5qoqGCFk/edit?usp=sharing",
+              "titleUrlLabel": "Audition materials",
+              "blocks": [
+                { "time": "3:30-6:00pm", "what": "Auditions" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "Jennifer Addison",
+                "note": "Drama Club support 2-3:30pm: Deanna Yauch"
+              }
+            },
+            {
+              "date": "2026-09-10",
+              "day": "10",
+              "month": "Sep",
+              "weekday": "Thu",
+              "performance": false,
+              "title": "Shrek Auditions & Callbacks",
+              "blocks": [
+                { "time": "3:30-6:00pm", "what": "Auditions and callbacks" },
+                { "time": "4:00-6:00pm", "what": "Grades 6-8" }
+              ],
+              "studyHall": {
+                "time": "2:45-3:30pm",
+                "volunteer": "",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-09-16",
+              "day": "16",
+              "month": "Sep",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Whole Cast Drama Club",
+              "blocks": [
+                { "time": "2:00-5:00pm", "what": "Whole cast rehearsal, MAAS MPR" },
+                { "time": "5:00-5:30pm", "what": "📢 Mandatory parent meeting, MAAS MPR" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "Mario Polito",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-09-23",
+              "day": "23",
+              "month": "Sep",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Limited Shrek Rehearsal",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD (Manley may not be available until 3pm)" },
+                { "time": "3:30-5:30pm", "what": "All Fionas, both Donkeys, and both Shreks" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-09-30",
+              "day": "30",
+              "month": "Sep",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Limited Shrek Rehearsal",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD (Manley may not be available until 3pm)" },
+                { "time": "3:30-5:30pm", "what": "TBD" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "none",
+                "note": ""
+              }
+            }
+          ]
+        },
+        {
+          "name": "October 2026",
+          "events": [
+            {
+              "date": "2026-10-14",
+              "day": "14",
+              "month": "Oct",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Limited Shrek Rehearsal (no 6th grade)",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD (Manley may not be available until 3pm)" },
+                { "time": "3:30-5:30pm", "what": "TBD" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "none",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-10-21",
+              "day": "21",
+              "month": "Oct",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Whole Cast Mystery Dinner Rehearsal",
+              "blocks": [
+                { "time": "2:00-5:30pm", "what": "Whole cast (Manley available this date and beyond)" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "Lilia Erlandson",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-10-28",
+              "day": "28",
+              "month": "Oct",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Whole Cast Mystery Dinner Rehearsal",
+              "blocks": [
+                { "time": "2:00-5:30pm", "what": "Whole cast" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "Terressa DeHaven",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-10-30",
+              "day": "30",
+              "month": "Oct",
+              "weekday": "Fri",
+              "performance": true,
+              "title": "🎭 Mystery Dinner",
+              "blocks": [
+                { "time": "5:00pm", "what": "Cast call time" },
+                { "time": "6:00-8:00pm", "what": "Showtime" }
+              ],
+              "studyHall": null
+            }
+          ]
+        },
+        {
+          "name": "November 2026",
+          "events": [
+            {
+              "date": "2026-11-04",
+              "day": "4",
+              "month": "Nov",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Rehearsal - groups TBD",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD" },
+                { "time": "3:30-5:30pm", "what": "TBD" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-11-11",
+              "day": "11",
+              "month": "Nov",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Rehearsal - groups TBD",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD" },
+                { "time": "3:30-5:30pm", "what": "TBD" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-11-18",
+              "day": "18",
+              "month": "Nov",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Rehearsal - groups TBD",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD" },
+                { "time": "3:30-5:30pm", "what": "TBD" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "",
+                "note": ""
+              }
+            }
+          ]
+        },
+        {
+          "name": "December 2026",
+          "events": [
+            {
+              "date": "2026-12-02",
+              "day": "2",
+              "month": "Dec",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Rehearsal - groups TBD",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD" },
+                { "time": "3:30-5:30pm", "what": "TBD" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "",
+                "note": ""
+              }
+            },
+            {
+              "date": "2026-12-09",
+              "day": "9",
+              "month": "Dec",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "Rehearsal - groups TBD",
+              "blocks": [
+                { "time": "2:00-3:30pm", "what": "TBD" },
+                { "time": "3:30-5:30pm", "what": "TBD" }
+              ],
+              "studyHall": {
+                "time": "12:45-2:00pm",
+                "volunteer": "",
+                "note": ""
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spring",
+      "heading": "Spring Performance Schedule",
+      "intro": "Spring rehearsals are the whole cast every week until the performances.",
+      "months": [
+        {
+          "name": "April 2027",
+          "events": [
+            {
+              "date": "2027-04-12",
+              "day": "12",
+              "month": "Apr",
+              "weekday": "Mon",
+              "performance": false,
+              "title": "Tech Rehearsal",
+              "blocks": [
+                { "time": "4:00-6:00pm", "what": "Whole cast" }
+              ],
+              "studyHall": null
+            },
+            {
+              "date": "2027-04-13",
+              "day": "13",
+              "month": "Apr",
+              "weekday": "Tue",
+              "performance": false,
+              "title": "Dress Rehearsal",
+              "blocks": [
+                { "time": "4:00-6:30pm", "what": "Castle Track in their lead roles" }
+              ],
+              "studyHall": null
+            },
+            {
+              "date": "2027-04-14",
+              "day": "14",
+              "month": "Apr",
+              "weekday": "Wed",
+              "performance": true,
+              "title": "🎭 In-school performance medley",
+              "blocks": [
+                { "time": "9:00-10:00am", "what": "Showtime" }
+              ],
+              "studyHall": null
+            },
+            {
+              "date": "2027-04-15",
+              "day": "15-16",
+              "month": "Apr",
+              "weekday": "Thu-Fri",
+              "performance": true,
+              "title": "🎭 Performances - Castle Track leads",
+              "blocks": [
+                { "time": "5:30pm", "what": "Cast call time" },
+                { "time": "6:30pm", "what": "Showtime" }
+              ],
+              "studyHall": null
+            },
+            {
+              "date": "2027-04-20",
+              "day": "20",
+              "month": "Apr",
+              "weekday": "Tue",
+              "performance": false,
+              "title": "Dress Rehearsal",
+              "blocks": [
+                { "time": "4:00-6:30pm", "what": "Storybook Track in their lead roles" }
+              ],
+              "studyHall": null
+            },
+            {
+              "date": "2027-04-21",
+              "day": "21",
+              "month": "Apr",
+              "weekday": "Wed",
+              "performance": false,
+              "title": "No rehearsal - rest!",
+              "blocks": [],
+              "studyHall": null
+            },
+            {
+              "date": "2027-04-22",
+              "day": "22-23",
+              "month": "Apr",
+              "weekday": "Thu-Fri",
+              "performance": true,
+              "title": "🎭 Performances - Storybook Track leads",
+              "blocks": [
+                { "time": "5:30pm", "what": "Cast call time" },
+                { "time": "6:30pm", "what": "Showtime" }
+              ],
+              "studyHall": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "openItems": {
+    "heading": "Still To Be Confirmed",
+    "intro": "For the boosters - a running list so nothing gets lost between updates.",
+    "items": [
+      "Study hall coverage - Sept 10, Sept 23, and every November and December date are still open.",
+      "SignUpGenius slots - the sign-up currently has no dates for Sept 23, November or December. Those slots need to be added before parents can claim them.",
+      "November and December rehearsals - the 2:00-3:30 and 3:30-5:30 groups are still TBD on all five dates.",
+      "Rehearsal groups - the 2:00-3:30 group is TBD on Sept 23, Sept 30 and Oct 14.",
+      "Gingy, Storyteller 6, Papa Bear, Blind Mouse 2 and Blind Mouse 3 - cast September 16.",
+      "Boosters donate link - the Join the Boosters document has a DONATE button with no link behind it."
+    ]
+  }
+}

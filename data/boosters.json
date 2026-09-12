@@ -1,0 +1,84 @@
+{
+  "_comment": "The Join the Boosters page. Content taken from the Join Drama Boosters! Google Doc. Leave a \"url\" empty and its button turns into a grey placeholder instead of a link.",
+
+  "heading": "Join Drama Boosters!",
+  "orgName": "Mesa Academy Drama Boosters, Inc.",
+  "lead": "Please join and/or donate to the nonprofit Mesa Academy Drama Boosters, Inc. in support of the Mesa Academy for Advanced Studies Drama Club. No meeting requirements for general membership!",
+
+  "buttons": [
+    {
+      "icon": "🤝",
+      "label": "Join the Boosters",
+      "note": "Membership form",
+      "url": "https://docs.google.com/forms/d/e/1FAIpQLSeynQXN5alxqw6TPdxrSLqZsjgKEzWw11v1iL_9S34JRowEBQ/viewform?usp=sharing"
+    },
+    {
+      "icon": "💲",
+      "label": "Donate",
+      "note": "Paste the donation link here when it is ready.",
+      "url": ""
+    }
+  ],
+
+  "mission": "The Boosters is dedicated to ensuring the long-term sustainability and artistic excellence of the MAAS Drama Club. We provide the financial resources, logistical coordination, and volunteer support necessary to transform student ambition into high-quality stage performances.",
+
+  "committees": {
+    "heading": "Committees",
+    "intro": "Participation on committees is optional, but very much appreciated.",
+    "items": [
+      {
+        "name": "Costumes & Makeup",
+        "what": "Organizes costume and makeup plans - design ideas, rentals, sourcing from families, producing."
+      },
+      {
+        "name": "Front of House",
+        "what": "Organizes ticket and concession sales, staffs the tables, sets up the house for performances, ushers and hands out programs, cleans up afterward."
+      },
+      {
+        "name": "Fundraising",
+        "what": "Organizes all fundraising efforts."
+      },
+      {
+        "name": "Marketing",
+        "what": "Organizes all marketing efforts."
+      },
+      {
+        "name": "Mystery Dinner",
+        "what": "Organizes the fall semester Mystery Dinner fundraiser performance, secures catering, sets up, serves food and cleans up.",
+        "linkLabel": "See the 2025 example",
+        "url": "https://www.playingwithmurder.com/thing-in-the-cellar-p-787.html"
+      },
+      {
+        "name": "Production",
+        "what": "Organizes set and prop plans - design ideas, rentals, sourcing from families, building."
+      },
+      {
+        "name": "Rehearsal Help",
+        "what": "Attends rehearsals as available to help the sponsor and director as needed."
+      },
+      {
+        "name": "Stage Crew",
+        "what": "Handles backstage operations during performances - moving sets and props, cueing entrances."
+      },
+      {
+        "name": "Study Hall",
+        "what": "Pick one date, or more, to supervise 4th and 5th grade Drama Club members on campus after school until the club meeting begins.",
+        "linkLabel": "Pick a date on SignUpGenius",
+        "url": "https://www.signupgenius.com/go/60B0C4DAAAC2AA3F49-65327333-study#/"
+      },
+      {
+        "name": "Tech",
+        "what": "Organizes and runs the technical side of performances - lights, sound and the rest."
+      }
+    ]
+  },
+
+  "specialRoles": {
+    "heading": "Special roles to help",
+    "text": "See our Boosters Membership list to learn about the specific roles we need help with.",
+    "linkLabel": "Boosters Membership list",
+    "url": "https://docs.google.com/document/d/1BBkj4K0J-i9WA6TGc2jOt1ikr3RasBXpgm9fqVJiItk/edit?usp=sharing"
+  },
+
+  "closing": "Contact drama.maas@gmail.com with questions."
+}
