@@ -122,36 +122,60 @@ a { color: var(--green-700); }
 .logo-club { width: 120px; height: auto; }
 .logo-show { width: min(420px, 80%); height: auto; margin: 6px auto 0; display: block; }
 
+/* Every page but the home page wears a slim version of the header. */
+.masthead.is-compact { padding: 10px 20px; }
+.masthead.is-compact .brand {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  text-decoration: none; color: #fff;
+}
+.masthead.is-compact .logo-club { width: 44px; }
+.masthead.is-compact .brand-text { display: flex; flex-direction: column; line-height: 1.25; }
+.masthead.is-compact .school {
+  font-size: .74rem; letter-spacing: .14em; text-transform: uppercase;
+  opacity: .85; margin: 0; font-weight: 600;
+}
+.masthead.is-compact .show { font-size: 1.05rem; font-weight: 700; }
+@media (max-width: 480px) {
+  .masthead.is-compact .school { font-size: .62rem; letter-spacing: .1em; }
+  .masthead.is-compact .show { font-size: .95rem; }
+}
+
 /* ---------- Nav ---------- */
 .nav {
   background: var(--green-900);
   border-bottom: 3px solid var(--gold);
   position: sticky; top: 0; z-index: 30;
 }
-.nav .wrap { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; padding: 0 12px; }
+.nav .wrap {
+  display: flex; gap: 2px; flex-wrap: nowrap; justify-content: center;
+  padding: 0 8px; overflow-x: auto; scrollbar-width: none;
+}
+.nav .wrap::-webkit-scrollbar { display: none; }
 .nav a {
-  color: #e9f2e5; text-decoration: none;
+  color: #e9f2e5; text-decoration: none; white-space: nowrap;
   padding: 12px 13px; font-size: .92rem; font-weight: 600;
   border-bottom: 3px solid transparent; margin-bottom: -3px;
+}
+@media (max-width: 480px) {
+  .nav a { padding: 12px 9px; font-size: .84rem; }
 }
 .nav a:hover { color: #fff; border-bottom-color: var(--green-300); }
 .nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--gold); }
 
 /* ---------- Contact strip ---------- */
+/* Contacts sit quietly in the footer on every page. */
 .contact-strip {
-  display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  margin: 24px 0;
-}
-.contact-card {
-  background: var(--bg-raised); border: 1px solid var(--line);
-  border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow);
+  display: grid; gap: 10px 28px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin: 0 0 20px; padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, .14);
+  text-align: left;
 }
 .contact-card .label {
-  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--ink-soft); margin-bottom: 2px;
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+  opacity: .7; margin-bottom: 1px;
 }
 .contact-card .value { font-weight: 600; word-break: break-word; }
-.contact-card .detail { color: var(--ink-soft); font-size: .85rem; word-break: break-word; }
+.contact-card .detail { opacity: .7; font-size: .82rem; word-break: break-word; }
 
 /* ---------- Sections ---------- */
 section { margin: 40px 0; scroll-margin-top: 70px; }
@@ -205,6 +229,14 @@ p.lead { font-size: 1.05rem; }
 .link-card .note { color: var(--ink-soft); font-size: .9rem; margin-top: 2px; }
 
 /* ---------- Calendar ---------- */
+.jump-bar { margin: 20px 0 0; }
+.jump {
+  font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer;
+  background: var(--gold); color: #2a1d00;
+  border: 1px solid var(--gold); border-radius: 999px; padding: 9px 18px;
+}
+.jump:hover { filter: brightness(1.06); }
+.jump:focus-visible { outline: 3px solid var(--green-500); outline-offset: 2px; }
 details.month { margin: 26px 0 0; }
 .month-label {
   position: sticky; top: var(--navh); z-index: 5;
@@ -232,6 +264,8 @@ details.month.is-done > .month-label { opacity: .65; }
 details.month:not([open]) > .events { display: none; }
 
 .event {
+  /* Clears the sticky nav and the sticky month heading when jumped to. */
+  scroll-margin-top: calc(var(--navh) + 46px);
   display: grid; grid-template-columns: 92px 1fr;
   background: var(--bg-raised); border: 1px solid var(--line);
   border-radius: var(--radius); overflow: hidden;
@@ -294,10 +328,6 @@ details.month:not([open]) > .events { display: none; }
 .event.is-show .date { background: var(--pink-soft); border-right-color: var(--pink); }
 .event.is-past { opacity: .5; }
 .event.is-next { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft), var(--shadow); }
-
-@media (max-width: 700px) {
-  :root { --navh: 86px; }   /* the nav wraps onto two rows here */
-}
 
 @media (max-width: 560px) {
   .event { grid-template-columns: 1fr; }
@@ -398,21 +428,41 @@ table.cast tbody.member:nth-of-type(even) > tr > td {
   background: color-mix(in srgb, var(--bg-sunken) 55%, transparent);
 }
 
+/* On a phone the table becomes one card per person: name across the top, then a
+   line per role with its track pill, and the description underneath. */
 @media (max-width: 760px) {
+  .table-scroll { border: none; border-radius: 0; }
+  table.cast { background: transparent; }
   table.cast, table.cast tbody, table.cast tr, table.cast td { display: block; width: 100%; }
   table.cast thead { display: none; }
+
   table.cast tbody.member {
-    border-top: 2px solid var(--line); padding: 12px 4px 14px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 12px 14px 14px; margin-bottom: 12px;
   }
   table.cast tbody.member:nth-of-type(even) > tr > td { background: transparent; }
-  table.cast tbody.member > tr > td { border-top: none; padding: 1px 14px; }
+  table.cast tbody.member > tr > td { border-top: none; padding: 0; background: transparent; }
+
   table.cast td.actor {
-    white-space: normal; font-size: 1.05rem; border-right: none; padding-bottom: 4px;
+    white-space: normal; font-size: 1.1rem; border-right: none;
+    padding-bottom: 8px; margin-bottom: 10px;
+    border-bottom: 2px solid var(--line);
   }
   table.cast td.actor .actor-count { display: none; }
-  table.cast tbody.member > tr.more { margin-top: 10px; }
-  table.cast td.role, table.cast td.track-col { display: inline-block; width: auto; }
-  table.cast td.track-col { padding-left: 6px; }
+
+  table.cast tbody.member > tr.more {
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line);
+  }
+  table.cast td.role {
+    display: inline-block; width: auto; vertical-align: middle;
+    font-size: 1rem; font-weight: 700;
+  }
+  table.cast td.track-col {
+    display: inline-block; width: auto; vertical-align: middle; padding-left: 10px;
+  }
+  table.cast td.desc { padding-top: 4px; }
 }
 
 .name-pills { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 12px 0 0; }
@@ -460,9 +510,11 @@ table.cast tbody.member:nth-of-type(even) > tr > td {
 
 /* ---------- Footer ---------- */
 footer.site {
-  margin-top: 56px; padding: 28px 20px 40px;
+  margin-top: 56px; padding: 26px 0 36px;
   background: var(--green-900); color: #cfe0c8; text-align: center; font-size: .9rem;
 }
+footer.site .wrap { text-align: center; }
+footer.site a, footer.site .contact-card .value a { color: #fff; }
 footer.site a { color: #fff; }
 
 /* ---------- Utility ---------- */
@@ -471,6 +523,10 @@ footer.site a { color: #fff; }
   color: var(--ink-soft); text-align: center;
 }
 .error { border-color: var(--pink); color: var(--pink); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
 .skip { position: absolute; left: -9999px; }
 .skip:focus {
   left: 8px; top: 8px; position: fixed; z-index: 99;

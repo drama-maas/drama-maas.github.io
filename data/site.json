@@ -1,14 +1,10 @@
 {
   "_comment": "Basic information shown on every page. Edit the text between the quotes only.",
-
   "school": "Mesa Academy for Advanced Studies",
   "clubName": "Drama Club",
   "season": "2026-27 spring musical",
   "showTitle": "Shrek The Musical JR.",
-  "bookmarkBanner": "Bookmark this page - it gets updated and links to everything you need!",
-
   "studyHallSignupUrl": "https://www.signupgenius.com/go/60B0C4DAAAC2AA3F49-65327333-study#/",
-
   "contacts": [
     {
       "icon": "🏫",
@@ -32,7 +28,6 @@
       "url": "mailto:drama.maas@gmail.com"
     }
   ],
-
   "announcements": {
     "heading": "Announcements",
     "upcomingHeading": "Coming up",
@@ -53,6 +48,5 @@
       }
     ]
   },
-
   "footerNote": "Questions about this website? Email drama.maas@gmail.com."
 }

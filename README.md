@@ -10,7 +10,7 @@ plain HTML; all content is read at load time from the JSON files in `data/`.
 ```
 index.html          Home: announcements and links & folders
 calendar.html       Drama Club calendar and the spring performance schedule
-performances.html   Show dates, built from the performance:true events
+performances.html   Shows tab: show dates, built from the performance:true events
 cast.html           Cast list with search and a track filter
 boosters.html       Join the Boosters: membership, donation, committees
 data/site.json      Header, contacts, announcements, study hall sign-up address
@@ -56,6 +56,10 @@ Then visit <http://localhost:8765>.
 
 - A pull request that changes a `data/*.json` file is checked automatically by the workflow
   in `.github/workflows/validate.yml`, which fails if the JSON has a typo.
+- The home page carries the full masthead; every other page uses a slim version of it. The
+  contacts sit in the footer sitewide.
+- `site.css` and `site.js` are loaded with a `?v=` stamp. Raise it in all five HTML files
+  after a style or script change so browsers do not serve a stale copy.
 - Dates drive the display: events before today are dimmed, the next upcoming event gets a
   gold outline, and the "Coming up" cards on the home page are generated from the calendar.
   Keep the `date` field accurate and the page stays current on its own.

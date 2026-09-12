@@ -6,15 +6,16 @@ website updates itself a minute or two later.
 
 | I want to change... | Edit this file |
 | --- | --- |
-| The yellow bookmark bar, the sponsor/boosters/questions boxes, the Announcements | `data/site.json` |
+| The footer contacts and the Announcements | `data/site.json` |
 | The "Links & Folders" buttons (Google Drive folders, SignUpGenius, etc.) | `data/links.json` |
 | Rehearsal dates, show dates, study hall coverage | `data/calendar.json` |
 | The cast list | `data/cast.json` |
 | The Join the Boosters page | `data/boosters.json` |
 
-The site has five pages: Home, Calendar, Performances, Cast List and Boosters. The
-Performances page builds itself from the calendar, listing every date marked
-`"performance": true`, so there is no separate file to keep in step.
+The site has five pages: Home, Calendar, Shows, Cast and Boosters. The Shows page builds
+itself from the calendar, listing every date marked `"performance": true`, so there is no
+separate file to keep in step. The school sponsor, boosters and questions contacts sit in
+the footer of every page.
 
 The boosters' running to-do list is no longer on the website. It lives in
 `STILL-TO-BE-CONFIRMED.md` in the repository, where you can tick items off.
@@ -102,7 +103,7 @@ In `data/calendar.json`, find the right month and copy an existing event:
 - `day`, `month` and `weekday` are what people actually see on the date chip. Write a range
   like `"15-16"` for a two-night run.
 - `performance` set to `true` gives the date the pink show-date styling and a "Performance"
-  badge, and puts it on the Performances page. Use it for Mystery Dinner and the April shows.
+  badge, and puts it on the Shows page. Use it for Mystery Dinner and the April shows.
 - `track` puts a coloured Castle or Storybook pill next to the title, the same pills used on
   the cast list. Leave it as `""` for a date that involves everybody.
 - `blocks` is the schedule. Each one is a time and what happens then. Add or remove as many
@@ -169,6 +170,14 @@ the `pending` section near the bottom of the file.
 committee list. A button with an empty `"url"` shows as a grey placeholder instead of a link,
 which is how the Donate button is set right now. Paste the donation address into its `url`
 and it turns into a working button.
+
+## If a change does not show up
+
+Browsers hold on to the stylesheet and the script for a while. The five HTML files load
+them with a version number on the end, like `site.css?v=5`. If you change the look of the
+site and someone still sees the old version, raise that number in all five files and every
+browser will fetch fresh copies. Changes to the files in `data` appear straight away and
+need none of this.
 
 ## Photos and logos
 

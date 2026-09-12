@@ -61,9 +61,6 @@ function renderChrome(site) {
   document.querySelectorAll('[data-site="season"]').forEach(n => n.textContent = site.season);
   document.querySelectorAll('[data-site="showTitle"]').forEach(n => n.textContent = site.showTitle);
 
-  const banner = slot('banner');
-  if (banner && site.bookmarkBanner) banner.textContent = '⭐ ' + site.bookmarkBanner;
-
   const footer = slot('footer-note');
   if (footer && site.footerNote) footer.textContent = site.footerNote;
 
@@ -202,7 +199,14 @@ function renderCalendars(data, site) {
   host.innerHTML = '';
   const today = todayISO();
   let nextMarked = false;
+  let nextCard = null;
   const signupUrl = site.studyHallSignupUrl || '';
+
+  const jumpBar = el('div', 'jump-bar');
+  const jump = el('button', 'jump', '↓  Jump to what is next');
+  jump.type = 'button';
+  jumpBar.appendChild(jump);
+  host.appendChild(jumpBar);
 
   (data.calendars || []).forEach(cal => {
     const section = el('section');
@@ -231,7 +235,9 @@ function renderCalendars(data, site) {
           card.classList.add('is-past');
         } else if (ev.date && !nextMarked) {
           card.classList.add('is-next');
+          card.id = 'next';
           nextMarked = true;
+          nextCard = card;
         }
 
         const chip = el('div', 'date');
@@ -277,6 +283,20 @@ function renderCalendars(data, site) {
     host.appendChild(section);
   });
 
+  const goToNext = () => {
+    if (!nextCard) return;
+    // The date may sit inside a month that folded itself shut.
+    const month = nextCard.closest('details.month');
+    if (month) month.open = true;
+    nextCard.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  };
+
+  if (nextCard) {
+    jump.addEventListener('click', goToNext);
+    if (location.hash === '#next') setTimeout(goToNext, 120);
+  } else {
+    jumpBar.remove();
+  }
 }
 
 /* ---------- performances ---------- */
