@@ -433,6 +433,9 @@ table.cast td.desc { color: var(--ink-soft); font-size: .93rem; }
 table.cast tbody.member:nth-of-type(even) > tr > td {
   background: color-mix(in srgb, var(--bg-sunken) 55%, transparent);
 }
+/* Filtered-out people. The phone layout sets display on the group, which would
+   otherwise beat the browser's own rule for hidden elements. */
+table.cast tbody.member[hidden] { display: none; }
 
 /* On a phone the table becomes one card per person: name across the top, then a
    line per role with its track pill, and the description underneath. Every cell
