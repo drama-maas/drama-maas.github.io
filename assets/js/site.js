@@ -64,6 +64,14 @@ function renderChrome(site) {
   const footer = slot('footer-note');
   if (footer && site.footerNote) footer.textContent = site.footerNote;
 
+  // Optional feedback link, placed just above the motto. Delete the "feedback"
+  // block from data/site.json and it disappears from every page.
+  if (footer && site.feedback && site.feedback.url) {
+    const row = el('p', 'footer-feedback');
+    row.appendChild(link(site.feedback.url, '💬  ' + (site.feedback.label || 'Share feedback') + ' »'));
+    footer.parentNode.insertBefore(row, footer);
+  }
+
   const contacts = slot('contacts');
   if (contacts && Array.isArray(site.contacts)) {
     contacts.innerHTML = '';

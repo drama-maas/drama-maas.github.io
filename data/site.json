@@ -48,5 +48,10 @@
       }
     ]
   },
+  "feedback": {
+    "_comment": "TEMPORARY: shows a feedback link in the footer of every page. Delete this whole block to remove it.",
+    "label": "Share feedback on this website",
+    "url": "https://forms.gle/tEBvQ8xbFVLDNzLDA"
+  },
   "footerNote": "“The spotlight starts here. The confidence lasts forever.”"
 }

@@ -671,6 +671,13 @@ footer.site {
 }
 footer.site .wrap { text-align: center; }
 #footer-note { font-style: italic; font-size: 1rem; opacity: .92; margin: 4px 0 0; }
+.footer-feedback { margin: 0 0 16px; }
+footer.site .footer-feedback a {
+  display: inline-block; text-decoration: none; font-weight: 600; font-size: .92rem;
+  color: #2a1d00; background: var(--gold); border-radius: 999px; padding: 8px 18px;
+}
+footer.site .footer-feedback a:hover { filter: brightness(1.07); }
+footer.site .footer-feedback a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 footer.site a, footer.site .contact-card .value a { color: #fff; }
 footer.site a { color: #fff; }
 
