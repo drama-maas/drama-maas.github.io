@@ -26,7 +26,8 @@
   --shadow: 0 1px 2px rgba(20, 51, 31, .06), 0 8px 24px rgba(20, 51, 31, .06);
   --wrap: 1020px;
   --navh: 50px;   /* height of the sticky nav bar; sticky headers park below it */
-  --art-inset: 28px;   /* how far the page artwork is held in from the window edge */
+  --art-inset: 28px;        /* how far the house is held in from the content column */
+  --art-inset-wide: 60px;   /* the outhouse, Fiona's tower and the Duloc towers */
   --show-green: #a9d49a;   /* the show title in the slim header */
   --font: "Lexend", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
@@ -166,7 +167,7 @@ a { color: var(--green-700); }
   .nav a { padding: 12px 9px; font-size: .84rem; }
 }
 @media (max-width: 760px) {
-  :root { --art-inset: 14px; }
+  :root { --art-inset: 14px; --art-inset-wide: 24px; }
 }
 .nav a:hover { color: #fff; border-bottom-color: var(--green-300); }
 .nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--gold); }
@@ -592,11 +593,12 @@ main.has-house { padding-bottom: 44px; }
 
 /* Calendar: the outhouse, aligned on the black shadow beneath it. */
 main.has-outhouse { padding-bottom: 40px; }
-.outhouse { width: 210px; max-width: 34%; transform: translateY(2.8%); }
+.outhouse { right: var(--art-inset-wide); width: 210px; max-width: 34%; transform: translateY(2.8%); }
 
 /* Shows: Fiona's tower, tall enough to reach the first show on a wide screen. */
 main.has-tower { padding-bottom: 40px; }
-.fiona { width: 150px; max-width: 28%; transform: translateY(0.4%); }
+/* Sized so the spire lands inside the first show card rather than above it. */
+.fiona { right: var(--art-inset-wide); width: 128px; max-width: 26%; transform: translateY(0.4%); }
 
 @media (max-width: 760px) {
   main.has-house { padding-bottom: 40px; }
@@ -605,7 +607,7 @@ main.has-tower { padding-bottom: 40px; }
     width: 100%; max-width: 460px;
   }
   .outhouse { width: 150px; max-width: 40%; }
-  .fiona { width: 92px; max-width: 30%; }
+  .fiona { width: 84px; max-width: 30%; }
 }
 
 /* Cast: the wall of Duloc. The middle is one merlon of wall repeated, and it
@@ -625,14 +627,14 @@ main.has-castle { padding-bottom: 210px; }
 .duloc + footer.site { margin-top: 0; padding-top: 20px; }
 .duloc-wall {
   position: absolute; bottom: 0; height: 94px;
-  left: var(--art-inset); right: var(--art-inset);
+  left: var(--art-inset-wide); right: var(--art-inset-wide);
   background: url("../img/duloc-wall.png") repeat-x bottom left / auto 100%;
 }
 .duloc-tower { position: absolute; bottom: 0; height: 210px; width: auto; }
-.duloc-tower.left { left: var(--art-inset); }
+.duloc-tower.left { left: var(--art-inset-wide); }
 /* The right tower's pennant overhangs its stonework by 11 of the artwork's
    pixels, so nudge it out to line the tower itself up with its twin. */
-.duloc-tower.right { right: calc(var(--art-inset) - 3px); }
+.duloc-tower.right { right: calc(var(--art-inset-wide) - 3px); }
 .duloc-door {
   position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 74px;
 }
@@ -642,9 +644,17 @@ main.has-castle { padding-bottom: 210px; }
   .duloc { height: 150px; margin-top: -150px; }
   .duloc-wall { height: 67px; }
   .duloc-tower { height: 150px; }
-  .duloc-tower.right { right: calc(var(--art-inset) - 2px); }
+  .duloc-tower.right { right: calc(var(--art-inset-wide) - 2px); }
   .duloc-door { height: 53px; }
 }
+
+/* Card surfaces are slightly see-through so the page artwork reads behind them. */
+.link-card, .event, .announce, .committee, .note-box, .name-pills li {
+  background: color-mix(in srgb, var(--bg-raised) 72%, transparent);
+  backdrop-filter: blur(1.5px);
+}
+.link-card:hover { background: color-mix(in srgb, var(--bg-raised) 92%, transparent); }
+.event.is-next { background: color-mix(in srgb, var(--bg-raised) 88%, transparent); }
 
 /* ---------- Footer ---------- */
 footer.site {
