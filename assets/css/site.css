@@ -568,23 +568,30 @@ table.cast tbody.member[hidden] { display: none; }
 .committee-link { font-size: .88rem; font-weight: 600; margin-top: 6px; }
 .closing-line { margin-top: 24px; font-weight: 600; }
 
-/* ---------- Shrek's house, home page only ---------- */
-/* Sits on the footer's top edge. The trunk rises clear of the content, while the
-   hut tucks in behind the link tiles, which carry their own solid background. */
-main.has-house { position: relative; padding-bottom: 44px; }
-main.has-house > section { position: relative; z-index: 1; }
-/* Extra headroom so the trailing roots never land on the footer text. */
-main.has-house + footer.site { margin-top: 0; padding-top: 46px; }
+/* ---------- Page artwork ---------- */
+/* Each page carries a piece of scenery along its foot, sitting on the footer's
+   green edge. Cards above it are slightly see-through so it reads behind them. */
+main.has-art { position: relative; }
+main.has-art > section, main.has-art > div { position: relative; z-index: 1; }
+main.has-art + footer.site { margin-top: 0; padding-top: 46px; }
 
-.house {
+.page-art {
   position: absolute; z-index: 0; bottom: 0; right: 4px;
-  width: 440px; max-width: 48%; height: auto;
-  /* The hut's foundation sits 10.86% up from the foot of the artwork, measured off
-     the wall colour. Drop the image by a hair more so the wall butts against the
-     footer's edge with no seam. The post and roots trail over the dark green. */
-  transform: translateY(11%);
-  pointer-events: none; user-select: none;
+  height: auto; pointer-events: none; user-select: none;
 }
+
+/* Home: Shrek's house. Its foundation sits 10.86% up from the foot of the
+   artwork, measured off the wall colour, so the image drops by a hair more. */
+main.has-house { padding-bottom: 44px; }
+.house { width: 440px; max-width: 48%; transform: translateY(11%); }
+
+/* Calendar: the outhouse, aligned on the black shadow under it. */
+main.has-outhouse { padding-bottom: 40px; }
+.outhouse { width: 210px; max-width: 34%; transform: translateY(2.8%); }
+
+/* Shows: Fiona's tower. */
+main.has-tower { padding-bottom: 40px; }
+.fiona { width: 104px; max-width: 26%; transform: translateY(0.4%); }
 
 @media (max-width: 760px) {
   main.has-house { padding-bottom: 40px; }
@@ -592,16 +599,48 @@ main.has-house + footer.site { margin-top: 0; padding-top: 46px; }
     right: auto; left: 50%; transform: translate(-50%, 11%);
     width: 100%; max-width: 460px;
   }
+  .outhouse { width: 150px; max-width: 40%; }
+  .fiona { width: 78px; max-width: 30%; }
 }
 
-/* The link tiles are slightly see-through so the house reads behind them. */
-.link-card {
+/* Cast: the wall of Duloc runs the full width of the page. The middle section
+   is one merlon of wall repeated; the towers and gate sit on top of it. */
+/* The band is a sibling of <main>, so it spans the window without the scrollbar
+   arithmetic that 100vw would drag in. A negative margin lifts it back over the
+   foot of the page, and a negative z-index keeps it behind the cards. */
+main.has-castle { padding-bottom: 210px; }
+.duloc {
+  position: relative; z-index: -1;
+  width: 100%; height: 210px; margin-top: -210px;
+  pointer-events: none; user-select: none;
+}
+.duloc + footer.site { margin-top: 0; padding-top: 20px; }
+.duloc-wall {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 94px;
+  background: url("../img/duloc-wall.png") repeat-x bottom left / auto 100%;
+}
+.duloc-tower { position: absolute; bottom: 0; height: 210px; width: auto; }
+.duloc-tower.left { left: 16px; }
+.duloc-tower.right { right: 16px; }
+.duloc-door { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 75px; }
+
+@media (max-width: 760px) {
+  main.has-castle { padding-bottom: 150px; }
+  .duloc { height: 150px; margin-top: -150px; }
+  .duloc-wall { height: 67px; }
+  .duloc-tower { height: 150px; }
+  .duloc-tower.left { left: 8px; }
+  .duloc-tower.right { right: 8px; }
+  .duloc-door { height: 54px; }
+}
+
+/* Card surfaces are slightly see-through so the page artwork reads behind them. */
+.link-card, .event, .announce, .committee, .note-box, .name-pills li {
   background: color-mix(in srgb, var(--bg-raised) 72%, transparent);
   backdrop-filter: blur(1.5px);
 }
-.link-card:hover {
-  background: color-mix(in srgb, var(--bg-raised) 92%, transparent);
-}
+.link-card:hover { background: color-mix(in srgb, var(--bg-raised) 92%, transparent); }
+.event.is-next { background: color-mix(in srgb, var(--bg-raised) 88%, transparent); }
 
 /* ---------- Footer ---------- */
 footer.site {
