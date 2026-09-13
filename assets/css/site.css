@@ -26,6 +26,7 @@
   --shadow: 0 1px 2px rgba(20, 51, 31, .06), 0 8px 24px rgba(20, 51, 31, .06);
   --wrap: 1020px;
   --navh: 50px;   /* height of the sticky nav bar; sticky headers park below it */
+  --art-inset: 28px;   /* how far the page artwork is held in from the window edge */
   --show-green: #a9d49a;   /* the show title in the slim header */
   --font: "Lexend", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
@@ -163,6 +164,9 @@ a { color: var(--green-700); }
 }
 @media (max-width: 480px) {
   .nav a { padding: 12px 9px; font-size: .84rem; }
+}
+@media (max-width: 760px) {
+  :root { --art-inset: 14px; }
 }
 .nav a:hover { color: #fff; border-bottom-color: var(--green-300); }
 .nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--gold); }
@@ -570,13 +574,14 @@ table.cast tbody.member[hidden] { display: none; }
 
 /* ---------- Page artwork ---------- */
 /* Each page carries a piece of scenery along its foot, sitting on the footer's
-   green edge. Cards above it are slightly see-through so it reads behind them. */
+   green edge. Cards above it are slightly see-through so it reads behind them.
+   Everything is held the same distance in from the window edge. */
 main.has-art { position: relative; }
 main.has-art > section, main.has-art > div { position: relative; z-index: 1; }
 main.has-art + footer.site { margin-top: 0; padding-top: 46px; }
 
 .page-art {
-  position: absolute; z-index: 0; bottom: 0; right: 4px;
+  position: absolute; z-index: 0; bottom: 0; right: var(--art-inset);
   height: auto; pointer-events: none; user-select: none;
 }
 
@@ -585,13 +590,13 @@ main.has-art + footer.site { margin-top: 0; padding-top: 46px; }
 main.has-house { padding-bottom: 44px; }
 .house { width: 440px; max-width: 48%; transform: translateY(11%); }
 
-/* Calendar: the outhouse, aligned on the black shadow under it. */
+/* Calendar: the outhouse, aligned on the black shadow beneath it. */
 main.has-outhouse { padding-bottom: 40px; }
 .outhouse { width: 210px; max-width: 34%; transform: translateY(2.8%); }
 
-/* Shows: Fiona's tower. */
+/* Shows: Fiona's tower, tall enough to reach the first show on a wide screen. */
 main.has-tower { padding-bottom: 40px; }
-.fiona { width: 104px; max-width: 26%; transform: translateY(0.4%); }
+.fiona { width: 150px; max-width: 28%; transform: translateY(0.4%); }
 
 @media (max-width: 760px) {
   main.has-house { padding-bottom: 40px; }
@@ -600,47 +605,46 @@ main.has-tower { padding-bottom: 40px; }
     width: 100%; max-width: 460px;
   }
   .outhouse { width: 150px; max-width: 40%; }
-  .fiona { width: 78px; max-width: 30%; }
+  .fiona { width: 92px; max-width: 30%; }
 }
 
-/* Cast: the wall of Duloc runs the full width of the page. The middle section
-   is one merlon of wall repeated; the towers and gate sit on top of it. */
-/* The band is a sibling of <main>, so it spans the window without the scrollbar
-   arithmetic that 100vw would drag in. A negative margin lifts it back over the
-   foot of the page, and a negative z-index keeps it behind the cards. */
+/* Cast: the wall of Duloc. The middle is one merlon of wall repeated, and it
+   runs only between the towers, which hide its cut ends. The band is a sibling
+   of <main>, so it spans the window without the scrollbar arithmetic that 100vw
+   drags in; a negative margin lifts it back over the foot of the page and a
+   negative z-index keeps it behind the cards. */
 main.has-castle { padding-bottom: 210px; }
+/* Same centred column as the rest of the page, so the towers line up with the
+   artwork on the other pages rather than with the window edge. */
 .duloc {
   position: relative; z-index: -1;
-  width: 100%; height: 210px; margin-top: -210px;
+  width: 100%; max-width: var(--wrap); height: 210px;
+  margin: -210px auto 0;
   pointer-events: none; user-select: none;
 }
 .duloc + footer.site { margin-top: 0; padding-top: 20px; }
 .duloc-wall {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 94px;
+  position: absolute; bottom: 0; height: 94px;
+  left: var(--art-inset); right: var(--art-inset);
   background: url("../img/duloc-wall.png") repeat-x bottom left / auto 100%;
 }
 .duloc-tower { position: absolute; bottom: 0; height: 210px; width: auto; }
-.duloc-tower.left { left: 16px; }
-.duloc-tower.right { right: 16px; }
-.duloc-door { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 75px; }
+.duloc-tower.left { left: var(--art-inset); }
+/* The right tower's pennant overhangs its stonework by 11 of the artwork's
+   pixels, so nudge it out to line the tower itself up with its twin. */
+.duloc-tower.right { right: calc(var(--art-inset) - 3px); }
+.duloc-door {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 74px;
+}
 
 @media (max-width: 760px) {
   main.has-castle { padding-bottom: 150px; }
   .duloc { height: 150px; margin-top: -150px; }
   .duloc-wall { height: 67px; }
   .duloc-tower { height: 150px; }
-  .duloc-tower.left { left: 8px; }
-  .duloc-tower.right { right: 8px; }
-  .duloc-door { height: 54px; }
+  .duloc-tower.right { right: calc(var(--art-inset) - 2px); }
+  .duloc-door { height: 53px; }
 }
-
-/* Card surfaces are slightly see-through so the page artwork reads behind them. */
-.link-card, .event, .announce, .committee, .note-box, .name-pills li {
-  background: color-mix(in srgb, var(--bg-raised) 72%, transparent);
-  backdrop-filter: blur(1.5px);
-}
-.link-card:hover { background: color-mix(in srgb, var(--bg-raised) 92%, transparent); }
-.event.is-next { background: color-mix(in srgb, var(--bg-raised) 88%, transparent); }
 
 /* ---------- Footer ---------- */
 footer.site {
