@@ -1,5 +1,5 @@
 {
-  "_comment": "The 'Links & Folders' section. Each group has a title and a list of links. An optional \"id\" adds a styling hook: \"boosters-only\" makes those tiles slightly see-through so Shrek's house shows through them.",
+  "_comment": "The 'Links & Folders' section. Each group has a title and a list of links.",
   "heading": "Links & Folders",
   "groups": [
     {
@@ -52,8 +52,7 @@
           "note": "",
           "url": "https://drive.google.com/drive/folders/1_YgaX04R8W8LT8fmFlBlEDDoqng5Jm8q?usp=drive_link"
         }
-      ],
-      "id": "boosters-only"
+      ]
     }
   ]
 }
