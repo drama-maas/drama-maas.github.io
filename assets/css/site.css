@@ -571,20 +571,25 @@ table.cast tbody.member[hidden] { display: none; }
 /* ---------- Shrek's house, home page only ---------- */
 /* Sits on the footer's top edge. The trunk rises clear of the content, while the
    hut tucks in behind the link tiles, which carry their own solid background. */
-main.has-house { position: relative; padding-bottom: 96px; }
+main.has-house { position: relative; padding-bottom: 44px; }
 main.has-house > section { position: relative; z-index: 1; }
-main.has-house + footer.site { margin-top: 0; }
+/* Extra headroom so the trailing roots never land on the footer text. */
+main.has-house + footer.site { margin-top: 0; padding-top: 46px; }
 
 .house {
   position: absolute; z-index: 0; bottom: 0; right: 4px;
   width: 440px; max-width: 48%; height: auto;
+  /* The hut's base sits 10.4% up from the foot of the artwork; drop the image by
+     that much so the walls, not the sign post, rest on the footer's edge. The
+     post and roots then trail over the dark green. */
+  transform: translateY(10.4%);
   pointer-events: none; user-select: none;
 }
 
 @media (max-width: 760px) {
-  main.has-house { padding-bottom: 92px; }
+  main.has-house { padding-bottom: 40px; }
   .house {
-    right: auto; left: 50%; transform: translateX(-50%);
+    right: auto; left: 50%; transform: translate(-50%, 10.4%);
     width: 100%; max-width: 460px;
   }
 }
