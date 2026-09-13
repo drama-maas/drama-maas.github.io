@@ -54,6 +54,189 @@ function todayISO() {
     String(d.getDate()).padStart(2, '0');
 }
 
+/* ---------- Google Sheet content ----------
+   The calendar, announcements and cast can come from a published Google Sheet
+   so admins edit a spreadsheet instead of JSON. Each tab is read as CSV. If a
+   tab cannot be reached or does not look right, the page quietly uses the
+   matching file in /data instead, so it never goes blank. */
+
+// Splits CSV text into rows of cells, honouring quoted cells that contain
+// commas, doubled quotes or line breaks.
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cell = '', quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"') {
+      quoted = true;
+    } else if (c === ',') {
+      row.push(cell); cell = '';
+    } else if (c === '\n' || c === '\r') {
+      if (c === '\r' && text[i + 1] === '\n') i++;
+      row.push(cell); rows.push(row); row = []; cell = '';
+    } else {
+      cell += c;
+    }
+  }
+  if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+
+// One published tab as objects keyed by the headings in row 1. Row 2 holds
+// hints for editors and is skipped, as are entirely blank rows.
+async function loadSheet(url, required) {
+  const res = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('the sheet returned ' + res.status);
+  const text = (await res.text()).replace(/^﻿/, '');
+  if (/^\s*</.test(text)) throw new Error('the sheet is not published as CSV');
+  const rows = parseCSV(text);
+  const heads = (rows[0] || []).map(h => h.trim());
+  required.forEach(h => {
+    if (!heads.includes(h)) throw new Error('the sheet has no "' + h + '" column');
+  });
+  return rows.slice(2)
+    .map(r => Object.fromEntries(heads.map((h, i) => [h, (r[i] || '').trim()])))
+    .filter(o => Object.values(o).some(Boolean));
+}
+
+// A tab from the sheet when one is configured and usable, otherwise the file.
+async function contentFor(jsonPath, sheetUrl, required, transform) {
+  const base = loadJSON(jsonPath);
+  if (!sheetUrl) return base;
+  const [saved, rows] = await Promise.all([base, loadSheet(sheetUrl, required).catch(err => err)]);
+  try {
+    if (rows instanceof Error) throw rows;
+    return transform(rows, saved);
+  } catch (err) {
+    console.warn('Using ' + jsonPath + ' because the Google Sheet could not be used: ' + err.message);
+    return saved;
+  }
+}
+
+// Accepts 2026-11-04, 11/4/2026 or 11/4/26 and returns 2026-11-04, or null.
+function isoDate(value) {
+  const s = (value || '').trim();
+  let y, m, d, hit;
+  if ((hit = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) { y = +hit[1]; m = +hit[2]; d = +hit[3]; }
+  else if ((hit = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/))) {
+    m = +hit[1]; d = +hit[2]; y = hit[3].length === 2 ? 2000 + +hit[3] : +hit[3];
+  } else return null;
+  const dt = new Date(y, m - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+  return y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+}
+
+function dateParts(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return {
+    year: y, day: d,
+    mon: dt.toLocaleString('en-US', { month: 'short' }),
+    monthName: dt.toLocaleString('en-US', { month: 'long' }),
+    weekday: dt.toLocaleString('en-US', { weekday: 'short' })
+  };
+}
+
+function pickTrack(value, allowed, fallback) {
+  const v = (value || '').trim().toLowerCase();
+  return allowed.find(t => t.toLowerCase() === v) || fallback;
+}
+
+const sheetYes = v => /^(yes|y|true|x)$/i.test((v || '').trim());
+
+function calendarFromSheet(rows, saved) {
+  // Headings and intros still come from the file; the sheet supplies the dates.
+  const sections = new Map();
+  (saved.calendars || []).forEach(c =>
+    sections.set(c.heading, { id: c.id, heading: c.heading, intro: c.intro || '', events: [] }));
+  const firstHeading = saved.calendars && saved.calendars[0] ? saved.calendars[0].heading : 'Calendar';
+
+  rows.forEach(r => {
+    const date = isoDate(r['Date']);
+    if (!date || !r['Title']) return;
+    const heading = r['Section'] || firstHeading;
+    if (!sections.has(heading)) sections.set(heading, { heading, intro: '', events: [] });
+
+    const start = dateParts(date);
+    const endIso = isoDate(r['End date']);
+    const end = endIso && endIso > date ? dateParts(endIso) : null;
+    const hasStudyHall = r['Study hall time'] || r['Study hall volunteer'] || r['Study hall note'];
+
+    sections.get(heading).events.push({
+      date,
+      day: end ? start.day + '-' + end.day : String(start.day),
+      month: start.mon,
+      weekday: end ? start.weekday + '-' + end.weekday : start.weekday,
+      performance: sheetYes(r['Performance']),
+      title: r['Title'],
+      track: pickTrack(r['Track'], ['Castle', 'Storybook'], ''),
+      blocks: [1, 2, 3]
+        .map(n => ({ time: r['Time ' + n] || '', what: r['What ' + n] || '' }))
+        .filter(b => b.time || b.what),
+      studyHall: hasStudyHall ? {
+        time: r['Study hall time'] || '',
+        volunteer: r['Study hall volunteer'] || '',
+        note: r['Study hall note'] || ''
+      } : null,
+      titleUrl: r['Link'] || '',
+      titleUrlLabel: r['Link label'] || ''
+    });
+  });
+
+  const calendars = [];
+  sections.forEach(sec => {
+    if (!sec.events.length) return;
+    sec.events.sort((a, b) => a.date.localeCompare(b.date));
+    const months = [];
+    sec.events.forEach(ev => {
+      const p = dateParts(ev.date);
+      const name = p.monthName + ' ' + p.year;
+      if (!months.length || months[months.length - 1].name !== name) months.push({ name, events: [] });
+      months[months.length - 1].events.push(ev);
+    });
+    calendars.push({ id: sec.id, heading: sec.heading, intro: sec.intro, months });
+  });
+  if (!calendars.length) throw new Error('the Calendar tab has no dates');
+  return Object.assign({}, saved, { calendars });
+}
+
+function announcementsFromSheet(rows) {
+  return rows
+    .filter(r => r['Title'] && !/^no$/i.test(r['Show'] || ''))
+    .map(r => ({
+      date: r['Date'] || '', icon: r['Icon'] || '', title: r['Title'],
+      detail: r['Detail'] || '', url: r['Link'] || ''
+    }));
+}
+
+function castFromSheet(rows, saved) {
+  // One row per role. Rows sharing an actor's name become one person, in the
+  // order they first appear. TBD rows are different unknown people, so each
+  // stays on its own.
+  const members = [];
+  const byName = new Map();
+  rows.forEach(r => {
+    if (!r['Actor'] && !r['Role']) return;
+    const part = {
+      role: r['Role'] || '',
+      track: pickTrack(r['Track'], ['Castle', 'Storybook', 'Both', 'TBD'], 'Both'),
+      description: r['Description'] || ''
+    };
+    const name = r['Actor'] || 'TBD';
+    const alone = /^tbd$/i.test(name);
+    if (!alone && byName.has(name)) { byName.get(name).parts.push(part); return; }
+    const person = { actor: name, parts: [part] };
+    members.push(person);
+    if (!alone) byName.set(name, person);
+  });
+  if (!members.length) throw new Error('the Cast tab has no rows');
+  return Object.assign({}, saved, { members });
+}
+
 /* ---------- shared chrome ---------- */
 
 function renderChrome(site) {
@@ -660,17 +843,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   const main = document.querySelector('main') || document.body;
   try {
     const site = await loadJSON('data/site.json');
+    const sheet = site.sheet || {};
     renderChrome(site);
 
     let calendarData = null;
     if (slot('calendars') || slot('announcements') || slot('performances')) {
-      calendarData = await loadJSON('data/calendar.json');
+      calendarData = await contentFor('data/calendar.json', sheet.calendar, ['Date', 'Title'], calendarFromSheet);
+    }
+    if (slot('announcements') && sheet.announcements) {
+      try {
+        const items = announcementsFromSheet(await loadSheet(sheet.announcements, ['Title']));
+        site.announcements = Object.assign({}, site.announcements, { items });
+      } catch (err) {
+        console.warn('Using data/site.json for announcements because the Google Sheet could not be used: ' + err.message);
+      }
     }
     renderAnnouncements(site, calendarData);
     if (slot('links')) renderLinks(await loadJSON('data/links.json'));
     if (slot('calendars')) renderCalendars(calendarData, site);
     if (slot('performances')) renderPerformances(calendarData, site);
-    if (slot('cast')) renderCast(await loadJSON('data/cast.json'));
+    if (slot('cast')) {
+      renderCast(await contentFor('data/cast.json', sheet.cast, ['Actor', 'Role'], castFromSheet));
+    }
     if (slot('boosters')) renderBoosters(await loadJSON('data/boosters.json'));
   } catch (err) {
     showError(main, err);
