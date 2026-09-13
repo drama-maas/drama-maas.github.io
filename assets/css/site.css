@@ -568,6 +568,27 @@ table.cast tbody.member[hidden] { display: none; }
 .committee-link { font-size: .88rem; font-weight: 600; margin-top: 6px; }
 .closing-line { margin-top: 24px; font-weight: 600; }
 
+/* ---------- Shrek's house, home page only ---------- */
+/* Sits on the footer's top edge. The trunk rises clear of the content, while the
+   hut tucks in behind the link tiles, which carry their own solid background. */
+main.has-house { position: relative; padding-bottom: 96px; }
+main.has-house > section { position: relative; z-index: 1; }
+main.has-house + footer.site { margin-top: 0; }
+
+.house {
+  position: absolute; z-index: 0; bottom: 0; right: 4px;
+  width: 440px; max-width: 48%; height: auto;
+  pointer-events: none; user-select: none;
+}
+
+@media (max-width: 760px) {
+  main.has-house { padding-bottom: 92px; }
+  .house {
+    right: auto; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 460px;
+  }
+}
+
 /* ---------- Footer ---------- */
 footer.site {
   margin-top: 56px; padding: 26px 0 36px;
