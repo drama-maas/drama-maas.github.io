@@ -666,5 +666,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (slot('boosters')) renderBoosters(await loadJSON('data/boosters.json'));
   } catch (err) {
     showError(main, err);
+  } finally {
+    // The scenery is pinned to the foot of <main>, so before the content is
+    // drawn it would flash near the top of a near-empty page. Reveal it once
+    // the layout has settled.
+    const showArt = () => document.body.classList.add('art-ready');
+    requestAnimationFrame(() => requestAnimationFrame(showArt));
+    setTimeout(showArt, 400);
   }
 });

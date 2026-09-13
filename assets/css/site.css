@@ -586,6 +586,14 @@ main.has-art + footer.site { margin-top: 0; padding-top: 46px; }
   height: auto; pointer-events: none; user-select: none;
 }
 
+/* Held back until the page has drawn, so the scenery does not flash near the
+   top of a still-empty page and then drop into place. */
+.page-art, .duloc { opacity: 0; transition: opacity .35s ease; }
+body.art-ready .page-art, body.art-ready .duloc { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .page-art, .duloc { transition: none; }
+}
+
 /* Home: Shrek's house. Its foundation sits 10.86% up from the foot of the
    artwork, measured off the wall colour, so the image drops by a hair more. */
 main.has-house { padding-bottom: 44px; }
@@ -662,6 +670,7 @@ footer.site {
   background: var(--green-900); color: #cfe0c8; text-align: center; font-size: .9rem;
 }
 footer.site .wrap { text-align: center; }
+#footer-note { font-style: italic; font-size: 1rem; opacity: .92; margin: 4px 0 0; }
 footer.site a, footer.site .contact-card .value a { color: #fff; }
 footer.site a { color: #fff; }
 
