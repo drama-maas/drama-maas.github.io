@@ -579,19 +579,28 @@ main.has-house + footer.site { margin-top: 0; padding-top: 46px; }
 .house {
   position: absolute; z-index: 0; bottom: 0; right: 4px;
   width: 440px; max-width: 48%; height: auto;
-  /* The hut's base sits 10.4% up from the foot of the artwork; drop the image by
-     that much so the walls, not the sign post, rest on the footer's edge. The
-     post and roots then trail over the dark green. */
-  transform: translateY(10.4%);
+  /* The hut's base sits about 10% up from the foot of the artwork; drop the image
+     past that so the walls meet the footer's edge with no seam of page background
+     showing. The post and roots then trail over the dark green. */
+  transform: translateY(12%);
   pointer-events: none; user-select: none;
 }
 
 @media (max-width: 760px) {
   main.has-house { padding-bottom: 40px; }
   .house {
-    right: auto; left: 50%; transform: translate(-50%, 10.4%);
+    right: auto; left: 50%; transform: translate(-50%, 12%);
     width: 100%; max-width: 460px;
   }
+}
+
+/* The boosters tiles let the house show faintly through them. */
+.link-grid.boosters-only .link-card {
+  background: color-mix(in srgb, var(--bg-raised) 72%, transparent);
+  backdrop-filter: blur(1.5px);
+}
+.link-grid.boosters-only .link-card:hover {
+  background: color-mix(in srgb, var(--bg-raised) 92%, transparent);
 }
 
 /* ---------- Footer ---------- */

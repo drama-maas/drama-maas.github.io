@@ -1,31 +1,30 @@
 {
-  "_comment": "The 'Links & Folders' section. Each group has a title and a list of links.",
-
+  "_comment": "The 'Links & Folders' section. Each group has a title and a list of links. An optional \"id\" adds a styling hook: \"boosters-only\" makes those tiles slightly see-through so Shrek's house shows through them.",
   "heading": "Links & Folders",
   "groups": [
     {
       "title": "Open to everyone",
       "links": [
         {
-          "icon": "\ud83d\udcd1",
+          "icon": "📑",
           "title": "Audition Materials",
           "note": "Songs, sides and the audition form.",
           "url": "https://docs.google.com/document/d/1HijclK8-Eq-KVfF1fZgyobGl4nJyxPHtlSu5qoqGCFk/edit?usp=sharing"
         },
         {
-          "icon": "\ud83d\ude4f",
+          "icon": "🙏",
           "title": "Volunteer to supervise Drama Club Study Hall",
           "note": "SignUpGenius - pick a date that works for you.",
           "url": "https://www.signupgenius.com/go/60B0C4DAAAC2AA3F49-65327333-study#/"
         },
         {
-          "icon": "\ud83c\udfad",
+          "icon": "🎭",
           "title": "Cast & Crew Folder",
           "note": "Student and guardian materials.",
           "url": "https://drive.google.com/drive/folders/1nfrz0qC5tyzjBF8SBJcA74zm625b3FLD?usp=drive_link"
         },
         {
-          "icon": "\ud83d\ude4f",
+          "icon": "🙏",
           "title": "Join the Boosters",
           "note": "Membership, committees and donations. Required for the folders listed below.",
           "url": "boosters.html"
@@ -36,24 +35,25 @@
       "title": "Boosters members only",
       "links": [
         {
-          "icon": "\ud83d\udd75\ufe0f",
+          "icon": "🕵️",
           "title": "Mystery Dinner Committee",
           "note": "",
           "url": "https://drive.google.com/drive/folders/1cGhYERouqSlW-VaH_FwZ1N8RW3cjNHFp?usp=drive_link"
         },
         {
-          "icon": "\ud83d\udcc1",
+          "icon": "📁",
           "title": "Production Folders",
           "note": "",
           "url": "https://drive.google.com/drive/folders/1mtCmcEnCI1vPTb3kG4tuv54q-waMd-V8?usp=sharing"
         },
         {
-          "icon": "\ud83d\udcc1",
+          "icon": "📁",
           "title": "Boosters Folders",
           "note": "",
           "url": "https://drive.google.com/drive/folders/1_YgaX04R8W8LT8fmFlBlEDDoqng5Jm8q?usp=drive_link"
         }
-      ]
+      ],
+      "id": "boosters-only"
     }
   ]
 }

@@ -153,7 +153,7 @@ function renderLinks(data) {
   host.appendChild(el('h2', null, data.heading || 'Links & Folders'));
   (data.groups || []).forEach(group => {
     host.appendChild(el('h3', null, group.title));
-    const grid = el('div', 'link-grid');
+    const grid = el('div', 'link-grid' + (group.id ? ' ' + group.id : ''));
     (group.links || []).forEach(l => {
       const card = link(l.url, null, 'link-card');
       const title = el('div', 'title');
