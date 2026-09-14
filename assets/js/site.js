@@ -164,7 +164,8 @@ function calendarFromSheet(rows, saved) {
     const start = dateParts(date);
     const endIso = isoDate(r['End date']);
     const end = endIso && endIso > date ? dateParts(endIso) : null;
-    const hasStudyHall = r['Study hall time'] || r['Study hall volunteer'] || r['Study hall note'];
+    const hasStudyHall = r['Study hall time'] || r['Study hall volunteer'] ||
+      r['Study hall students'] || r['Study hall note'];
 
     sections.get(heading).events.push({
       date,
@@ -177,9 +178,12 @@ function calendarFromSheet(rows, saved) {
       blocks: [1, 2, 3]
         .map(n => ({ time: r['Time ' + n] || '', what: r['What ' + n] || '' }))
         .filter(b => b.time || b.what),
+      notes: (r['Notes'] || '').split(/\r?\n/).map(s => s.replace(/^\s*[-*•]\s*/, '').trim()).filter(Boolean),
+      cast: r['Cast needed'] || '',
       studyHall: hasStudyHall ? {
         time: r['Study hall time'] || '',
         volunteer: r['Study hall volunteer'] || '',
+        students: r['Study hall students'] || '',
         note: r['Study hall note'] || ''
       } : null,
       titleUrl: r['Link'] || '',
@@ -380,11 +384,85 @@ function renderStudyHall(sh, signupUrl, isPast) {
     row.appendChild(el('span', 'study-open', 'Needs a volunteer'));
     if (signupUrl) row.appendChild(link(signupUrl, 'Sign up »', 'study-signup'));
   }
+  if (sh.students) {
+    const who = el('div', 'study-students');
+    who.appendChild(el('span', 'study-label', 'In study hall'));
+    who.appendChild(document.createTextNode(' ' + sh.students));
+    row.appendChild(who);
+  }
   if (sh.note) row.appendChild(el('div', 'study-note', sh.note));
   return row;
 }
 
-function renderCalendars(data, site) {
+/* ---------- who is called to each rehearsal ---------- */
+
+// "David, (Storyteller 6), Clara D" -> ["David", "Storyteller 6", "Clara D"]
+function castTokens(list) {
+  return (list || '').split(/[,;\n]/)
+    .map(t => t.replace(/[()]/g, '').replace(/\bTBD\b/gi, '').replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+}
+
+const normName = s => (s || '').toLowerCase().replace(/[.]/g, '').replace(/\s+/g, ' ').trim();
+
+// Everything a person might be called on a cast list: full name, first name,
+// first name plus last initial ("Clara D"), and each role they play. A first
+// name shared by two people matches both, so nobody is told to stay home by
+// mistake; a last initial tells them apart.
+function castPeople(castData) {
+  return (castData && castData.members ? castData.members : [])
+    .filter(m => m.actor && !/^tbd$/i.test(m.actor))
+    .map(m => {
+      const words = m.actor.trim().split(/\s+/);
+      const first = words[0];
+      const initial = words.length > 1 ? words[1][0] : '';
+      const keys = new Set([normName(m.actor), normName(first)]);
+      if (initial) keys.add(normName(first + ' ' + initial));
+      (m.parts || []).forEach(p =>
+        (p.role || '').split(/\s+or\s+/i).forEach(r => r && keys.add(normName(r))));
+      return { actor: m.actor, first, keys };
+    });
+}
+
+// Where a person stands for one event: 'all', 'yes', 'no', 'none' (nobody is
+// called), 'unposted', or 'study' (listed for study hall but not the rehearsal).
+function callStatus(ev, person) {
+  const raw = (ev.cast || '').trim();
+  const inList = list => castTokens(list).some(t => person.keys.has(normName(t)));
+  if (/^all$/i.test(raw)) return 'all';
+  if (/^none$/i.test(raw)) return 'none';
+  if (!raw) return 'unposted';
+  if (inList(raw)) return 'yes';
+  if (ev.studyHall && inList(ev.studyHall.students)) return 'study';
+  return 'no';
+}
+
+function applyCastFilter(cards, person) {
+  cards.forEach(({ card, ev, note }) => {
+    card.classList.remove('is-called', 'is-not-called');
+    note.hidden = true;
+    note.className = 'call-note';
+    if (!person) return;
+    const status = callStatus(ev, person);
+    const say = (cls, text) => { note.textContent = text; note.classList.add(cls); note.hidden = false; };
+    if (status === 'yes' || status === 'all') {
+      card.classList.add('is-called');
+      say('is-yes', '✓ ' + person.first + ' is needed');
+    } else if (status === 'no') {
+      card.classList.add('is-not-called');
+      say('is-no', person.first + ' is not needed at this rehearsal');
+    } else if (status === 'none') {
+      card.classList.add('is-not-called');
+      say('is-no', 'No rehearsal for anyone');
+    } else if (status === 'study') {
+      say('is-study', person.first + ' is listed for study hall');
+    } else if (!card.classList.contains('is-past')) {
+      say('is-unposted', 'Cast list not posted yet');
+    }
+  });
+}
+
+function renderCalendars(data, site, castData) {
   const host = slot('calendars');
   if (!host) return;
   host.innerHTML = '';
@@ -392,8 +470,25 @@ function renderCalendars(data, site) {
   let nextMarked = false;
   let nextCard = null;
   const signupUrl = site.studyHallSignupUrl || '';
+  const people = castPeople(castData);
+  const cards = [];
 
   const jumpBar = el('div', 'jump-bar');
+
+  let picker = null;
+  if (people.length) {
+    const label = el('label', 'cast-picker');
+    label.appendChild(el('span', 'cast-picker-label', 'Show rehearsals for'));
+    picker = el('select');
+    picker.appendChild(new Option('Everyone', ''));
+    people
+      .slice()
+      .sort((a, b) => a.actor.localeCompare(b.actor))
+      .forEach(p => picker.appendChild(new Option(p.actor, p.actor)));
+    label.appendChild(picker);
+    jumpBar.appendChild(label);
+  }
+
   const jump = el('button', 'jump', '↓  Jump to what is next');
   jump.type = 'button';
   jumpBar.appendChild(jump);
@@ -453,6 +548,10 @@ function renderCalendars(data, site) {
           body.appendChild(p);
         }
 
+        const note = el('div', 'call-note');
+        note.hidden = true;
+        body.appendChild(note);
+
         if ((ev.blocks || []).length) {
           const blocks = el('div', 'blocks');
           ev.blocks.forEach(b => {
@@ -462,11 +561,38 @@ function renderCalendars(data, site) {
           body.appendChild(blocks);
         }
 
+        // Notes: one bullet per line. A line that is only a time, such as
+        // "2:00-3:30pm", starts a new group with that time as its heading.
+        const lines = (ev.notes || []).map(n => (n || '').trim()).filter(Boolean);
+        if (lines.length) {
+          const notes = el('div', 'notes');
+          let ul = null;
+          lines.forEach(text => {
+            if (/^\d{1,2}(:\d{2})?\s*[-–]\s*\d{1,2}(:\d{2})?\s*(am|pm)?$/i.test(text)) {
+              notes.appendChild(el('div', 'notes-time', text));
+              ul = null;
+              return;
+            }
+            if (!ul) { ul = el('ul'); notes.appendChild(ul); }
+            ul.appendChild(el('li', null, text));
+          });
+          body.appendChild(notes);
+        }
+
+        const castList = (ev.cast || '').trim();
+        if (castList && !/^none$/i.test(castList)) {
+          const row = el('div', 'cast-needed');
+          row.appendChild(el('span', 'cast-needed-label', 'Cast needed'));
+          row.appendChild(document.createTextNode(' ' + (/^all$/i.test(castList) ? 'All' : castList)));
+          body.appendChild(row);
+        }
+
         const sh = renderStudyHall(ev.studyHall, signupUrl, isPast);
         if (sh) body.appendChild(sh);
 
         card.appendChild(body);
         list.appendChild(card);
+        cards.push({ card, ev, note });
       });
       box.appendChild(list);
       section.appendChild(box);
@@ -486,7 +612,27 @@ function renderCalendars(data, site) {
     jump.addEventListener('click', goToNext);
     if (location.hash === '#next') setTimeout(goToNext, 120);
   } else {
-    jumpBar.remove();
+    jump.remove();
+    if (!picker) jumpBar.remove();
+  }
+
+  if (picker) {
+    const KEY = 'maas-calendar-cast';
+    const choose = name => {
+      const person = people.find(p => p.actor === name) || null;
+      applyCastFilter(cards, person);
+      host.classList.toggle('is-filtered', !!person);
+    };
+    picker.addEventListener('change', () => {
+      choose(picker.value);
+      try { localStorage.setItem(KEY, picker.value); } catch (e) { /* storage unavailable */ }
+    });
+    let saved = '';
+    try { saved = localStorage.getItem(KEY) || ''; } catch (e) { /* storage unavailable */ }
+    if (saved && people.some(p => p.actor === saved)) {
+      picker.value = saved;
+      choose(saved);
+    }
   }
 }
 
@@ -860,7 +1006,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     renderAnnouncements(site, calendarData);
     if (slot('links')) renderLinks(await loadJSON('data/links.json'));
-    if (slot('calendars')) renderCalendars(calendarData, site);
+    if (slot('calendars')) {
+      // The cast list feeds the name picker that shows who is called to each rehearsal.
+      const castForPicker = await contentFor('data/cast.json', sheet.cast, ['Actor', 'Role'], castFromSheet)
+        .catch(() => null);
+      renderCalendars(calendarData, site, castForPicker);
+    }
     if (slot('performances')) renderPerformances(calendarData, site);
     if (slot('cast')) {
       renderCast(await contentFor('data/cast.json', sheet.cast, ['Actor', 'Role'], castFromSheet));

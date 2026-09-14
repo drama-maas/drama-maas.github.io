@@ -109,6 +109,41 @@ In `data/calendar.json`, find the right month and copy an existing event:
 - `blocks` is the schedule. Each one is a time and what happens then. Add or remove as many
   as you need.
 
+### Say who is called and what happens
+
+Each rehearsal also carries `notes` and `cast`:
+
+```json
+"blocks": [ { "time": "2:00-5:00pm", "what": "" } ],
+"notes": [
+  "2:00-3:30pm",
+  "Mrs. Decker: In Duloc",
+  "3:30-5:00pm",
+  "Mrs. Manley: Duloc choreography"
+],
+"cast": "Kate, Abbi, Reagan, Clara D, (Gingy)"
+```
+
+- `notes` prints as bullets under the time. A line that is only a time, like `"2:00-3:30pm"`,
+  becomes a small heading for the bullets after it.
+- `cast` feeds the **Show rehearsals for** picker at the top of the Calendar page. When someone
+  picks a name, rehearsals they are not called to fade out and say so.
+
+| What you write in `cast` | What the picker does |
+| --- | --- |
+| `"All"` | Everyone is needed |
+| `"David, Nikki, (Gingy)"` | Those people are needed; everyone else is told they are not |
+| `"None"` | Nobody is called, such as a day off |
+| `""` | Cast list not posted yet. **Nobody is told to stay home.** |
+
+Use first names. When two students share one, add a last initial, like `Clara C` and `Clara D`.
+For a role that is not cast yet, write the role in brackets, like `(Storyteller 6)`; it starts
+matching the student automatically once the cast list names them. A student listed in study
+hall `students` is never told to stay home, even if they are not in `cast`.
+
+Leave `cast` blank until the list is final. A wrong list tells a student to skip a rehearsal
+they should be at; a blank one just says the list is not posted yet.
+
 ### Fill in a study hall volunteer
 
 Find the date in `data/calendar.json` and write the name in `volunteer`:
@@ -119,6 +154,9 @@ Find the date in `data/calendar.json` and write the name in `volunteer`:
 | `"volunteer": ""` | Needs a volunteer, plus a green **Sign up** button |
 | `"volunteer": "none"` | Not needed this day. Use this only when study hall truly is not running. |
 | `"studyHall": null` | Nothing at all (use this on performance dates) |
+
+The students attending study hall go in `"students"`, separated by commas, like
+`"students": "Clara D, Lydia"`.
 
 The **Sign up** button goes to the SignUpGenius page. That address is stored once, in
 `data/site.json` under `"studyHallSignupUrl"`, so if the sign-up ever moves you change it in

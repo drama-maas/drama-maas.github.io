@@ -241,7 +241,15 @@ p.lead { font-size: 1.05rem; }
 .link-card .note { color: var(--ink-soft); font-size: .9rem; margin-top: 2px; }
 
 /* ---------- Calendar ---------- */
-.jump-bar { margin: 20px 0 0; }
+.jump-bar { margin: 20px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.cast-picker { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cast-picker-label { font-weight: 600; font-size: .9rem; }
+.cast-picker select {
+  font: inherit; font-size: .92rem; color: var(--ink);
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 14px; min-width: 210px; max-width: 100%;
+}
+.cast-picker select:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .jump {
   font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer;
   background: var(--gold); color: #2a1d00;
@@ -310,6 +318,31 @@ details.month:not([open]) > .events { display: none; }
   color: var(--ink);
 }
 .blocks .bwhat { color: var(--ink-soft); }
+
+.notes { margin-top: 6px; font-size: .93rem; color: var(--ink-soft); }
+.notes ul { margin: 2px 0 0; padding-left: 20px; }
+.notes li + li { margin-top: 2px; }
+.notes-time {
+  margin-top: 8px; font-weight: 600; color: var(--ink);
+  font-size: .85rem; font-variant-numeric: tabular-nums;
+}
+.cast-needed { margin-top: 8px; font-size: .9rem; color: var(--ink-soft); }
+.cast-needed-label, .study-students .study-label { font-weight: 600; color: var(--ink); }
+.study-students { flex-basis: 100%; }
+
+/* Picking a name on the calendar: say whether they are called, and fade the
+   rehearsals they can skip. */
+.call-note {
+  display: inline-block; margin-top: 6px;
+  font-size: .8rem; font-weight: 700; border-radius: 999px; padding: 3px 12px;
+}
+.call-note.is-yes { background: var(--green-500); color: #fff; }
+.call-note.is-no { background: var(--bg-sunken); color: var(--ink); border: 1px solid var(--line); }
+.call-note.is-study { background: var(--gold-soft); color: var(--ink); border: 1px solid var(--gold); }
+.call-note.is-unposted { background: transparent; color: var(--ink-soft); border: 1px dashed var(--line); }
+.event.is-not-called { opacity: .45; }
+.event.is-not-called .call-note { opacity: 1; }
+.event.is-called { border-color: var(--green-500); }
 
 .study {
   margin-top: 10px; padding-top: 8px;
