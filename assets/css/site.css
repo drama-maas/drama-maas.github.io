@@ -327,6 +327,35 @@ details.month:not([open]) > .events { display: none; }
   font-size: .85rem; font-variant-numeric: tabular-nums;
 }
 .cast-needed { margin-top: 8px; font-size: .9rem; color: var(--ink-soft); }
+.cast-names { display: inline; }
+/* Each name shows its role on hover, or on tap, since a tap focuses it. */
+.cast-name {
+  position: relative; display: inline-block; margin: 2px 4px 0 0;
+  padding: 1px 8px; border-radius: 999px; cursor: help;
+  background: var(--bg-sunken); border: 1px solid var(--line); color: var(--ink);
+  font-size: .84rem; line-height: 1.5;
+}
+.cast-name:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.cast-name[data-role]:hover::after,
+.cast-name[data-role]:focus::after {
+  content: attr(data-role);
+  position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%);
+  z-index: 20; white-space: nowrap; pointer-events: none;
+  background: var(--green-900); color: #fff; border-radius: 6px;
+  padding: 4px 9px; font-size: .78rem; font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+}
+.cast-name.is-unmatched { cursor: default; border-style: dashed; color: var(--ink-soft); font-style: italic; }
+@media (max-width: 560px) {
+  /* Centred labels would run off the edge of a narrow screen; start them at the name instead. */
+  .cast-name[data-role]:hover::after,
+  .cast-name[data-role]:focus::after {
+    left: 0; transform: none; white-space: normal; width: max-content; max-width: 70vw;
+  }
+}
+/* Cards clip their contents for the rounded corners; let a name's role label
+   rise above the card edge instead of being cut off. */
+.event:has(.cast-name:hover), .event:has(.cast-name:focus) { overflow: visible; z-index: 3; }
 .cast-needed-label { font-weight: 600; color: var(--ink); }
 
 /* Picking a name on the calendar: say whether they are called, and fade the

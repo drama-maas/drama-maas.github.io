@@ -138,26 +138,38 @@ Each rehearsal also carries `notes` and `cast`:
   "3:30-5:00pm",
   "Mrs. Manley: Duloc choreography"
 ],
-"cast": "Kate, Abbi, Reagan, Clara D, (Gingy)"
+"cast": "Human Fiona, Teen Fiona, Lord Farquaad, Storytellers, Gingy"
 ```
 
 - `notes` prints as bullets under the time. A line that is only a time, like `"2:00-3:30pm"`,
   becomes a small heading for the bullets after it.
-- `cast` feeds the **Show rehearsals for** picker at the top of the Calendar page. When someone
-  picks a name, rehearsals they are not called to fade out and say so.
+- `cast` lists who is called, and the page turns it into a row of names. Hover over or tap a
+  name to see the role that put them there. It also feeds the **Show rehearsals for** picker
+  at the top of the Calendar page: pick a name and the rehearsals they are not called to fade
+  out and say so.
 
-| What you write in `cast` | What the picker does |
+**List roles, not names.** Write the roles as they appear on the cast list, separated by
+commas. `Donkey` brings in both Donkeys, one from each track, so there is no need to know who
+plays what.
+
+| What you write in `cast` | Who is called |
 | --- | --- |
-| `"All"` | Everyone is needed |
-| `"David, Nikki, (Gingy)"` | Those people are needed; everyone else is told they are not |
-| `"None"` | Nobody is called, such as a day off |
+| `"All"` | Everyone |
+| `"Donkey, Shrek, Dragon"` | Everyone who plays any of those roles, on either track |
+| `"Fionas, Storytellers"` | A plural covers the whole group: every kind of Fiona, all six Storytellers |
+| `"Storyteller 3"` | Just that one numbered role |
+| `"None"` | Nobody, such as a day off |
 | `""` | Cast list not posted yet. **Nobody is told to stay home.** |
 
-Use first names. When two students share one, add a last initial, like `Clara C` and `Clara D`.
-For a role that is not cast yet, write the role in brackets, like `(Storyteller 6)`; it starts
-matching the student automatically once the cast list names them. A student listed in study
-hall `students` is never told to stay home, even if they are not in `cast`. The students
-list itself is not shown on the page.
+- An exact role wins over a group, so `Shrek` or `Shreks` means the two Shreks and not Little
+  Shrek.
+- A role that has not been cast yet shows as "not cast yet" and starts showing the student
+  automatically once the Cast tab names them.
+- A word that matches no role shows in italics with a dashed outline, which is how a typo
+  gives itself away.
+- Names still work too, such as `Clara D` for one particular student.
+- A student listed in study hall `students` is never told to stay home, even if they are not
+  in `cast`. The students list itself is not shown on the page.
 
 Leave `cast` blank until the list is final. A wrong list tells a student to skip a rehearsal
 they should be at; a blank one just says the list is not posted yet.

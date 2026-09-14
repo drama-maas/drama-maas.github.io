@@ -392,10 +392,40 @@ function castTokens(list) {
 
 const normName = s => (s || '').toLowerCase().replace(/[.]/g, '').replace(/\s+/g, ' ').trim();
 
-// Everything a person might be called on a cast list: full name, first name,
-// first name plus last initial ("Clara D"), and each role they play. A first
-// name shared by two people matches both, so nobody is told to stay home by
-// mistake; a last initial tells them apart.
+// "Donkeys" -> "donkey", "Blind Mice" -> "blind mouse", "Princesses" -> "princess".
+function singular(word) {
+  const w = normName(word);
+  if (/\bmice$/.test(w)) return w.replace(/mice$/, 'mouse');
+  if (/ies$/.test(w)) return w.replace(/ies$/, 'y');
+  if (/sses$/.test(w)) return w.replace(/es$/, '');
+  if (/[^s]s$/.test(w)) return w.slice(0, -1);
+  return w;
+}
+
+// A role as written on the cast list, and the family it belongs to with any
+// number dropped: "Storyteller 3" -> "storyteller", "Little Pig 2" -> "little pig".
+function roleForms(role) {
+  const exact = normName(role);
+  return { exact, family: exact.replace(/\s+\d+$/, '') };
+}
+
+// Does a word on a cast list name this role? When some role is named exactly
+// that ("Shrek", or "Shreks" meaning Shrek), only exact matches count, so Little
+// Shrek is not pulled in. Otherwise a word without a number matches the whole
+// family and any role it begins or ends: "Storytellers" covers Storyteller 1
+// to 6 and "Fionas" covers Human, Teen, Young and Ogre Fiona. Loose matches
+// include more people, never fewer, so nobody is told to stay home by mistake.
+function tokenMatchesRole(token, role, exactOnly) {
+  const { exact, family } = roleForms(role);
+  const words = [normName(token), singular(token)];
+  if (words.includes(exact)) return true;
+  if (exactOnly || /\d/.test(words[0])) return false;
+  return words.some(w => w === family || family.startsWith(w + ' ') || family.endsWith(' ' + w));
+}
+
+// Everyone on the cast list, with the ways they can be named: full name, first
+// name, first name plus last initial ("Clara D"), and each role they play. A
+// first name shared by two people matches both; a last initial tells them apart.
 function castPeople(castData) {
   return (castData && castData.members ? castData.members : [])
     .filter(m => m.actor && !/^tbd$/i.test(m.actor))
@@ -403,19 +433,54 @@ function castPeople(castData) {
       const words = m.actor.trim().split(/\s+/);
       const first = words[0];
       const initial = words.length > 1 ? words[1][0] : '';
-      const keys = new Set([normName(m.actor), normName(first)]);
-      if (initial) keys.add(normName(first + ' ' + initial));
+      const names = new Set([normName(m.actor), normName(first)]);
+      if (initial) names.add(normName(first + ' ' + initial));
+      const roles = [];
       (m.parts || []).forEach(p =>
-        (p.role || '').split(/\s+or\s+/i).forEach(r => r && keys.add(normName(r))));
-      return { actor: m.actor, first, keys };
+        (p.role || '').split(/\s+or\s+/i).forEach(r => r && roles.push({ role: r.trim(), track: p.track })));
+      return { actor: m.actor, first, names, roles };
     });
+}
+
+// Roles still waiting on casting, so a list can say who is coming once they are named.
+function unassignedRoles(castData) {
+  return (castData && castData.members ? castData.members : [])
+    .filter(m => /^tbd$/i.test(m.actor || ''))
+    .flatMap(m => (m.parts || []).map(p => p.role));
+}
+
+// Turns a cast-needed list into people. Returns each person matched with the
+// roles that matched them, in list order, plus any words that matched nobody.
+function resolveCast(list, people, unassigned) {
+  const found = new Map();
+  const leftovers = [];
+  const allRoles = people.flatMap(p => p.roles.map(r => r.role)).concat(unassigned);
+  castTokens(list).forEach(token => {
+    const exactOnly = allRoles.some(r => tokenMatchesRole(token, r, true));
+    let hit = false;
+    people.forEach(person => {
+      const byName = person.names.has(normName(token));
+      const roles = byName ? person.roles : person.roles.filter(r => tokenMatchesRole(token, r.role, exactOnly));
+      if (!roles.length) return;
+      hit = true;
+      if (!found.has(person.actor)) found.set(person.actor, { person, roles: [] });
+      const entry = found.get(person.actor);
+      roles.forEach(r => {
+        if (!entry.roles.some(x => x.role === r.role && x.track === r.track)) entry.roles.push(r);
+      });
+    });
+    const pending = unassigned.filter(r => tokenMatchesRole(token, r, exactOnly));
+    if (pending.length) leftovers.push({ token, pending });
+    else if (!hit) leftovers.push({ token, pending: [] });
+  });
+  return { matched: [...found.values()], leftovers };
 }
 
 // Where a person stands for one event: 'all', 'yes', 'no', 'none' (nobody is
 // called), 'unposted', or 'study' (listed for study hall but not the rehearsal).
-function callStatus(ev, person) {
+function callStatus(ev, person, people, unassigned) {
   const raw = (ev.cast || '').trim();
-  const inList = list => castTokens(list).some(t => person.keys.has(normName(t)));
+  const inList = list => resolveCast(list, people, unassigned).matched.some(m => m.person.actor === person.actor);
   if (/^all$/i.test(raw)) return 'all';
   if (/^none$/i.test(raw)) return 'none';
   if (!raw) return 'unposted';
@@ -424,13 +489,49 @@ function callStatus(ev, person) {
   return 'no';
 }
 
-function applyCastFilter(cards, person) {
+// "Cast needed" as a row of names, each showing the role or roles that put
+// them there on hover or tap.
+function renderCastNeeded(list, people, unassigned) {
+  const raw = (list || '').trim();
+  if (!raw || /^none$/i.test(raw)) return null;
+  const row = el('div', 'cast-needed');
+  row.appendChild(el('span', 'cast-needed-label', 'Cast needed'));
+  if (/^all$/i.test(raw)) {
+    row.appendChild(document.createTextNode(' All'));
+    return row;
+  }
+  if (!people.length) {
+    row.appendChild(document.createTextNode(' ' + raw));
+    return row;
+  }
+  const { matched, leftovers } = resolveCast(raw, people, unassigned);
+  const names = el('span', 'cast-names');
+  matched.forEach(({ person, roles }) => {
+    const label = roles.map(r => r.role + (r.track && r.track !== 'Both' ? ' (' + r.track + ')' : '')).join(', ');
+    const chip = el('span', 'cast-name', person.actor);
+    chip.tabIndex = 0;
+    chip.title = label;
+    chip.dataset.role = label;
+    chip.setAttribute('aria-label', person.actor + ', ' + label);
+    names.appendChild(chip);
+  });
+  leftovers.forEach(({ token, pending }) => {
+    const text = pending.length ? pending.join(', ') + ' (not cast yet)' : token;
+    const chip = el('span', 'cast-name is-unmatched', text);
+    if (!pending.length) chip.title = 'Nobody on the cast list has this role or name';
+    names.appendChild(chip);
+  });
+  row.appendChild(names);
+  return row;
+}
+
+function applyCastFilter(cards, person, people, unassigned) {
   cards.forEach(({ card, ev, note }) => {
     card.classList.remove('is-called', 'is-not-called');
     note.hidden = true;
     note.className = 'call-note';
     if (!person) return;
-    const status = callStatus(ev, person);
+    const status = callStatus(ev, person, people, unassigned);
     const say = (cls, text) => { note.textContent = text; note.classList.add(cls); note.hidden = false; };
     if (status === 'yes' || status === 'all') {
       card.classList.add('is-called');
@@ -457,6 +558,7 @@ function renderCalendars(data, site, castData) {
   let nextMarked = false;
   let nextCard = null;
   const people = castPeople(castData);
+  const unassigned = unassignedRoles(castData);
   const cards = [];
 
   const jumpBar = el('div', 'jump-bar');
@@ -565,13 +667,8 @@ function renderCalendars(data, site, castData) {
           body.appendChild(notes);
         }
 
-        const castList = (ev.cast || '').trim();
-        if (castList && !/^none$/i.test(castList)) {
-          const row = el('div', 'cast-needed');
-          row.appendChild(el('span', 'cast-needed-label', 'Cast needed'));
-          row.appendChild(document.createTextNode(' ' + (/^all$/i.test(castList) ? 'All' : castList)));
-          body.appendChild(row);
-        }
+        const castRow = renderCastNeeded(ev.cast, people, unassigned);
+        if (castRow) body.appendChild(castRow);
 
         const sh = renderStudyHall(ev.studyHall);
         if (sh) body.appendChild(sh);
@@ -606,7 +703,7 @@ function renderCalendars(data, site, castData) {
     const KEY = 'maas-calendar-cast';
     const choose = name => {
       const person = people.find(p => p.actor === name) || null;
-      applyCastFilter(cards, person);
+      applyCastFilter(cards, person, people, unassigned);
       host.classList.toggle('is-filtered', !!person);
     };
     picker.addEventListener('change', () => {
