@@ -327,8 +327,7 @@ details.month:not([open]) > .events { display: none; }
   font-size: .85rem; font-variant-numeric: tabular-nums;
 }
 .cast-needed { margin-top: 8px; font-size: .9rem; color: var(--ink-soft); }
-.cast-needed-label, .study-students .study-label { font-weight: 600; color: var(--ink); }
-.study-students { flex-basis: 100%; }
+.cast-needed-label { font-weight: 600; color: var(--ink); }
 
 /* Picking a name on the calendar: say whether they are called, and fade the
    rehearsals they can skip. */
@@ -336,6 +335,9 @@ details.month:not([open]) > .events { display: none; }
   display: inline-block; margin-top: 6px;
   font-size: .8rem; font-weight: 700; border-radius: 999px; padding: 3px 12px;
 }
+/* The display above would otherwise beat the browser's rule for hidden elements,
+   leaving the badge on screen after switching back to Everyone. */
+.call-note[hidden] { display: none; }
 .call-note.is-yes { background: var(--green-500); color: #fff; }
 .call-note.is-no { background: var(--bg-sunken); color: var(--ink); border: 1px solid var(--line); }
 .call-note.is-study { background: var(--gold-soft); color: var(--ink); border: 1px solid var(--gold); }
@@ -352,14 +354,6 @@ details.month:not([open]) > .events { display: none; }
 }
 .study-label { font-weight: 600; }
 .study-name { color: var(--ink); }
-.study-none { font-style: italic; }
-.study-open { color: var(--pink); font-weight: 700; }
-.study-signup {
-  text-decoration: none; font-weight: 700; font-size: .82rem;
-  background: var(--green-500); color: #fff !important;
-  border-radius: 999px; padding: 3px 12px;
-}
-.study-signup:hover { background: var(--green-700); }
 .study-note { flex-basis: 100%; }
 
 .badge {

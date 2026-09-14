@@ -49,8 +49,6 @@ You do not have to maintain these by hand:
 - **Past dates** fade out and the next date coming up gets a gold "Next up" badge.
 - **Finished months** fold themselves shut once every date in them has passed. Anyone can
   click the month heading to open it again.
-- **Study hall** shows a green **Sign up** button on any future date with no volunteer named.
-  Once the date has passed the button disappears, since nobody can still sign up for it.
 
 ## Common jobs
 
@@ -139,29 +137,21 @@ Each rehearsal also carries `notes` and `cast`:
 Use first names. When two students share one, add a last initial, like `Clara C` and `Clara D`.
 For a role that is not cast yet, write the role in brackets, like `(Storyteller 6)`; it starts
 matching the student automatically once the cast list names them. A student listed in study
-hall `students` is never told to stay home, even if they are not in `cast`.
+hall `students` is never told to stay home, even if they are not in `cast`. The students
+list itself is not shown on the page.
 
 Leave `cast` blank until the list is final. A wrong list tells a student to skip a rehearsal
 they should be at; a blank one just says the list is not posted yet.
 
-### Fill in a study hall volunteer
+### Study hall
 
-Find the date in `data/calendar.json` and write the name in `volunteer`:
+Study hall only shows on a date when a volunteer is named in `volunteer`, for example
+`Study hall 12:45-2:00pm  Jane Smith`. Leave `volunteer` blank and nothing shows for that date.
+With only a few students in study hall, parents no longer sign up.
 
-| What you write | What the page shows |
-| --- | --- |
-| `"volunteer": "Jane Smith"` | Study hall 12:45-2:00pm  Jane Smith |
-| `"volunteer": ""` | Needs a volunteer, plus a green **Sign up** button |
-| `"volunteer": "none"` | Not needed this day. Use this only when study hall truly is not running. |
-| `"studyHall": null` | Nothing at all (use this on performance dates) |
-
-The students attending study hall go in `"students"`, separated by commas, like
-`"students": "Clara D, Lydia"`.
-
-The **Sign up** button goes to the SignUpGenius page. That address is stored once, in
-`data/site.json` under `"studyHallSignupUrl"`, so if the sign-up ever moves you change it in
-one place. SignUpGenius does not give each date its own web address, so the button opens the
-list and the parent picks the row.
+The students attending go in `"students"`, separated by commas, like
+`"students": "Clara D, Lydia"`. They are not shown on the page; the list only stops the name
+picker from telling those students to stay home.
 
 ### Add or change a link
 

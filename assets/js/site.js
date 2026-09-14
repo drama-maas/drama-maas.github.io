@@ -364,32 +364,19 @@ function renderLinks(data) {
 
 /* ---------- calendar ---------- */
 
-function renderStudyHall(sh, signupUrl, isPast) {
+// Study hall only appears when a volunteer is named. With just a few students
+// in study hall, parents no longer sign up, so an empty slot shows nothing.
+// The students list is not shown; it only keeps the name picker from telling
+// those students to stay home.
+function renderStudyHall(sh) {
   if (!sh) return null;
   const name = (sh.volunteer || '').trim();
-  const none = name.toLowerCase() === 'none';
-
-  // A past date with nobody named has nothing useful left to say.
-  if (isPast && !name) return sh.note ? el('div', 'study study-note', sh.note) : null;
-
+  if (!name || name.toLowerCase() === 'none') {
+    return sh.note ? el('div', 'study study-note', sh.note) : null;
+  }
   const row = el('div', 'study');
   row.appendChild(el('span', 'study-label', 'Study hall' + (sh.time ? ' ' + sh.time : '')));
-
-  if (none) {
-    row.appendChild(el('span', 'study-none', 'Not needed this day'));
-  } else if (name) {
-    row.appendChild(el('span', 'study-name', name));
-  } else {
-    row.classList.add('is-open');
-    row.appendChild(el('span', 'study-open', 'Needs a volunteer'));
-    if (signupUrl) row.appendChild(link(signupUrl, 'Sign up »', 'study-signup'));
-  }
-  if (sh.students) {
-    const who = el('div', 'study-students');
-    who.appendChild(el('span', 'study-label', 'In study hall'));
-    who.appendChild(document.createTextNode(' ' + sh.students));
-    row.appendChild(who);
-  }
+  row.appendChild(el('span', 'study-name', name));
   if (sh.note) row.appendChild(el('div', 'study-note', sh.note));
   return row;
 }
@@ -469,7 +456,6 @@ function renderCalendars(data, site, castData) {
   const today = todayISO();
   let nextMarked = false;
   let nextCard = null;
-  const signupUrl = site.studyHallSignupUrl || '';
   const people = castPeople(castData);
   const cards = [];
 
@@ -587,7 +573,7 @@ function renderCalendars(data, site, castData) {
           body.appendChild(row);
         }
 
-        const sh = renderStudyHall(ev.studyHall, signupUrl, isPast);
+        const sh = renderStudyHall(ev.studyHall);
         if (sh) body.appendChild(sh);
 
         card.appendChild(body);
