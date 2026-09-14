@@ -531,6 +531,11 @@ details.month:not([open]) > .events { display: none; }
 /* No overflow here: a scroll container would trap the sticky header inside the
    table instead of parking it under the navigation bar. */
 .table-scroll { border: 1px solid var(--line); border-radius: var(--radius); }
+/* Round off the table's own corners inside that border. overflow: clip trims the
+   square cell backgrounds without creating a scroll container. */
+@media (min-width: 761px) {
+  .table-scroll { overflow: clip; }
+}
 /* Fixed column widths, so searching or filtering does not re-measure the columns
    and squeeze a role like "Storyteller 3" onto two lines. */
 table.cast {
