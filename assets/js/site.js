@@ -44,6 +44,91 @@ function showError(target, err) {
 
 const slot = id => document.getElementById(id);
 
+/* ---------- loading placeholders ----------
+   While the Google Sheet is on its way, sections it feeds show grey outlines
+   the same shape as the real cards, so the page feels ready straight away.
+   Each render function clears its section, which removes them. */
+
+function skeletonBar(width, cls) {
+  const bar = el('span', 'sk-bar' + (cls ? ' ' + cls : ''));
+  bar.style.width = width;
+  return bar;
+}
+
+function skeletonEvent(lines) {
+  const card = el('div', 'event sk-card');
+  const chip = el('div', 'date');
+  chip.appendChild(skeletonBar('34px', 'sk-small'));
+  chip.appendChild(skeletonBar('28px', 'sk-big'));
+  chip.appendChild(skeletonBar('30px', 'sk-small'));
+  card.appendChild(chip);
+  const body = el('div', 'body');
+  body.appendChild(skeletonBar('55%', 'sk-title'));
+  lines.forEach(w => body.appendChild(skeletonBar(w)));
+  card.appendChild(body);
+  return card;
+}
+
+function showSkeleton(id, kind) {
+  const host = slot(id);
+  if (!host) return;
+  host.innerHTML = '';
+  host.setAttribute('aria-busy', 'true');
+  const wrap = el('div', 'skeleton');
+  wrap.setAttribute('aria-hidden', 'true');
+  host.appendChild(el('p', 'sr-only', 'Loading…'));
+
+  if (kind === 'announcements') {
+    [3, 3].forEach((count, g) => {
+      wrap.appendChild(skeletonBar(g ? '120px' : '190px', g ? 'sk-h3' : 'sk-h2'));
+      const grid = el('div', 'announce-grid');
+      for (let i = 0; i < count; i++) {
+        const card = el('div', 'announce sk-card');
+        card.appendChild(skeletonBar('40%', 'sk-small'));
+        card.appendChild(skeletonBar('75%', 'sk-title'));
+        card.appendChild(skeletonBar('90%'));
+        card.appendChild(skeletonBar('60%'));
+        grid.appendChild(card);
+      }
+      wrap.appendChild(grid);
+    });
+  } else if (kind === 'calendar' || kind === 'shows') {
+    if (kind === 'calendar') {
+      const bar = el('div', 'jump-bar');
+      bar.appendChild(skeletonBar('260px', 'sk-pill'));
+      bar.appendChild(skeletonBar('190px', 'sk-pill'));
+      wrap.appendChild(bar);
+    }
+    wrap.appendChild(skeletonBar(kind === 'calendar' ? '240px' : '150px', 'sk-h2'));
+    wrap.appendChild(skeletonBar('45%'));
+    const list = el('div', 'events');
+    const shapes = [['35%', '80%', '65%'], ['35%', '70%'], ['35%', '85%', '50%'], ['35%', '60%']];
+    shapes.slice(0, kind === 'calendar' ? 4 : 2).forEach(s => list.appendChild(skeletonEvent(s)));
+    wrap.appendChild(list);
+  } else if (kind === 'cast') {
+    ['92%', '80%', '86%'].forEach(w => wrap.appendChild(skeletonBar(w)));
+    const row = el('div', 'search-row');
+    row.appendChild(skeletonBar('100%', 'sk-pill sk-grow'));
+    wrap.appendChild(row);
+    const list = el('div', 'sk-rows');
+    for (let i = 0; i < 8; i++) {
+      const r = el('div', 'sk-row sk-card');
+      r.appendChild(skeletonBar('22%'));
+      r.appendChild(skeletonBar('26%'));
+      r.appendChild(skeletonBar('12%', 'sk-pill'));
+      r.appendChild(skeletonBar('30%'));
+      list.appendChild(r);
+    }
+    wrap.appendChild(list);
+  }
+  host.appendChild(wrap);
+}
+
+function doneLoading(id) {
+  const host = slot(id);
+  if (host) host.removeAttribute('aria-busy');
+}
+
 /* Track names and the CSS class that colours their pill. */
 const TRACK_CLASS = { Castle: 'castle', Storybook: 'storybook', Both: 'both', TBD: 'tbd' };
 
@@ -1122,32 +1207,51 @@ function renderBoosters(data) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const main = document.querySelector('main') || document.body;
+  showSkeleton('announcements', 'announcements');
+  showSkeleton('calendars', 'calendar');
+  showSkeleton('performances', 'shows');
+  showSkeleton('cast', 'cast');
   try {
     const site = await loadJSON('data/site.json');
     const sheet = site.sheet || {};
     renderChrome(site);
 
-    let calendarData = null;
-    if (slot('calendars') || slot('announcements') || slot('performances')) {
-      calendarData = await contentFor('calendar', loadJSON('data/calendar.json'), sheet.calendar,
-        ['Date', 'Title'], calendarFromSheet);
-    }
+    // Start every download at once, and draw each section as soon as its own
+    // content arrives, rather than one after another.
+    const calendarData = (slot('calendars') || slot('announcements') || slot('performances'))
+      ? contentFor('calendar', loadJSON('data/calendar.json'), sheet.calendar, ['Date', 'Title'], calendarFromSheet)
+      : Promise.resolve(null);
+    const castData = (slot('calendars') || slot('cast'))
+      ? contentFor('cast', loadJSON('data/cast.json'), sheet.cast, ['Actor', 'Role'], castFromSheet)
+      : null;
+    const jobs = [];
+
+    if (slot('links')) jobs.push(loadJSON('data/links.json').then(renderLinks));
+    if (slot('boosters')) jobs.push(loadJSON('data/boosters.json').then(renderBoosters));
     if (slot('announcements')) {
-      site.announcements = await contentFor('announcements', site.announcements, sheet.announcements,
+      const announcements = contentFor('announcements', site.announcements, sheet.announcements,
         ['Title'], (rows, saved) => Object.assign({}, saved, { items: announcementsFromSheet(rows) }));
+      jobs.push(Promise.all([announcements, calendarData]).then(([a, cal]) => {
+        site.announcements = a;
+        renderAnnouncements(site, cal);
+        doneLoading('announcements');
+      }));
     }
-    renderAnnouncements(site, calendarData);
-    if (slot('links')) renderLinks(await loadJSON('data/links.json'));
     if (slot('calendars')) {
       // The cast list feeds the name picker that shows who is called to each rehearsal.
-      const castForPicker = await contentFor('cast', loadJSON('data/cast.json'), sheet.cast,
-        ['Actor', 'Role'], castFromSheet).catch(() => null);
-      renderCalendars(calendarData, site, castForPicker);
+      jobs.push(Promise.all([calendarData, castData.catch(() => null)]).then(([cal, cast]) => {
+        renderCalendars(cal, site, cast);
+        doneLoading('calendars');
+      }));
     }
-    if (slot('performances')) renderPerformances(calendarData, site);
+    if (slot('performances')) {
+      jobs.push(calendarData.then(cal => { renderPerformances(cal, site); doneLoading('performances'); }));
+    }
     if (slot('cast')) {
-      renderCast(await contentFor('cast', loadJSON('data/cast.json'), sheet.cast, ['Actor', 'Role'], castFromSheet));
+      jobs.push(castData.then(cast => { renderCast(cast); doneLoading('cast'); }));
     }
+    await Promise.all(jobs);
+
     if (usedBackup) {
       // Tell families the page may be a little behind, without alarming them.
       const note = el('p', 'backup-note',
@@ -1155,7 +1259,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         'Try reloading in a few minutes.');
       main.insertBefore(note, main.firstChild);
     }
-    if (slot('boosters')) renderBoosters(await loadJSON('data/boosters.json'));
   } catch (err) {
     showError(main, err);
   } finally {

@@ -328,6 +328,36 @@ details.month:not([open]) > .events { display: none; }
 }
 .cast-needed { margin-top: 8px; font-size: .9rem; color: var(--ink-soft); }
 .cast-needed-label { margin-right: 8px; }
+/* Loading placeholders: grey bars in the shape of the cards, with a soft
+   shimmer, shown until the Google Sheet content arrives. */
+.sk-bar {
+  display: block; height: .8rem; max-width: 100%; margin: 8px 0 0; border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg-sunken) 0%, var(--line) 50%, var(--bg-sunken) 100%);
+  background-size: 200% 100%; animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+.sk-bar:first-child { margin-top: 0; }
+.sk-bar.sk-small { height: .6rem; }
+.sk-bar.sk-big { height: 1.5rem; margin: 6px auto; }
+.sk-bar.sk-title { height: 1.05rem; margin-top: 6px; }
+.sk-bar.sk-h2 { height: 1.6rem; margin: 26px 0 0; }
+.sk-bar.sk-h3 { height: 1.1rem; margin: 26px 0 0; }
+.sk-bar.sk-pill { height: 2.3rem; border-radius: 999px; margin: 0; }
+.sk-bar.sk-grow { flex: 1 1 240px; }
+.skeleton .event .date .sk-bar { margin-left: auto; margin-right: auto; }
+.skeleton .events .event { min-height: 96px; }
+.sk-rows { display: grid; gap: 8px; margin-top: 12px; }
+.sk-row {
+  display: flex; align-items: center; gap: 18px; padding: 14px 18px;
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.sk-row .sk-bar { margin: 0; }
+@keyframes sk-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .sk-bar { animation: none; } }
+@media (max-width: 560px) {
+  .skeleton .event .date .sk-bar { margin: 0; }
+  .skeleton .event .date .sk-big { height: 1.1rem; }
+}
+
 .backup-note {
   margin: 18px 0 0; padding: 10px 14px; border-radius: 10px;
   background: var(--gold-soft); border: 1px solid var(--gold); color: var(--ink); font-size: .9rem;
