@@ -228,8 +228,7 @@ screen and simply hide the other track's version of a role. Pick Castle and a do
 student shows their Castle role, with their Storybook role tucked away. Roles played both
 weekends stay put under either button.
 
-When the September 16 roles are settled, replace the `TBD` entries with real names and delete
-the `pending` section near the bottom of the file.
+When a `TBD` role is cast, put the student's name in the Actor column of the Sheet's Cast tab.
 
 ### Update the Boosters page
 

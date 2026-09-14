@@ -531,10 +531,15 @@ details.month:not([open]) > .events { display: none; }
 /* No overflow here: a scroll container would trap the sticky header inside the
    table instead of parking it under the navigation bar. */
 .table-scroll { border: 1px solid var(--line); border-radius: var(--radius); }
+/* Fixed column widths, so searching or filtering does not re-measure the columns
+   and squeeze a role like "Storyteller 3" onto two lines. */
 table.cast {
   width: 100%; border-collapse: separate; border-spacing: 0;
-  background: var(--bg-raised);
+  background: var(--bg-raised); table-layout: fixed;
 }
+table.cast th:nth-child(1) { width: 13rem; }
+table.cast th:nth-child(2) { width: 13rem; }
+table.cast th:nth-child(3) { width: 7.5rem; }
 table.cast th {
   position: sticky; top: var(--navh); z-index: 10;
   text-align: left; background: var(--green-700); color: #fff;

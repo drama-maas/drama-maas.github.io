@@ -1108,16 +1108,6 @@ function renderCast(data) {
   apply();
   started = true;
 
-  if (data.pending) {
-    const section = el('section');
-    section.appendChild(el('h2', null, data.pending.heading));
-    if (data.pending.intro) section.appendChild(el('p', 'section-intro', data.pending.intro));
-    const pills = el('ul', 'name-pills');
-    (data.pending.names || []).forEach(n => pills.appendChild(el('li', null, n)));
-    section.appendChild(pills);
-    host.appendChild(section);
-  }
-
   if (data.closing) {
     const box = el('div', 'note-box');
     data.closing.forEach(p => box.appendChild(el('p', null, p)));
