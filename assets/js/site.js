@@ -86,13 +86,17 @@ function parseCSV(text) {
   return rows;
 }
 
-// One published tab as objects keyed by the headings in row 1. Row 2 holds
-// hints for editors and is skipped, as are entirely blank rows.
-async function loadSheet(url, required) {
+async function fetchSheetText(url) {
   const res = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' });
   if (!res.ok) throw new Error('the sheet returned ' + res.status);
   const text = (await res.text()).replace(/^﻿/, '');
   if (/^\s*</.test(text)) throw new Error('the sheet is not published as CSV');
+  return text;
+}
+
+// A tab's CSV as objects keyed by the headings in row 1. Row 2 holds hints for
+// editors and is skipped, as are entirely blank rows.
+function sheetRows(text, required) {
   const rows = parseCSV(text);
   const heads = (rows[0] || []).map(h => h.trim());
   required.forEach(h => {
@@ -103,16 +107,64 @@ async function loadSheet(url, required) {
     .filter(o => Object.values(o).some(Boolean));
 }
 
-// A tab from the sheet when one is configured and usable, otherwise the file.
-async function contentFor(jsonPath, sheetUrl, required, transform) {
-  const base = loadJSON(jsonPath);
-  if (!sheetUrl) return base;
-  const [saved, rows] = await Promise.all([base, loadSheet(sheetUrl, required).catch(err => err)]);
+/* If the Sheet cannot be reached, show the most recent copy of it rather than
+   the old files. Two copies are kept:
+   - this browser's copy of the last Sheet it loaded successfully, and
+   - a snapshot in data/sheet-cache/, saved by a scheduled GitHub job whenever
+     the Sheet changes, so first-time visitors are covered too.
+   Whichever is newer is used. The files in /data are the last resort. */
+const SHEET_CACHE = 'data/sheet-cache/';
+const LOCAL_SHEET_KEY = 'maas-sheet-copy-';
+let snapshotMeta = null;
+let usedBackup = false;
+
+function saveLocalSheetCopy(name, text) {
+  try { localStorage.setItem(LOCAL_SHEET_KEY + name, JSON.stringify({ text, at: Date.now() })); }
+  catch (e) { /* storage unavailable or full */ }
+}
+
+async function sheetBackups(name) {
+  const copies = [];
   try {
-    if (rows instanceof Error) throw rows;
-    return transform(rows, saved);
+    const local = JSON.parse(localStorage.getItem(LOCAL_SHEET_KEY + name) || 'null');
+    if (local && local.text) copies.push({ text: local.text, at: local.at || 0, from: 'this browser' });
+  } catch (e) { /* storage unavailable */ }
+  try {
+    if (!snapshotMeta) snapshotMeta = loadJSON(SHEET_CACHE + 'meta.json');
+    const meta = await snapshotMeta;
+    if (meta && meta[name]) {
+      const res = await fetch(SHEET_CACHE + name + '.csv?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) copies.push({ text: (await res.text()).replace(/^﻿/, ''), at: Date.parse(meta[name]) || 0, from: 'the saved snapshot' });
+    }
+  } catch (e) { /* no snapshot yet */ }
+  return copies.sort((a, b) => b.at - a.at);
+}
+
+// One piece of content from its Sheet tab when possible. `base` is the file
+// version (or a promise of it), used for headings the Sheet does not hold and
+// as the last resort. `transform` turns rows into the shape the page renders.
+async function contentFor(name, base, sheetUrl, required, transform) {
+  const livePromise = sheetUrl ? fetchSheetText(sheetUrl).catch(err => err) : null;
+  const saved = await base;
+  if (!sheetUrl) return saved;
+  const live = await livePromise;
+  try {
+    if (live instanceof Error) throw live;
+    const result = transform(sheetRows(live, required), saved);
+    saveLocalSheetCopy(name, live);
+    return result;
   } catch (err) {
-    console.warn('Using ' + jsonPath + ' because the Google Sheet could not be used: ' + err.message);
+    for (const copy of await sheetBackups(name)) {
+      try {
+        const result = transform(sheetRows(copy.text, required), saved);
+        usedBackup = true;
+        console.warn('Google Sheet unavailable (' + err.message + '). Showing the ' + name +
+          ' from ' + copy.from + ', saved ' + new Date(copy.at).toLocaleString() + '.');
+        return result;
+      } catch (e) { /* that copy is unusable; try the next */ }
+    }
+    usedBackup = true;
+    console.warn('Google Sheet unavailable (' + err.message + ') and no saved copy of the ' + name + '. Showing the site files.');
     return saved;
   }
 }
@@ -1077,27 +1129,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let calendarData = null;
     if (slot('calendars') || slot('announcements') || slot('performances')) {
-      calendarData = await contentFor('data/calendar.json', sheet.calendar, ['Date', 'Title'], calendarFromSheet);
+      calendarData = await contentFor('calendar', loadJSON('data/calendar.json'), sheet.calendar,
+        ['Date', 'Title'], calendarFromSheet);
     }
-    if (slot('announcements') && sheet.announcements) {
-      try {
-        const items = announcementsFromSheet(await loadSheet(sheet.announcements, ['Title']));
-        site.announcements = Object.assign({}, site.announcements, { items });
-      } catch (err) {
-        console.warn('Using data/site.json for announcements because the Google Sheet could not be used: ' + err.message);
-      }
+    if (slot('announcements')) {
+      site.announcements = await contentFor('announcements', site.announcements, sheet.announcements,
+        ['Title'], (rows, saved) => Object.assign({}, saved, { items: announcementsFromSheet(rows) }));
     }
     renderAnnouncements(site, calendarData);
     if (slot('links')) renderLinks(await loadJSON('data/links.json'));
     if (slot('calendars')) {
       // The cast list feeds the name picker that shows who is called to each rehearsal.
-      const castForPicker = await contentFor('data/cast.json', sheet.cast, ['Actor', 'Role'], castFromSheet)
-        .catch(() => null);
+      const castForPicker = await contentFor('cast', loadJSON('data/cast.json'), sheet.cast,
+        ['Actor', 'Role'], castFromSheet).catch(() => null);
       renderCalendars(calendarData, site, castForPicker);
     }
     if (slot('performances')) renderPerformances(calendarData, site);
     if (slot('cast')) {
-      renderCast(await contentFor('data/cast.json', sheet.cast, ['Actor', 'Role'], castFromSheet));
+      renderCast(await contentFor('cast', loadJSON('data/cast.json'), sheet.cast, ['Actor', 'Role'], castFromSheet));
+    }
+    if (usedBackup) {
+      // Tell families the page may be a little behind, without alarming them.
+      const note = el('p', 'backup-note',
+        'We could not reach the latest updates just now, so this shows the most recent saved copy. ' +
+        'Try reloading in a few minutes.');
+      main.insertBefore(note, main.firstChild);
     }
     if (slot('boosters')) renderBoosters(await loadJSON('data/boosters.json'));
   } catch (err) {

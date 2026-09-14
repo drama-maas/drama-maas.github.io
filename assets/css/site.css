@@ -327,6 +327,11 @@ details.month:not([open]) > .events { display: none; }
   font-size: .85rem; font-variant-numeric: tabular-nums;
 }
 .cast-needed { margin-top: 8px; font-size: .9rem; color: var(--ink-soft); }
+.cast-needed-label { margin-right: 8px; }
+.backup-note {
+  margin: 18px 0 0; padding: 10px 14px; border-radius: 10px;
+  background: var(--gold-soft); border: 1px solid var(--gold); color: var(--ink); font-size: .9rem;
+}
 .cast-names { display: inline; }
 /* Each name shows its role on hover, or on tap, since a tap focuses it. */
 .cast-name {

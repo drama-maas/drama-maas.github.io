@@ -1,0 +1,38 @@
+name: Save a copy of the Google Sheet
+
+# Keeps data/sheet-cache/ in step with the published Sheet, so the website has a
+# recent copy to show if it ever cannot reach Google. Commits only when a tab
+# actually changed. Run it by hand from the Actions tab at any time.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sheet-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the published tabs
+        run: python3 .github/scripts/snapshot_sheet.py
+
+      - name: Commit any changes
+        run: |
+          if [ -n "$(git status --porcelain data/sheet-cache)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/sheet-cache
+            git commit -m "Save a copy of the Google Sheet"
+            git pull --rebase --autostash
+            git push
+          else
+            echo "Sheet unchanged; nothing to save."
+          fi

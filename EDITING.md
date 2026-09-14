@@ -15,8 +15,16 @@ Google Sheet. Edit a tab and the website picks it up within about five minutes. 
 | The notices at the top of the Home page | Announcements |
 | The cast list | Cast |
 
-If the website ever cannot reach the Sheet, it falls back to the files described below, so
-the pages never go blank. Those files are not kept in step with the Sheet automatically.
+If the website ever cannot reach the Sheet, it shows the most recent saved copy of it, with a
+short note at the top of the page. Two copies are kept: each visitor's browser remembers the
+last Sheet it loaded, and a scheduled GitHub job saves a snapshot into `data/sheet-cache/` every
+half hour whenever the Sheet has changed. Whichever copy is newer is shown. Only if neither
+exists does the site fall back to the older files described below.
+
+The snapshot job lives in the repository's **Actions** tab as **Save a copy of the Google
+Sheet**. Click **Run workflow** there to save a copy straight away. GitHub pauses scheduled
+jobs in a repository with no activity for 60 days, so after a long quiet spell, such as the
+summer, check that tab and re-enable it.
 
 ## Everything else: the files on GitHub
 
