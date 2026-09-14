@@ -1,15 +1,34 @@
 # How to update the Drama Club website
 
-No coding needed. Everything people read on the site lives in five text files in the
-`data` folder. You edit them right on GitHub in your web browser, click Save, and the
-website updates itself a minute or two later.
+No coding needed.
+
+## Most changes: the Google Sheet
+
+The calendar, the announcements and the cast list live in the
+**[Drama Club Website Content](https://docs.google.com/spreadsheets/d/1li5XvEky6UglRdMSMkIrX8us44wkxp-PwYyw0nvNJC8/edit)**
+Google Sheet. Edit a tab and the website picks it up within about five minutes. The Sheet's
+**Read me** tab explains every column.
+
+| I want to change... | Sheet tab |
+| --- | --- |
+| Rehearsal and show dates, notes, who is called, study hall | Calendar |
+| The notices at the top of the Home page | Announcements |
+| The cast list | Cast |
+
+If the website ever cannot reach the Sheet, it falls back to the files described below, so
+the pages never go blank. Those files are not kept in step with the Sheet automatically.
+
+## Everything else: the files on GitHub
+
+The rest lives in text files in the `data` folder. You edit them right on GitHub in your web
+browser, click Save, and the website updates itself a minute or two later.
 
 | I want to change... | Edit this file |
 | --- | --- |
-| The footer contacts and the Announcements | `data/site.json` |
+| The footer contacts, the feedback link, and the Sheet connection | `data/site.json` |
 | The "Links & Folders" buttons (Google Drive folders, SignUpGenius, etc.) | `data/links.json` |
-| Rehearsal dates, show dates, study hall coverage | `data/calendar.json` |
-| The cast list | `data/cast.json` |
+| Calendar headings and intros, and the fallback copy of the dates | `data/calendar.json` |
+| The cast list introduction and closing, and the fallback copy of the cast | `data/cast.json` |
 | The Join the Boosters page | `data/boosters.json` |
 
 The site has five pages: Home, Calendar, Shows, Cast and Boosters. The Shows page builds

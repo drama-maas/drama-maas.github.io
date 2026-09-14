@@ -7,9 +7,9 @@
   "studyHallSignupUrl": "https://www.signupgenius.com/go/60B0C4DAAAC2AA3F49-65327333-study#/",
   "sheet": {
     "_comment": "Published Google Sheet tabs (CSV links). When a link is set, that content comes from the sheet; when blank or unreachable, from the files in /data.",
-    "calendar": "",
-    "announcements": "",
-    "cast": ""
+    "calendar": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaTDELpSGqPfJWac7Ujr4uC2AhDOEsEWrPhRCTQltY2gOM5TzO9Zlw42W7Ce2it5yUi6DHoLZiPMwg/pub?gid=1670863620&single=true&output=csv",
+    "announcements": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaTDELpSGqPfJWac7Ujr4uC2AhDOEsEWrPhRCTQltY2gOM5TzO9Zlw42W7Ce2it5yUi6DHoLZiPMwg/pub?gid=1391547251&single=true&output=csv",
+    "cast": "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaTDELpSGqPfJWac7Ujr4uC2AhDOEsEWrPhRCTQltY2gOM5TzO9Zlw42W7Ce2it5yUi6DHoLZiPMwg/pub?gid=618019511&single=true&output=csv"
   },
   "contacts": [
     {
