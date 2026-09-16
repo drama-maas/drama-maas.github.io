@@ -17,5 +17,3 @@ Tick an item off by deleting its line, or by ticking the box if you edit this on
 
 - The SignUpGenius sign-up and the calendar in `data/calendar.json` are maintained
   separately. When a rehearsal date is added to one, add it to the other.
-- Study hall dates with nobody named show a Sign up button on the calendar page
-  automatically, so filling `volunteer` in `data/calendar.json` is what clears them.
