@@ -1,10 +1,8 @@
 {
   "_comment": "The Join the Boosters page. Content taken from the Join Drama Boosters! Google Doc. Leave a \"url\" empty and its button turns into a grey placeholder instead of a link.",
-
   "heading": "Join Drama Boosters!",
   "orgName": "Mesa Academy Drama Boosters, Inc.",
   "lead": "Please join and/or donate to the nonprofit Mesa Academy Drama Boosters, Inc. in support of the Mesa Academy for Advanced Studies Drama Club. No meeting requirements for general membership!",
-
   "buttons": [
     {
       "icon": "🤝",
@@ -15,13 +13,11 @@
     {
       "icon": "💲",
       "label": "Donate",
-      "note": "Paste the donation link here when it is ready.",
-      "url": ""
+      "note": "Every dollar goes to the club",
+      "url": "https://www.zeffy.com/en-US/donation-form/donate-to-maas-drama-club"
     }
   ],
-
   "mission": "The Boosters is dedicated to ensuring the long-term sustainability and artistic excellence of the MAAS Drama Club. We provide the financial resources, logistical coordination, and volunteer support necessary to transform student ambition into high-quality stage performances.",
-
   "committees": {
     "heading": "Committees",
     "intro": "Participation on committees is optional, but very much appreciated.",
@@ -72,13 +68,11 @@
       }
     ]
   },
-
   "specialRoles": {
     "heading": "Special roles to help",
     "text": "See our Boosters Membership list to learn about the specific roles we need help with.",
     "linkLabel": "Boosters Membership list",
     "url": "https://docs.google.com/document/d/1BBkj4K0J-i9WA6TGc2jOt1ikr3RasBXpgm9fqVJiItk/edit?usp=sharing"
   },
-
   "closing": "Contact drama.maas@gmail.com with questions."
 }

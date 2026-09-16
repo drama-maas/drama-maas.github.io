@@ -28,6 +28,12 @@
           "title": "Join the Boosters",
           "note": "Membership, committees and donations. Required for the folders listed below.",
           "url": "boosters.html"
+        },
+        {
+          "icon": "💚",
+          "title": "Donate to the Drama Club",
+          "url": "https://www.zeffy.com/en-US/donation-form/donate-to-maas-drama-club",
+          "note": "Every dollar goes to the club. No membership needed."
         }
       ]
     },
