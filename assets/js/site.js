@@ -139,6 +139,15 @@ function todayISO() {
     String(d.getDate()).padStart(2, '0');
 }
 
+/* A date's title can carry extra lines. In the Sheet, Alt+Enter inside the Title
+   cell starts a new line; the first line is the title and each line after it is
+   a subtitle under it, such as "(Sorry parents, students only)". */
+function titleParts(ev) {
+  const lines = String(ev.title || '').split(/\r?\n/)
+    .map(t => t.trim()).filter(Boolean);
+  return { title: lines[0] || '', subs: lines.slice(1) };
+}
+
 /* ---------- published Sheet content ----------
    The calendar, announcements and cast are edited in a Google Sheet and
    published to data/sheet-cache/ as CSV. Each tab is read from there. */
@@ -424,7 +433,7 @@ function renderAnnouncements(site, calendarData) {
     when.textContent = [ev.month, ev.day].filter(Boolean).join(' ') +
       (ev.weekday ? '  ·  ' + ev.weekday : '');
     card.appendChild(when);
-    card.appendChild(el('div', 'title', ev.title));
+    card.appendChild(el('div', 'title', titleParts(ev).title));
     (ev.blocks || []).forEach(b => {
       const line = el('div', 'detail');
       line.appendChild(el('strong', null, b.time));
@@ -722,11 +731,13 @@ function renderCalendars(data, site, castData) {
         const line = el('div', 'head');
         if (ev.performance) line.appendChild(el('span', 'badge', '★ Performance'));
         if (card.classList.contains('is-next')) line.appendChild(el('span', 'badge next', 'Next up'));
-        line.appendChild(el('span', 'title', ev.title));
+        const parts = titleParts(ev);
+        line.appendChild(el('span', 'title', parts.title));
         if (ev.track) {
           line.appendChild(el('span', 'track track-' + (TRACK_CLASS[ev.track] || 'both'), ev.track));
         }
         body.appendChild(line);
+        parts.subs.forEach(text => body.appendChild(el('div', 'subtitle', text)));
 
         if (ev.titleUrl) {
           const p = el('div', 'event-link');
@@ -847,11 +858,13 @@ function renderPerformances(data, site) {
     const body = el('div', 'body');
     const head = el('div', 'head');
     head.appendChild(el('span', 'badge', '★ Performance'));
-    head.appendChild(el('span', 'title', ev.title));
+    const parts = titleParts(ev);
+    head.appendChild(el('span', 'title', parts.title));
     if (ev.track) {
       head.appendChild(el('span', 'track track-' + (TRACK_CLASS[ev.track] || 'both'), ev.track));
     }
     body.appendChild(head);
+    parts.subs.forEach(text => body.appendChild(el('div', 'subtitle', text)));
     if ((ev.blocks || []).length) {
       const blocks = el('div', 'blocks');
       ev.blocks.forEach(b => {

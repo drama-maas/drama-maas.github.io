@@ -308,6 +308,13 @@ details.month:not([open]) > .events { display: none; }
 .event .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
 .event .head .title { font-weight: 700; font-size: 1.05rem; }
 .event .event-link { font-size: .9rem; margin-top: 2px; }
+/* Extra lines from the Title cell: quieter than the title, and plainer than the
+   times and the bulleted notes below them. */
+.event .subtitle {
+  margin-top: 3px; font-size: .92rem; line-height: 1.35;
+  color: var(--ink-soft); font-style: italic;
+}
+.event .subtitle + .subtitle { margin-top: 1px; }
 
 .blocks {
   display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px;

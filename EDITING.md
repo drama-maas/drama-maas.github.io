@@ -68,7 +68,7 @@ On the **Calendar** tab, add a row, in date order.
 | Date | Type it like `2026-11-04`. This dims past dates and picks what is next, so get it right |
 | End date | Only for a run of dates, like a two-night show |
 | Section | Which heading on the Calendar page it sits under |
-| Title | Shown in bold |
+| Title | Shown in bold. Extra lines become subtitles, see below |
 | Performance | `Yes` gives it the pink show styling and lists it on the Shows page |
 | Track | `Castle` or `Storybook` adds the coloured pill. Blank for everybody |
 | Time 1-3, What 1-3 | The schedule, such as `2:00-5:00pm`. Most dates need only Time 1 |
@@ -78,6 +78,11 @@ On the **Calendar** tab, add a row, in date order.
 
 In **Notes**, a line that is only a time, like `2:00-3:30pm`, becomes a small heading for the
 bullets after it.
+
+**Subtitles.** Press Alt+Enter inside the **Title** cell to start a new line. The first line is
+the title, and every line after it prints underneath in smaller italics, above the times, like
+`(Sorry parents, students and volunteers only)`. Add as many lines as you need. These are not
+bullets, so use Notes for a list of what happens when.
 
 ### Say who is called
 
