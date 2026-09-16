@@ -116,8 +116,20 @@ rehearsal they should be at; a blank one just says the list is not posted yet.
 
 ### Study hall
 
-Study hall only shows on a date when **Study hall volunteer** has a name in it, for example
-`Study hall 12:45-2:00pm  Jane Smith`. Leave it blank and nothing shows for that date.
+The **Study hall volunteer** cell decides what a date shows:
+
+| What you put in it | What the date shows |
+| --- | --- |
+| A parent's name | `Study hall 12:45-2:00pm  Jane Smith` |
+| `Needed` | `Study hall 12:45-2:00pm  Needs a volunteer  Sign up »`, linking to SignUpGenius |
+| blank | Nothing at all |
+
+So a date that still needs a parent says so and offers the sign-up link, and whoever is keeping
+the list just replaces `Needed` with the parent's name once somebody signs up. Leave it blank
+on a date where you do not want to ask, such as one that is still being planned.
+
+The sign-up link disappears by itself once a date has passed. The address it points at is
+`studyHallSignupUrl` in `data/site.json`.
 
 Put the students attending in **Study hall students**, separated by commas, like
 `Clara D, Lydia`. They are not shown on the page; the list only stops the name picker from

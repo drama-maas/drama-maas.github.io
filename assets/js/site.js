@@ -475,15 +475,30 @@ function renderLinks(data) {
 // in study hall, parents no longer sign up, so an empty slot shows nothing.
 // The students list is not shown; it only keeps the name picker from telling
 // those students to stay home.
-function renderStudyHall(sh) {
+/* Study hall shows only when the Sheet says something about it. Put a parent's
+   name in "Study hall volunteer" and it shows their name; write "Needed" and it
+   shows a sign-up link for that date until someone's name replaces it; leave it
+   blank and nothing shows at all. The link is dropped once the date has passed. */
+const WANTS_VOLUNTEER = /^(needed|need a volunteer|needs a volunteer|sign ?up|open|tbd|\?)$/i;
+
+function renderStudyHall(sh, site, isPast) {
   if (!sh) return null;
   const name = (sh.volunteer || '').trim();
+  const wanted = WANTS_VOLUNTEER.test(name);
   if (!name || name.toLowerCase() === 'none') {
     return sh.note ? el('div', 'study study-note', sh.note) : null;
   }
+  if (wanted && isPast) return null;
+
   const row = el('div', 'study');
   row.appendChild(el('span', 'study-label', 'Study hall' + (sh.time ? ' ' + sh.time : '')));
-  row.appendChild(el('span', 'study-name', name));
+  if (wanted) {
+    row.appendChild(el('span', 'study-open', 'Needs a volunteer'));
+    const url = site && site.studyHallSignupUrl;
+    if (url) row.appendChild(link(url, 'Sign up »', 'study-link'));
+  } else {
+    row.appendChild(el('span', 'study-name', name));
+  }
   if (sh.note) row.appendChild(el('div', 'study-note', sh.note));
   return row;
 }
@@ -779,7 +794,7 @@ function renderCalendars(data, site, castData) {
         const castRow = renderCastNeeded(ev.cast, people, unassigned);
         if (castRow) body.appendChild(castRow);
 
-        const sh = renderStudyHall(ev.studyHall);
+        const sh = renderStudyHall(ev.studyHall, site, isPast);
         if (sh) body.appendChild(sh);
 
         card.appendChild(body);

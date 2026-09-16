@@ -425,6 +425,10 @@ details.month:not([open]) > .events { display: none; }
 }
 .study-label { font-weight: 600; }
 .study-name { color: var(--ink); }
+/* A date still waiting for a parent: say so plainly, with the sign-up beside it. */
+.study-open { color: var(--ink); font-style: italic; }
+.study-link { font-weight: 600; text-decoration: none; }
+.study-link:hover { text-decoration: underline; }
 .study-note { flex-basis: 100%; }
 
 .badge {
