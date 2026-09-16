@@ -425,10 +425,14 @@ details.month:not([open]) > .events { display: none; }
 }
 .study-label { font-weight: 600; }
 .study-name { color: var(--ink); }
-/* A date still waiting for a parent: say so plainly, with the sign-up beside it. */
-.study-open { color: var(--ink); font-style: italic; }
-.study-link { font-weight: 600; text-decoration: none; }
-.study-link:hover { text-decoration: underline; }
+/* A date still waiting for a parent: say so in pink, with a sign-up button beside it. */
+.study-open { color: var(--pink); font-weight: 700; }
+.study-link {
+  text-decoration: none; font-weight: 700; font-size: .82rem;
+  background: var(--green-500); color: #fff !important;
+  border-radius: 999px; padding: 3px 12px;
+}
+.study-link:hover { background: var(--green-700); }
 .study-note { flex-basis: 100%; }
 
 .badge {

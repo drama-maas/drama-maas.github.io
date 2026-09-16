@@ -13,6 +13,8 @@
 var PUBLISH_TAB = 'Publish';
 var STATUS_URL = 'https://drama-maas.github.io/data/sheet-cache/meta.json';
 var STAMP_LABEL = 'Publish stamp';
+var EDIT_KEY = 'lastEditAt';        // when anyone last changed a content tab
+var PUBLISH_KEY = 'lastPublishAt';  // when someone last clicked Publish
 
 function onOpen() {
   SpreadsheetApp.getUi()
@@ -20,11 +22,38 @@ function onOpen() {
     .addItem('Publish changes to the website', 'publishNow')
     .addItem('Check publishing status', 'checkStatus')
     .addToUi();
+  if (hasUnpublishedEdits()) {
+    SpreadsheetApp.getActive().toast(
+      'This Sheet has changes that are not on the website yet. ' +
+      'Choose Website > Publish changes to the website when they are ready.', 'Not published', 10);
+  }
+}
+
+/** Notes the time of every edit to a content tab, so status can spot unpublished work. */
+function onEdit(e) {
+  try {
+    if (e && e.range && e.range.getSheet().getName() === PUBLISH_TAB) return;
+    PropertiesService.getDocumentProperties().setProperty(EDIT_KEY, String(Date.now()));
+  } catch (err) {
+    // Never let bookkeeping get in the way of editing.
+  }
+}
+
+function hasUnpublishedEdits() {
+  var props = PropertiesService.getDocumentProperties();
+  return Number(props.getProperty(EDIT_KEY) || 0) > Number(props.getProperty(PUBLISH_KEY) || 0);
+}
+
+function formatWhen(ms) {
+  return Utilities.formatDate(new Date(ms), SpreadsheetApp.getActive().getSpreadsheetTimeZone(),
+    "EEE MMM d 'at' h:mm a");
 }
 
 /** Creates and formats the Publish tab. Safe to run again. */
 function setUp() {
   var sheet = publishTab();
+  var props = PropertiesService.getDocumentProperties();
+  if (!props.getProperty(EDIT_KEY)) props.setProperty(EDIT_KEY, String(Date.now()));
   var ss = SpreadsheetApp.getActive();
   ss.toast('Publish tab ready. Reload the Sheet to get the Website menu.', 'Set up', 8);
   return sheet.getSheetId();
@@ -81,6 +110,7 @@ function publishNow() {
   sheet.getRange('B4').setNumberFormat('@').setValue(stamp);
   sheet.getRange('B5').setValue(Session.getActiveUser().getEmail() || 'a drama club editor');
   sheet.getRange('B6').setValue(answer.getResponseText() || '');
+  PropertiesService.getDocumentProperties().setProperty(PUBLISH_KEY, String(now.getTime()));
 
   SpreadsheetApp.getActive().toast(
     'Asked the website to publish. It should be live in about five minutes. ' +
@@ -105,14 +135,24 @@ function checkStatus() {
 
   var published = String(live.publishStamp || '').trim();
   var when = live.publishedAt ? new Date(live.publishedAt).toLocaleString() : 'unknown';
+  var props = PropertiesService.getDocumentProperties();
+  var lastEdit = Number(props.getProperty(EDIT_KEY) || 0);
   var message;
-  if (!asked) {
-    message = 'Nobody has published from this Sheet yet. The website last updated: ' + when + '.';
-  } else if (published === asked) {
-    message = 'The website is up to date. Your publish of ' + asked + ' went live at ' + when + '.';
-  } else {
+  if (hasUnpublishedEdits()) {
+    message = 'You have changes that are NOT on the website yet. ' +
+      (lastEdit ? 'The Sheet was last edited ' + formatWhen(lastEdit) + '. ' : '') +
+      'Choose Website > Publish changes to the website and click OK to send them.';
+    if (asked && published !== asked) {
+      message += ' (Your earlier publish of ' + asked + ' is also still on its way.)';
+    }
+  } else if (asked && published !== asked) {
     message = 'Still publishing. You asked at ' + asked + '. The website has not picked it up yet; ' +
       'it checks every five minutes. Try again shortly.';
+  } else if (!asked) {
+    message = 'Nobody has published from this Sheet yet. The website last updated: ' + when + '.';
+  } else {
+    message = 'The website is up to date. Your publish of ' + asked + ' went live at ' + when +
+      ', and nothing has been edited since.';
   }
   ui.alert('Publishing status', message, ui.ButtonSet.OK);
 }

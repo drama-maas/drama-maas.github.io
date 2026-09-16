@@ -33,8 +33,17 @@ When everything is ready, choose **Website → Publish changes to the website** 
 in the Sheet. Add a short note about what changed if you like, and click OK. The site updates
 within about five minutes.
 
-To see whether it has landed, choose **Website → Check publishing status**. It will tell you
-either that the website is up to date, or that your publish has not been picked up yet.
+To see where things stand, choose **Website → Check publishing status**. It tells you one of
+three things:
+
+- **You have changes that are not on the website yet.** Someone has edited the Sheet since the
+  last publish. Publish when the changes are ready.
+- **Still publishing.** A publish was asked for and the website has not picked it up yet. Give it
+  a few more minutes.
+- **The website is up to date.** The last publish went live and nothing has been edited since.
+
+The Sheet also shows a reminder in the corner when you open it if there are unpublished changes.
+When you publish, remember to click **OK** in the box that appears; Cancel publishes nothing.
 
 The **Publish** tab records when the last publish was asked for and by whom. Do not rename or
 delete that tab, and do not type into cell B4 by hand; the website reads that cell to know
