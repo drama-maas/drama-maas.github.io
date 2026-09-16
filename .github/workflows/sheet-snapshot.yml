@@ -1,12 +1,18 @@
-name: Save a copy of the Google Sheet
+name: Publish the Google Sheet to the website
 
-# Keeps data/sheet-cache/ in step with the published Sheet, so the website has a
-# recent copy to show if it ever cannot reach Google. Commits only when a tab
-# actually changed. Run it by hand from the Actions tab at any time.
+# The website shows data/sheet-cache/, not the Sheet itself. An editor clicks
+# Publish in the Sheet, which stamps the date and time into its Publish tab;
+# this job notices the new stamp and copies the tabs across. Run it by hand from
+# the Actions tab to publish straight away.
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Publish now, even if nobody clicked Publish in the Sheet"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -16,12 +22,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  snapshot:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download the published tabs
+      - name: Copy the published tabs
+        env:
+          FORCE_PUBLISH: ${{ inputs.force }}
         run: python3 .github/scripts/snapshot_sheet.py
 
       - name: Commit any changes
@@ -30,9 +38,9 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data/sheet-cache
-            git commit -m "Save a copy of the Google Sheet"
+            git commit -m "Publish the Google Sheet to the website"
             git pull --rebase --autostash
             git push
           else
-            echo "Sheet unchanged; nothing to save."
+            echo "Nothing to publish."
           fi

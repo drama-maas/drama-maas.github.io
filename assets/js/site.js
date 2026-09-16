@@ -45,7 +45,7 @@ function showError(target, err) {
 const slot = id => document.getElementById(id);
 
 /* ---------- loading placeholders ----------
-   While the Google Sheet is on its way, sections it feeds show grey outlines
+   While the published content is on its way, the sections it feeds show grey outlines
    the same shape as the real cards, so the page feels ready straight away.
    Each render function clears its section, which removes them. */
 
@@ -139,11 +139,9 @@ function todayISO() {
     String(d.getDate()).padStart(2, '0');
 }
 
-/* ---------- Google Sheet content ----------
-   The calendar, announcements and cast can come from a published Google Sheet
-   so admins edit a spreadsheet instead of JSON. Each tab is read as CSV. If a
-   tab cannot be reached or does not look right, the page quietly uses the
-   matching file in /data instead, so it never goes blank. */
+/* ---------- published Sheet content ----------
+   The calendar, announcements and cast are edited in a Google Sheet and
+   published to data/sheet-cache/ as CSV. Each tab is read from there. */
 
 // Splits CSV text into rows of cells, honouring quoted cells that contain
 // commas, doubled quotes or line breaks.
@@ -171,14 +169,6 @@ function parseCSV(text) {
   return rows;
 }
 
-async function fetchSheetText(url) {
-  const res = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' });
-  if (!res.ok) throw new Error('the sheet returned ' + res.status);
-  const text = (await res.text()).replace(/^﻿/, '');
-  if (/^\s*</.test(text)) throw new Error('the sheet is not published as CSV');
-  return text;
-}
-
 // A tab's CSV as objects keyed by the headings in row 1. Row 2 holds hints for
 // editors and is skipped, as are entirely blank rows.
 function sheetRows(text, required) {
@@ -192,64 +182,35 @@ function sheetRows(text, required) {
     .filter(o => Object.values(o).some(Boolean));
 }
 
-/* If the Sheet cannot be reached, show the most recent copy of it rather than
-   the old files. Two copies are kept:
-   - this browser's copy of the last Sheet it loaded successfully, and
-   - a snapshot in data/sheet-cache/, saved by a scheduled GitHub job whenever
-     the Sheet changes, so first-time visitors are covered too.
-   Whichever is newer is used. The files in /data are the last resort. */
+/* The pages read the published copy of the Sheet in data/sheet-cache/, not the
+   Sheet itself. An editor makes as many changes as they like, then clicks
+   Publish in the Sheet, and a GitHub job copies the tabs here. So the site only
+   ever shows finished work, and it loads from this site rather than waiting on
+   Google. The files in /data are a last resort if a published copy is missing. */
 const SHEET_CACHE = 'data/sheet-cache/';
-const LOCAL_SHEET_KEY = 'maas-sheet-copy-';
-let snapshotMeta = null;
 let usedBackup = false;
 
-function saveLocalSheetCopy(name, text) {
-  try { localStorage.setItem(LOCAL_SHEET_KEY + name, JSON.stringify({ text, at: Date.now() })); }
-  catch (e) { /* storage unavailable or full */ }
+async function fetchPublished(name) {
+  const res = await fetch(SHEET_CACHE + name + '.csv?t=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('the published ' + name + ' returned ' + res.status);
+  const text = (await res.text()).replace(/^﻿/, '');
+  if (/^\s*</.test(text)) throw new Error('the published ' + name + ' is not CSV');
+  return text;
 }
 
-async function sheetBackups(name) {
-  const copies = [];
-  try {
-    const local = JSON.parse(localStorage.getItem(LOCAL_SHEET_KEY + name) || 'null');
-    if (local && local.text) copies.push({ text: local.text, at: local.at || 0, from: 'this browser' });
-  } catch (e) { /* storage unavailable */ }
-  try {
-    if (!snapshotMeta) snapshotMeta = loadJSON(SHEET_CACHE + 'meta.json');
-    const meta = await snapshotMeta;
-    if (meta && meta[name]) {
-      const res = await fetch(SHEET_CACHE + name + '.csv?t=' + Date.now(), { cache: 'no-store' });
-      if (res.ok) copies.push({ text: (await res.text()).replace(/^﻿/, ''), at: Date.parse(meta[name]) || 0, from: 'the saved snapshot' });
-    }
-  } catch (e) { /* no snapshot yet */ }
-  return copies.sort((a, b) => b.at - a.at);
-}
-
-// One piece of content from its Sheet tab when possible. `base` is the file
-// version (or a promise of it), used for headings the Sheet does not hold and
-// as the last resort. `transform` turns rows into the shape the page renders.
-async function contentFor(name, base, sheetUrl, required, transform) {
-  const livePromise = sheetUrl ? fetchSheetText(sheetUrl).catch(err => err) : null;
+// One piece of content from its published tab. `base` is the file version (or a
+// promise of it), used for headings the Sheet does not hold and as the last
+// resort. `transform` turns rows into the shape the page renders.
+async function contentFor(name, base, required, transform) {
+  const published = fetchPublished(name).catch(err => err);
   const saved = await base;
-  if (!sheetUrl) return saved;
-  const live = await livePromise;
+  const text = await published;
   try {
-    if (live instanceof Error) throw live;
-    const result = transform(sheetRows(live, required), saved);
-    saveLocalSheetCopy(name, live);
-    return result;
+    if (text instanceof Error) throw text;
+    return transform(sheetRows(text, required), saved);
   } catch (err) {
-    for (const copy of await sheetBackups(name)) {
-      try {
-        const result = transform(sheetRows(copy.text, required), saved);
-        usedBackup = true;
-        console.warn('Google Sheet unavailable (' + err.message + '). Showing the ' + name +
-          ' from ' + copy.from + ', saved ' + new Date(copy.at).toLocaleString() + '.');
-        return result;
-      } catch (e) { /* that copy is unusable; try the next */ }
-    }
     usedBackup = true;
-    console.warn('Google Sheet unavailable (' + err.message + ') and no saved copy of the ' + name + '. Showing the site files.');
+    console.warn('Could not read the published ' + name + ' (' + err.message + '). Showing the site files.');
     return saved;
   }
 }
@@ -1203,23 +1164,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   showSkeleton('cast', 'cast');
   try {
     const site = await loadJSON('data/site.json');
-    const sheet = site.sheet || {};
     renderChrome(site);
 
     // Start every download at once, and draw each section as soon as its own
     // content arrives, rather than one after another.
     const calendarData = (slot('calendars') || slot('announcements') || slot('performances'))
-      ? contentFor('calendar', loadJSON('data/calendar.json'), sheet.calendar, ['Date', 'Title'], calendarFromSheet)
+      ? contentFor('calendar', loadJSON('data/calendar.json'), ['Date', 'Title'], calendarFromSheet)
       : Promise.resolve(null);
     const castData = (slot('calendars') || slot('cast'))
-      ? contentFor('cast', loadJSON('data/cast.json'), sheet.cast, ['Actor', 'Role'], castFromSheet)
+      ? contentFor('cast', loadJSON('data/cast.json'), ['Actor', 'Role'], castFromSheet)
       : null;
     const jobs = [];
 
     if (slot('links')) jobs.push(loadJSON('data/links.json').then(renderLinks));
     if (slot('boosters')) jobs.push(loadJSON('data/boosters.json').then(renderBoosters));
     if (slot('announcements')) {
-      const announcements = contentFor('announcements', site.announcements, sheet.announcements,
+      const announcements = contentFor('announcements', site.announcements,
         ['Title'], (rows, saved) => Object.assign({}, saved, { items: announcementsFromSheet(rows) }));
       jobs.push(Promise.all([announcements, calendarData]).then(([a, cal]) => {
         site.announcements = a;
@@ -1245,7 +1205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (usedBackup) {
       // Tell families the page may be a little behind, without alarming them.
       const note = el('p', 'backup-note',
-        'We could not reach the latest updates just now, so this shows the most recent saved copy. ' +
+        'We could not load the latest updates just now, so some of this page may be out of date. ' +
         'Try reloading in a few minutes.');
       main.insertBefore(note, main.firstChild);
     }

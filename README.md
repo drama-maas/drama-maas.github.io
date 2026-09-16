@@ -13,14 +13,20 @@ plain HTML, drawn at load time from a published Google Sheet and the JSON files 
 | Calendar headings and intros, footer contacts, feedback link | `data/calendar.json`, `data/site.json` |
 | Links & Folders, the Boosters page | `data/links.json`, `data/boosters.json` |
 
-The Sheet is published to the web as CSV. The web addresses of its three tabs sit in the
-`sheet` block of `data/site.json`.
+Publishing is deliberate. The pages read `data/sheet-cache/`, never the Sheet itself, so an
+editor's work in progress stays off the site. Choosing **Website → Publish changes to the
+website** in the Sheet stamps the date and time onto its Publish tab; the **Publish the Google
+Sheet to the website** workflow checks that stamp every five minutes, and when it changes it
+copies the three tabs into `data/sheet-cache/` and commits them, which redeploys the site.
 
-If the Sheet cannot be reached, a page shows the most recent saved copy of it: this browser's
-copy of the last Sheet it loaded, or the snapshot in `data/sheet-cache/`, whichever is newer.
-The snapshot is kept up to date by the **Save a copy of the Google Sheet** workflow. Only if
-neither copy exists does the page use `data/calendar.json` and `data/cast.json`, which are now
-out of date and kept as a last resort.
+The Sheet is published to the web as CSV. The web addresses of its tabs, including the Publish
+tab the workflow reads the stamp from, sit in the `sheet` block of `data/site.json`. The button
+itself is an Apps Script bound to the Sheet (Extensions → Apps Script from the Sheet); a copy
+of its source is kept here in `apps-script/website-publish-button.gs`. Editing that file does
+not change the Sheet: paste it into the Sheet's script editor and save.
+
+If a published copy is missing or unreadable, the page falls back to `data/calendar.json` and
+`data/cast.json`, which are out of date and kept only as a last resort, and shows a short note.
 
 ## Files
 
@@ -39,7 +45,8 @@ data/sheet-cache/   Saved copy of the Sheet's tabs, written by the snapshot work
 assets/css/site.css Styling (light and dark)
 assets/js/site.js   Reads the Sheet and the JSON files and draws the pages
 assets/img/         Logos and page scenery
-.github/workflows/  validate.yml checks the JSON; sheet-snapshot.yml saves the Sheet
+apps-script/        Copy of the Sheet's Publish button script
+.github/workflows/  validate.yml checks the JSON; sheet-snapshot.yml publishes the Sheet
 STILL-TO-BE-CONFIRMED.md  Boosters' running to-do list, repo only
 .nojekyll           Tells GitHub Pages to serve the files as-is
 ```
@@ -56,10 +63,11 @@ repository would move the site.
 
 - Give anyone who edits the JSON files **Write** access under **Settings → Collaborators**.
   People who only edit the Google Sheet need edit access to the Sheet, not the repository.
-- The snapshot workflow needs **Settings → Actions → General → Workflow permissions** set to
-  **Read and write**, so it can commit the saved copy.
+- The publish workflow needs **Settings → Actions → General → Workflow permissions** set to
+  **Read and write**, so it can commit the published copy.
 - GitHub pauses scheduled workflows after 60 days without repository activity. After a long
-  quiet spell, open the **Actions** tab and re-enable **Save a copy of the Google Sheet**.
+  quiet spell, open the **Actions** tab and re-enable **Publish the Google Sheet to the
+  website**, or the Publish button will appear to do nothing.
 
 ## Running it locally
 
@@ -70,7 +78,7 @@ Serve the folder instead:
 python -m http.server 8765
 ```
 
-Then visit <http://localhost:8765>. The local copy still reads the live Google Sheet.
+Then visit <http://localhost:8765>. It reads the published copy in `data/sheet-cache/`.
 
 ## Notes
 
@@ -81,5 +89,7 @@ Then visit <http://localhost:8765>. The local copy still reads the live Google S
 - Dates drive the display: past events are dimmed, the next one gets a gold outline, finished
   months fold shut, and the "Coming up" cards on the home page come from the calendar.
 - Sections fed by the Sheet show grey loading placeholders until their content arrives.
+- `data/sheet-cache/meta.json` records the last publish stamp and time. The Sheet's **Check
+  publishing status** menu item reads it from the live site.
 - Source content came from the Drama Club Boosters entry page, the Shrek cast list, and the
   Join Drama Boosters documents.

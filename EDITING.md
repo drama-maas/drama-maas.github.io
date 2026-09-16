@@ -6,7 +6,7 @@ No coding needed.
 
 The calendar, the announcements and the cast list live in the
 **[Drama Club Website Content](https://docs.google.com/spreadsheets/d/1li5XvEky6UglRdMSMkIrX8us44wkxp-PwYyw0nvNJC8/edit)**
-Google Sheet. Edit a tab and the website picks it up within about five minutes. The Sheet's
+Google Sheet. Edit a tab, then publish, and the website updates. The Sheet's
 **Read me** tab explains every column, and row 2 of each tab has a short hint under each
 heading.
 
@@ -23,15 +23,24 @@ Three things keep the Sheet working:
 - **Leave row 2 alone.** It holds the hints and is skipped by the website.
 - **Blank rows are fine.** Use them to space things out; the website ignores them.
 
-If the website ever cannot reach the Sheet, it shows the most recent saved copy of it, with a
-short note at the top of the page. Two copies are kept: each visitor's browser remembers the
-last Sheet it loaded, and a scheduled GitHub job saves a snapshot into `data/sheet-cache/` every
-half hour whenever the Sheet has changed. Whichever copy is newer is shown.
+## Nothing goes live until you publish it
 
-The snapshot job lives in the repository's **Actions** tab as **Save a copy of the Google
-Sheet**. Click **Run workflow** there to save a copy straight away. GitHub pauses scheduled
-jobs in a repository with no activity for 60 days, so after a long quiet spell, such as the
-summer, check that tab and re-enable it.
+The website does not read the Sheet directly. It shows the last **published** copy, so you can
+edit for as long as you like, leave things half finished, and fix your own typos, with none of
+it on the website.
+
+When everything is ready, choose **Website → Publish changes to the website** from the menu bar
+in the Sheet. Add a short note about what changed if you like, and click OK. The site updates
+within about five minutes.
+
+To see whether it has landed, choose **Website → Check publishing status**. It will tell you
+either that the website is up to date, or that your publish has not been picked up yet.
+
+The **Publish** tab records when the last publish was asked for and by whom. Do not rename or
+delete that tab, and do not type into cell B4 by hand; the website reads that cell to know
+when a publish was requested.
+
+If the menu is missing, reload the Sheet and give it a few seconds to appear.
 
 ## Common jobs in the Sheet
 
@@ -144,8 +153,8 @@ browser, click Save, and the website updates itself a minute or two later.
 | The Join the Boosters page | `data/boosters.json` |
 
 `data/calendar.json` and `data/cast.json` also hold an old copy of the dates and the cast. The
-website only uses it if the Sheet and both saved copies are all unavailable, so there is no
-need to keep it up to date.
+website only falls back to it if a published copy goes missing, so there is no need to keep it
+up to date.
 
 The boosters' running to-do list is not on the website. It lives in
 `STILL-TO-BE-CONFIRMED.md` in the repository, where you can tick items off.
@@ -196,8 +205,8 @@ You do not have to maintain these by hand:
 
 ## If a change does not show up
 
-- **A Sheet change:** give it five minutes, then reload. Google takes a few minutes to
-  republish the Sheet.
+- **A Sheet change:** did you publish it? Choose **Website → Publish changes to the website**,
+  then give it five minutes. **Website → Check publishing status** says whether it has landed.
 - **A file change on GitHub:** give it a minute or two, then reload.
 - **A change to the look of the site:** browsers hold on to the stylesheet and the script for
   a while. The five HTML files load them with a version number on the end, like
