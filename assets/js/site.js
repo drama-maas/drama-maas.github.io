@@ -634,6 +634,7 @@ function renderCastNeeded(list, people, unassigned) {
     chip.tabIndex = 0;
     chip.title = label;
     chip.dataset.role = label;
+    chip.dataset.actor = person.actor;
     chip.setAttribute('aria-label', person.actor + ', ' + label);
     names.appendChild(chip);
   });
@@ -650,6 +651,9 @@ function renderCastNeeded(list, people, unassigned) {
 function applyCastFilter(cards, person, people, unassigned) {
   cards.forEach(({ card, ev, note }) => {
     card.classList.remove('is-called', 'is-not-called');
+    // Ring the picked student's own name among the cast on each date.
+    card.querySelectorAll('.cast-name[data-actor]').forEach(chip =>
+      chip.classList.toggle('is-picked', !!person && chip.dataset.actor === person.actor));
     note.hidden = true;
     note.className = 'call-note';
     if (!person) return;
