@@ -11,7 +11,7 @@ Tick an item off by deleting its line, or by ticking the box if you edit this on
 - [ ] November and December rehearsals - the 2:00-3:30 and 3:30-5:30 groups are still TBD on all five dates.
 - [ ] Rehearsal groups - the 2:00-3:30 group is TBD on Sept 23, Sept 30 and Oct 14.
 - [ ] Gingy, Storyteller 6, Papa Bear, Blind Mouse 2 and Blind Mouse 3 - cast September 16.
-- [ ] Boosters donate link - the Join the Boosters document has a DONATE button with no link behind it.
+- [x] Boosters donate link - the Join the Boosters document has a DONATE button with no link behind it.
 
 ## Notes
 
