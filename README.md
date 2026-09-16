@@ -47,8 +47,12 @@ STILL-TO-BE-CONFIRMED.md  Boosters' running to-do list, repo only
 ## Hosting
 
 The site is served by GitHub Pages from the `main` branch, root folder
-(**Settings → Pages**), at <https://mariopolito.github.io/MAAS_Drama/>. Every push to `main`
-redeploys it within a minute or two.
+(**Settings → Pages**), at <https://drama-maas.github.io/>. Every push to `main` redeploys it
+within a minute or two.
+
+The repository belongs to the drama club's own GitHub account, `drama-maas`, and is named
+`drama-maas.github.io`. That name is what puts the site at the root address, so renaming the
+repository would move the site.
 
 - Give anyone who edits the JSON files **Write** access under **Settings → Collaborators**.
   People who only edit the Google Sheet need edit access to the Sheet, not the repository.
