@@ -168,7 +168,9 @@ put under either button.
 ### The scene breakdown
 
 The **Scenes** tab feeds the scene page at `scenes.html`, which is not linked from the menu:
-you reach it by typing the address. It is one row per student per track, and one column per
+you reach it by typing the address. It opens on **Student view**, where a student picks their
+name; **Grid view** puts the whole cast against every scene, and on a phone that becomes a list
+of scenes you can open one at a time. It is one row per student per track, and one column per
 scene, in the order the scenes are performed.
 
 | Column | What it does |

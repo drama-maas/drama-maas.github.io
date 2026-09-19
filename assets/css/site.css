@@ -827,18 +827,19 @@ footer.site a { color: #fff; }
 
 /* grid: the scene names run up the columns so 30-odd of them fit across */
 .grid-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-raised); }
-table.scene-grid { border-collapse: separate; border-spacing: 0; font-size: .85rem; }
+table.scene-grid { border-collapse: separate; border-spacing: 0; font-size: .85rem; width: 100%; }
 table.scene-grid th, table.scene-grid td { padding: 0; }
 table.scene-grid thead th { position: sticky; top: 0; z-index: 2; background: var(--bg-raised); border-bottom: 1px solid var(--line); vertical-align: bottom; }
 table.scene-grid th.corner {
   left: 0; z-index: 3; text-align: left; padding: 10px 12px; white-space: nowrap;
   font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft);
 }
-table.scene-grid th.scene-col { width: 30px; min-width: 30px; font-weight: 500; }
+table.scene-grid th.scene-col { width: auto; min-width: 30px; font-weight: 500; }
 table.scene-grid th.scene-col span {
   writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap;
   padding: 10px 7px; max-height: 160px; overflow: hidden; text-overflow: ellipsis;
 }
+table.scene-grid th.corner, table.scene-grid tbody th.who { width: 190px; }
 table.scene-grid tbody th.who {
   position: sticky; left: 0; z-index: 1; background: var(--bg-raised); text-align: left;
   border-right: 1px solid var(--line); padding: 3px 12px; white-space: nowrap; font-weight: 600;
@@ -853,7 +854,7 @@ table.scene-grid tr.group-row th {
   font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);
   padding: 14px 12px 4px;
 }
-table.scene-grid td.cell { border-bottom: 1px solid var(--bg-sunken); height: 26px; width: 30px; text-align: center; }
+table.scene-grid td.cell { border-bottom: 1px solid var(--bg-sunken); height: 26px; min-width: 30px; text-align: center; }
 .cell-num { font-size: .72rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 table.scene-grid td.cell.on { background: var(--cos-bg); box-shadow: inset 0 0 0 1px var(--cos-line); border-radius: 5px; }
 
@@ -916,6 +917,38 @@ table.scene-grid td.cell.on { background: var(--cos-bg); box-shadow: inset 0 0 0
 .off-list li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 6px; }
 .off-list li.is-cue { color: var(--ink); font-weight: 600; }
 .off-list .run-num { padding-top: 0; }
+
+/* The scene page is a wide table, so it gets the window rather than the reading
+   column the other pages use. */
+.wrap-wide { max-width: min(1760px, 100%); }
+.wrap-wide .scene-head p, .wrap-wide .track-sub { max-width: 80ch; }
+
+/* Phones get the scene list; a 33-column table only works on a big screen. */
+.scene-cards { display: none; }
+@media (max-width: 760px) {
+  .grid-scroll { display: none; }
+  .scene-cards { display: grid; gap: 8px; }
+  .student-out .track-card { padding: 14px; }
+}
+.scene-card { background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius); }
+.scene-card summary {
+  cursor: pointer; padding: 10px 14px; display: flex; gap: 10px; align-items: baseline; list-style: none;
+}
+.scene-card summary::-webkit-details-marker { display: none; }
+.scene-card .scene-no {
+  flex: none; min-width: 26px; text-align: center; font-variant-numeric: tabular-nums;
+  font-size: .8rem; font-weight: 700; color: var(--ink-soft);
+}
+.scene-card .scene-title small { display: block; color: var(--ink-soft); font-size: .82rem; font-weight: 400; }
+.scene-card[open] summary { border-bottom: 1px solid var(--line); }
+.scene-card-group {
+  margin: 10px 14px 0; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft);
+}
+.scene-card-list { list-style: none; margin: 6px 0 0; padding: 0 14px 4px; display: grid; gap: 6px; }
+.scene-card-list:last-child { padding-bottom: 12px; }
+.scene-card-list li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.scene-card-list small { color: var(--ink-soft); }
+.scene-card .filter-note { padding: 0 14px 12px; margin: 6px 0 0; }
 
 @media print {
   .nav, .banner, .search-row, .legend, footer.site { display: none; }

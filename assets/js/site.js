@@ -1268,9 +1268,9 @@ function renderScenes(data, castData) {
   tabs.setAttribute('role', 'group');
   tabs.setAttribute('aria-label', 'How to look at the scenes');
   const panels = {};
-  let view = 'grid';
+  let view = 'student';
   const buttons = [];
-  [['grid', 'Grid view'], ['student', 'Student view']].forEach(([key, label]) => {
+  [['student', 'Student view'], ['grid', 'Grid view']].forEach(([key, label]) => {
     const b = el('button', 'filter' + (key === view ? ' is-on' : ''), label);
     b.type = 'button';
     b.addEventListener('click', () => {
@@ -1284,11 +1284,11 @@ function renderScenes(data, castData) {
   });
   host.appendChild(tabs);
 
-  panels.grid = el('div', 'scene-panel');
   panels.student = el('div', 'scene-panel');
-  panels.student.hidden = true;
-  host.appendChild(panels.grid);
+  panels.grid = el('div', 'scene-panel');
+  panels.grid.hidden = true;
   host.appendChild(panels.student);
+  host.appendChild(panels.grid);
 
   /* ---- grid: students down the side, scenes across ---- */
   let gridTrack = 'Castle';
@@ -1309,7 +1309,9 @@ function renderScenes(data, castData) {
   });
   panels.grid.appendChild(trackRow);
   const gridWrap = el('div', 'grid-scroll');
+  const sceneList = el('div', 'scene-cards');
   panels.grid.appendChild(gridWrap);
+  panels.grid.appendChild(sceneList);
 
   function drawGrid() {
     gridWrap.innerHTML = '';
@@ -1369,6 +1371,54 @@ function renderScenes(data, castData) {
     gridWrap.appendChild(el('p', 'filter-note',
       'A block means that student is on stage in that scene. The number and colour are which of ' +
       'their costumes they wear, counting from the first one they put on. Tap a name for their own scene list.'));
+    drawSceneList(rows);
+  }
+
+  // On a phone the table is unreadable, so the same information reads as a list
+  // of scenes: open one and it says who is on stage and what they are wearing.
+  function drawSceneList(rows) {
+    sceneList.innerHTML = '';
+    sceneList.appendChild(el('p', 'filter-note',
+      'Open a scene to see who is on stage in it and what they are wearing. ' +
+      'Tap a name for that student\u2019s own scene list.'));
+    scenes.forEach((n, i) => {
+      const here = rows.filter(r => r.cells[n]);
+      const card = el('details', 'scene-card');
+      const sum = el('summary');
+      sum.appendChild(el('span', 'scene-no', String(i + 1)));
+      const t = el('span', 'scene-title');
+      t.appendChild(el('strong', null, n));
+      t.appendChild(el('small', null, here.length + (here.length === 1 ? ' student on stage' : ' students on stage')));
+      sum.appendChild(t);
+      card.appendChild(sum);
+      if (!here.length) {
+        card.appendChild(el('p', 'filter-note', 'Nobody is on stage in this scene yet.'));
+        sceneList.appendChild(card);
+        return;
+      }
+      let group = null;
+      let list = null;
+      here.forEach(r => {
+        if (r.group && r.group !== group) {
+          group = r.group;
+          card.appendChild(el('h4', 'scene-card-group', group));
+          list = el('ul', 'scene-card-list');
+          card.appendChild(list);
+        }
+        if (!list) { list = el('ul', 'scene-card-list'); card.appendChild(list); }
+        const c = r.cells[n];
+        const li = el('li');
+        const who = el('button', 'who-link', r.student);
+        who.type = 'button';
+        who.addEventListener('click', () => showStudent(r.student));
+        li.appendChild(who);
+        const cos = el('span', 'cos ' + costumeClass(costumeOrder(r, scenes), c.costume), c.costume);
+        li.appendChild(cos);
+        if (c.role) li.appendChild(el('small', null, 'as ' + c.role));
+        list.appendChild(li);
+      });
+      sceneList.appendChild(card);
+    });
   }
   drawGrid();
 
@@ -1475,7 +1525,7 @@ function renderScenes(data, castData) {
   function showStudent(name) {
     select.value = name;
     drawStudent(name);
-    buttons[1].click();
+    buttons[0].click();
     panels.student.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
@@ -1492,7 +1542,7 @@ function renderScenes(data, castData) {
   drawStudent(select.value);
   let savedView = '';
   try { savedView = localStorage.getItem('scenes-view') || ''; } catch (err) { savedView = ''; }
-  if (savedView === 'student' || (!savedView && select.value)) buttons[1].click();
+  if (savedView === 'grid') buttons[1].click();
 }
 
 /* ---------- boot ---------- */
