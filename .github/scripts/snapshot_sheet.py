@@ -24,6 +24,7 @@ REQUIRED = {
     "calendar": ["Date", "Title"],
     "announcements": ["Title"],
     "cast": ["Actor", "Role"],
+    "scenes": ["Track", "Student"],
 }
 STAMP_LABEL = "publish stamp"
 

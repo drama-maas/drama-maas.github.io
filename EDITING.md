@@ -165,6 +165,29 @@ The **Castle Track** and **Storybook Track** buttons above the table keep everyb
 screen and simply hide the other track's version of a role. Roles played both weekends stay
 put under either button.
 
+### The scene breakdown
+
+The **Scenes** tab feeds the scene page at `scenes.html`, which is not linked from the menu:
+you reach it by typing the address. It is one row per student per track, and one column per
+scene, in the order the scenes are performed.
+
+| Column | What it does |
+| --- | --- |
+| Track | `Castle` or `Storybook`. Each student gets one row per track they are in |
+| Group | The heading their row sits under in the grid, such as `Leads` or `Storytellers` |
+| Student | Their name, spelled as on the Cast tab |
+| One column per scene | The costume they wear in that scene. Leave it empty when they are off stage |
+
+Write the costume the way it should read to a student, such as `Duloc` or `Storyteller 3`. To
+add what they are doing in that scene, put it in brackets after the costume, like
+`Duloc (Guard)`. The page works out the rest: a costume change is any scene where the costume
+is different from the one they had on last, and it warns about a quick change when there is no
+scene in between.
+
+Renaming a scene column renames it on the page. Moving a column moves the scene in the running
+order, and adding a column adds a scene. Everything on the page comes from this tab, so this is
+the only place to change it.
+
 ## Everything else: the files on GitHub
 
 The rest lives in text files in the `data` folder. You edit them right on GitHub in your web

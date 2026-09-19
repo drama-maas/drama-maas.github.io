@@ -1186,6 +1186,315 @@ function renderBoosters(data) {
   }
 }
 
+/* ---------- scenes: who is on stage, and in what, scene by scene ---------- */
+
+// The Scenes tab is a grid: one row per student per track, one column per scene.
+// A cell holds the costume they wear, with an optional role in brackets, and an
+// empty cell means they are off stage.
+function scenesFromSheet(rows, saved) {
+  const fixed = ['Track', 'Group', 'Student'];
+  const names = Object.keys(rows[0] || {}).filter(h => h && !fixed.includes(h));
+  const cast = [];
+  rows.forEach(r => {
+    const student = (r['Student'] || '').trim();
+    if (!student) return;
+    const cells = {};
+    names.forEach(n => {
+      const raw = (r[n] || '').trim();
+      if (!raw) return;
+      const m = raw.match(/^(.*?)\s*\((.+)\)\s*$/);
+      cells[n] = { costume: (m ? m[1] : raw).trim(), role: m ? m[2].trim() : '' };
+    });
+    cast.push({
+      student,
+      track: pickTrack(r['Track'], ['Castle', 'Storybook'], 'Castle'),
+      group: (r['Group'] || '').trim(),
+      cells
+    });
+  });
+  if (!cast.length) throw new Error('the Scenes tab has no rows');
+  return Object.assign({}, saved || {}, { scenes: names, cast });
+}
+
+// Each student's costumes in the order they first wear them, so the same costume
+// keeps the same colour down their row and through their scene list.
+function costumeOrder(row, scenes) {
+  const seen = [];
+  scenes.forEach(n => {
+    const c = row.cells[n];
+    if (c && !seen.includes(c.costume)) seen.push(c.costume);
+  });
+  return seen;
+}
+const costumeClass = (order, costume) => 'cos-' + Math.min(order.indexOf(costume) + 1, 6);
+
+// Every scene the student is in, with the costume changes between them and the
+// stretches off stage. A change with no scene in between is a quick change.
+function sceneRun(row, scenes) {
+  const on = [];
+  scenes.forEach((n, i) => { if (row.cells[n]) on.push({ i, name: n, ...row.cells[n] }); });
+  const items = [];
+  on.forEach((app, k) => {
+    const prev = on[k - 1];
+    if (prev && prev.costume !== app.costume) {
+      items.push({ type: 'change', costume: app.costume, after: prev.name, gap: app.i - prev.i - 1 });
+    }
+    const from = prev ? prev.i + 1 : 0;
+    if (app.i > from) items.push({ type: 'off', from, to: app.i - 1 });
+    if (!prev) items.push({ type: 'start', costume: app.costume });
+    items.push({ type: 'on', app });
+  });
+  return { on, items };
+}
+
+function renderScenes(data, castData) {
+  const host = slot('scenes');
+  if (!host) return;
+  host.innerHTML = '';
+  const scenes = data.scenes;
+  const partsOf = new Map();
+  (castData && castData.members || []).forEach(m => partsOf.set(m.actor, m.parts));
+  const rolesFor = (student, track) => (partsOf.get(student) || [])
+    .filter(p => p.track === track || p.track === 'Both').map(p => p.role);
+
+  const head = el('div', 'scene-head');
+  head.appendChild(el('h2', null, 'Scene by scene'));
+  head.appendChild(el('p', 'section-intro',
+    'Every scene of Shrek, who is on stage in it, and the costume they wear. ' +
+    'Pick your name in Student view to see your own night, including when to change costume.'));
+  host.appendChild(head);
+
+  const tabs = el('div', 'filters scene-tabs');
+  tabs.setAttribute('role', 'group');
+  tabs.setAttribute('aria-label', 'How to look at the scenes');
+  const panels = {};
+  let view = 'grid';
+  const buttons = [];
+  [['grid', 'Grid view'], ['student', 'Student view']].forEach(([key, label]) => {
+    const b = el('button', 'filter' + (key === view ? ' is-on' : ''), label);
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      view = key;
+      buttons.forEach(x => x.classList.toggle('is-on', x === b));
+      Object.entries(panels).forEach(([k, p]) => { p.hidden = k !== key; });
+      try { localStorage.setItem('scenes-view', key); } catch (err) { /* private window */ }
+    });
+    buttons.push(b);
+    tabs.appendChild(b);
+  });
+  host.appendChild(tabs);
+
+  panels.grid = el('div', 'scene-panel');
+  panels.student = el('div', 'scene-panel');
+  panels.student.hidden = true;
+  host.appendChild(panels.grid);
+  host.appendChild(panels.student);
+
+  /* ---- grid: students down the side, scenes across ---- */
+  let gridTrack = 'Castle';
+  const trackRow = el('div', 'filters scene-tracks');
+  trackRow.setAttribute('role', 'group');
+  trackRow.setAttribute('aria-label', 'Which track');
+  const trackButtons = [];
+  ['Castle', 'Storybook'].forEach(t => {
+    const b = el('button', 'filter filter-' + TRACK_CLASS[t] + (t === gridTrack ? ' is-on' : ''), t + ' Track');
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      gridTrack = t;
+      trackButtons.forEach(x => x.classList.toggle('is-on', x === b));
+      drawGrid();
+    });
+    trackButtons.push(b);
+    trackRow.appendChild(b);
+  });
+  panels.grid.appendChild(trackRow);
+  const gridWrap = el('div', 'grid-scroll');
+  panels.grid.appendChild(gridWrap);
+
+  function drawGrid() {
+    gridWrap.innerHTML = '';
+    const rows = data.cast.filter(r => r.track === gridTrack);
+    const table = el('table', 'scene-grid');
+    const thead = el('thead');
+    const hr = el('tr');
+    hr.appendChild(el('th', 'corner', gridTrack + ' Track'));
+    scenes.forEach((n, i) => {
+      const th = el('th', 'scene-col');
+      th.scope = 'col';
+      th.appendChild(el('span', null, (i + 1) + '. ' + n));
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr);
+    table.appendChild(thead);
+    const tbody = el('tbody');
+    let group = null;
+    rows.forEach(r => {
+      if (r.group && r.group !== group) {
+        group = r.group;
+        const gr = el('tr', 'group-row');
+        const gh = el('th', null, group);
+        gh.colSpan = scenes.length + 1;
+        gh.scope = 'colgroup';
+        gr.appendChild(gh);
+        tbody.appendChild(gr);
+      }
+      const order = costumeOrder(r, scenes);
+      const tr = el('tr');
+      const nameCell = el('th', 'who');
+      nameCell.scope = 'row';
+      const pick = el('button', 'who-link', r.student);
+      pick.type = 'button';
+      pick.addEventListener('click', () => showStudent(r.student, r.track));
+      nameCell.appendChild(pick);
+      const roles = rolesFor(r.student, r.track);
+      if (roles.length) nameCell.appendChild(el('small', null, roles.join(', ')));
+      tr.appendChild(nameCell);
+      scenes.forEach(n => {
+        const c = r.cells[n];
+        const td = el('td', 'cell');
+        if (c) {
+          td.classList.add('on', costumeClass(order, c.costume));
+          td.title = r.student + ' · ' + n + ' · ' + c.costume + (c.role ? ' (' + c.role + ')' : '');
+          td.appendChild(el('span', 'cell-num', String(order.indexOf(c.costume) + 1)));
+          td.appendChild(el('span', 'sr-only', c.costume));
+        } else {
+          td.title = r.student + ' · ' + n + ' · off stage';
+        }
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    gridWrap.appendChild(table);
+    gridWrap.appendChild(el('p', 'filter-note',
+      'A block means that student is on stage in that scene. The number and colour are which of ' +
+      'their costumes they wear, counting from the first one they put on. Tap a name for their own scene list.'));
+  }
+  drawGrid();
+
+  /* ---- student view ---- */
+  const names = [...new Set(data.cast.map(r => r.student))].sort((a, b) => a.localeCompare(b));
+  const picker = el('div', 'search-row');
+  const label = el('label', 'sr-only', 'Pick a student');
+  label.htmlFor = 'scene-student';
+  const select = el('select', 'scene-picker');
+  select.id = 'scene-student';
+  select.appendChild(el('option', null, 'Pick your name…')).value = '';
+  names.forEach(n => { const o = el('option', null, n); o.value = n; select.appendChild(o); });
+  picker.appendChild(label);
+  picker.appendChild(select);
+  panels.student.appendChild(picker);
+  const studentOut = el('div', 'student-out');
+  panels.student.appendChild(studentOut);
+
+  function drawStudent(name) {
+    studentOut.innerHTML = '';
+    if (!name) {
+      studentOut.appendChild(el('p', 'filter-note', 'Pick your name to see every scene you are in.'));
+      return;
+    }
+    const mine = data.cast.filter(r => r.student === name);
+    if (!mine.length) {
+      studentOut.appendChild(el('p', 'filter-note', 'We do not have scenes for ' + name + ' yet.'));
+      return;
+    }
+    mine.forEach(r => {
+      const card = el('section', 'track-card track-card-' + TRACK_CLASS[r.track]);
+      const h = el('h3', null, r.track + ' Track');
+      card.appendChild(h);
+      const roles = rolesFor(r.student, r.track);
+      const { on, items } = sceneRun(r, scenes);
+      const order = costumeOrder(r, scenes);
+      const changes = items.filter(x => x.type === 'change');
+      card.appendChild(el('p', 'track-sub',
+        (roles.length ? roles.join(' · ') + ' — ' : '') +
+        on.length + (on.length === 1 ? ' scene' : ' scenes') + ', ' +
+        order.length + (order.length === 1 ? ' costume' : ' costumes') + ', ' +
+        changes.length + (changes.length === 1 ? ' costume change' : ' costume changes')));
+      if (!on.length) {
+        card.appendChild(el('p', 'filter-note', 'No scenes on this track yet.'));
+        studentOut.appendChild(card);
+        return;
+      }
+      const list = el('ol', 'scene-run');
+      items.forEach(it => {
+        const li = el('li');
+        if (it.type === 'start') {
+          const d = el('div', 'run-change');
+          d.appendChild(document.createTextNode('Start in '));
+          d.appendChild(el('span', 'cos ' + costumeClass(order, it.costume), it.costume));
+          li.appendChild(d);
+        } else if (it.type === 'change') {
+          const quick = it.gap === 0;
+          const d = el('div', 'run-change' + (quick ? ' is-quick' : ''));
+          if (quick) d.appendChild(el('strong', null, 'Quick change! '));
+          d.appendChild(document.createTextNode('Change into '));
+          d.appendChild(el('span', 'cos ' + costumeClass(order, it.costume), it.costume));
+          d.appendChild(document.createTextNode(quick
+            ? ' straight after ' + it.after + ', with no scene in between'
+            : ' after ' + it.after + ' (' + it.gap + (it.gap === 1 ? ' scene' : ' scenes') + ' to change)'));
+          li.appendChild(d);
+        } else if (it.type === 'off') {
+          const box = el('details', 'run-off');
+          const sum = el('summary');
+          const n = it.to - it.from + 1;
+          sum.appendChild(el('span', 'off-count',
+            'Off stage · ' + (n === 1 ? 'scene ' + (it.from + 1) : n + ' scenes, ' + (it.from + 1) + '–' + (it.to + 1))));
+          const cue = el('span', 'off-cue');
+          cue.appendChild(document.createTextNode('Be ready during '));
+          cue.appendChild(el('strong', null, (it.to + 1) + '. ' + scenes[it.to]));
+          cue.appendChild(document.createTextNode(' — you are on next'));
+          sum.appendChild(cue);
+          box.appendChild(sum);
+          const inner = el('ol', 'off-list');
+          for (let i = it.from; i <= it.to; i++) {
+            const item = el('li', i === it.to ? 'is-cue' : null);
+            item.appendChild(el('span', 'run-num', String(i + 1)));
+            item.appendChild(el('span', null, scenes[i] + (i === it.to ? ' · get ready' : '')));
+            inner.appendChild(item);
+          }
+          box.appendChild(inner);
+          li.appendChild(box);
+        } else {
+          li.appendChild(el('span', 'run-num', String(it.app.i + 1)));
+          const d = el('div', 'run-on');
+          const left = el('div');
+          left.appendChild(el('strong', null, it.app.name));
+          if (it.app.role) left.appendChild(el('small', null, 'as ' + it.app.role));
+          d.appendChild(left);
+          d.appendChild(el('span', 'cos ' + costumeClass(order, it.app.costume), it.app.costume));
+          li.appendChild(d);
+        }
+        list.appendChild(li);
+      });
+      card.appendChild(list);
+      studentOut.appendChild(card);
+    });
+  }
+
+  function showStudent(name) {
+    select.value = name;
+    drawStudent(name);
+    buttons[1].click();
+    panels.student.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
+  select.addEventListener('change', () => {
+    drawStudent(select.value);
+    try { localStorage.setItem('scenes-student', select.value); } catch (err) { /* private window */ }
+  });
+
+  // Open where they left off, or on the name in the address, so a student can
+  // bookmark their own page.
+  let start = new URLSearchParams(location.search).get('student') || '';
+  if (!start) { try { start = localStorage.getItem('scenes-student') || ''; } catch (err) { start = ''; } }
+  if (names.includes(start)) select.value = start;
+  drawStudent(select.value);
+  let savedView = '';
+  try { savedView = localStorage.getItem('scenes-view') || ''; } catch (err) { savedView = ''; }
+  if (savedView === 'student' || (!savedView && select.value)) buttons[1].click();
+}
+
 /* ---------- boot ---------- */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1203,7 +1512,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const calendarData = (slot('calendars') || slot('announcements') || slot('performances'))
       ? contentFor('calendar', loadJSON('data/calendar.json'), ['Date', 'Title'], calendarFromSheet)
       : Promise.resolve(null);
-    const castData = (slot('calendars') || slot('cast'))
+    const castData = (slot('calendars') || slot('cast') || slot('scenes'))
       ? contentFor('cast', loadJSON('data/cast.json'), ['Actor', 'Role'], castFromSheet)
       : null;
     const jobs = [];
@@ -1231,6 +1540,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     if (slot('cast')) {
       jobs.push(castData.then(cast => { renderCast(cast); doneLoading('cast'); }));
+    }
+    if (slot('scenes')) {
+      const sceneData = contentFor('scenes', Promise.resolve(null), ['Track', 'Student'], scenesFromSheet);
+      jobs.push(Promise.all([sceneData, castData.catch(() => null)]).then(([sc, cast]) => {
+        renderScenes(sc, cast);
+        doneLoading('scenes');
+      }));
     }
     await Promise.all(jobs);
 
