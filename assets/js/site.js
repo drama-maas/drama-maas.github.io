@@ -1537,7 +1537,8 @@ function renderScenes(data, castData) {
           li.appendChild(box);
         } else {
           li.appendChild(el('span', 'run-num', String(it.app.i + 1)));
-          const d = el('div', 'run-on');
+          // The tile wears the ring of the costume they are in for that scene.
+          const d = el('div', 'run-on ' + costumeClass(order, it.app.bits[0].costume));
           const left = el('div');
           left.appendChild(el('strong', null, it.app.name));
           const roles = [...new Set(it.app.bits.map(b => b.role).filter(Boolean))];
