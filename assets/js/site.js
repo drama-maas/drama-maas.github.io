@@ -1216,6 +1216,22 @@ function scenesFromSheet(rows, saved) {
   return Object.assign({}, saved || {}, { scenes: names, cast });
 }
 
+// Two columns that share a name before a colon are two parts of one scene, such
+// as "Who I'd Be: Solos" and "Who I'd Be: Choir". They are numbered as one scene,
+// and a student in only one of them is not off stage for the other.
+function sceneParts(names) {
+  const scenes = [];
+  names.forEach(col => {
+    const m = col.match(/^(.*?)\s*:\s*(.+)$/);
+    const name = m ? m[1].trim() : col.trim();
+    const part = m ? m[2].trim() : '';
+    const last = scenes[scenes.length - 1];
+    if (part && last && last.name === name) last.parts.push({ col, part });
+    else scenes.push({ name, parts: [{ col, part }] });
+  });
+  return scenes;
+}
+
 // Each student's costumes in the order they first wear them, so the same costume
 // keeps the same colour down their row and through their scene list.
 function costumeOrder(row, scenes) {
@@ -1230,18 +1246,23 @@ const costumeClass = (order, costume) => 'cos-' + Math.min(order.indexOf(costume
 
 // Every scene the student is in, with the costume changes between them and the
 // stretches off stage. A change with no scene in between is a quick change.
-function sceneRun(row, scenes) {
+function sceneRun(row, sceneList) {
   const on = [];
-  scenes.forEach((n, i) => { if (row.cells[n]) on.push({ i, name: n, ...row.cells[n] }); });
+  sceneList.forEach((sc, i) => {
+    const bits = sc.parts
+      .filter(p => row.cells[p.col])
+      .map(p => ({ part: p.part, costume: row.cells[p.col].costume, role: row.cells[p.col].role }));
+    if (bits.length) on.push({ i, name: sc.name, bits, first: bits[0].costume, last: bits[bits.length - 1].costume });
+  });
   const items = [];
   on.forEach((app, k) => {
     const prev = on[k - 1];
-    if (prev && prev.costume !== app.costume) {
-      items.push({ type: 'change', costume: app.costume, after: prev.name, gap: app.i - prev.i - 1 });
+    if (prev && prev.last !== app.first) {
+      items.push({ type: 'change', costume: app.first, after: prev.name, gap: app.i - prev.i - 1 });
     }
     const from = prev ? prev.i + 1 : 0;
     if (app.i > from) items.push({ type: 'off', from, to: app.i - 1 });
-    if (!prev) items.push({ type: 'start', costume: app.costume });
+    if (!prev) items.push({ type: 'start', costume: app.first });
     items.push({ type: 'on', app });
   });
   return { on, items };
@@ -1251,7 +1272,10 @@ function renderScenes(data, castData) {
   const host = slot('scenes');
   if (!host) return;
   host.innerHTML = '';
-  const scenes = data.scenes;
+  const columns = data.scenes;
+  const scenes = sceneParts(columns);
+  const sceneNames = scenes.map(sc => sc.name);
+  const sceneStart = new Set(scenes.map(sc => sc.parts[0].col));
   const partsOf = new Map();
   (castData && castData.members || []).forEach(m => partsOf.set(m.actor, m.parts));
   const rolesFor = (student, track) => (partsOf.get(student) || [])
@@ -1320,11 +1344,13 @@ function renderScenes(data, castData) {
     const thead = el('thead');
     const hr = el('tr');
     hr.appendChild(el('th', 'corner', gridTrack + ' Track'));
-    scenes.forEach((n, i) => {
-      const th = el('th', 'scene-col');
-      th.scope = 'col';
-      th.appendChild(el('span', null, (i + 1) + '. ' + n));
-      hr.appendChild(th);
+    scenes.forEach((sc, i) => {
+      sc.parts.forEach((p, k) => {
+        const th = el('th', 'scene-col' + (k ? ' part-more' : ''));
+        th.scope = 'col';
+        th.appendChild(el('span', null, (k ? '' : (i + 1) + '. ') + sc.name + (p.part ? ' — ' + p.part : '')));
+        hr.appendChild(th);
+      });
     });
     thead.appendChild(hr);
     table.appendChild(thead);
@@ -1335,12 +1361,12 @@ function renderScenes(data, castData) {
         group = r.group;
         const gr = el('tr', 'group-row');
         const gh = el('th', null, group);
-        gh.colSpan = scenes.length + 1;
+        gh.colSpan = columns.length + 1;
         gh.scope = 'colgroup';
         gr.appendChild(gh);
         tbody.appendChild(gr);
       }
-      const order = costumeOrder(r, scenes);
+      const order = costumeOrder(r, columns);
       const tr = el('tr');
       const nameCell = el('th', 'who');
       nameCell.scope = 'row';
@@ -1351,9 +1377,9 @@ function renderScenes(data, castData) {
       const roles = rolesFor(r.student, r.track);
       if (roles.length) nameCell.appendChild(el('small', null, roles.join(', ')));
       tr.appendChild(nameCell);
-      scenes.forEach(n => {
+      columns.forEach(n => {
         const c = r.cells[n];
-        const td = el('td', 'cell');
+        const td = el('td', 'cell' + (sceneStart.has(n) ? ' part-start' : ''));
         if (c) {
           td.classList.add('on', costumeClass(order, c.costume));
           td.title = r.student + ' · ' + n + ' · ' + c.costume + (c.role ? ' (' + c.role + ')' : '');
@@ -1381,13 +1407,13 @@ function renderScenes(data, castData) {
     sceneList.appendChild(el('p', 'filter-note',
       'Open a scene to see who is on stage in it and what they are wearing. ' +
       'Tap a name for that student\u2019s own scene list.'));
-    scenes.forEach((n, i) => {
-      const here = rows.filter(r => r.cells[n]);
+    scenes.forEach((sc, i) => {
+      const here = rows.filter(r => sc.parts.some(p => r.cells[p.col]));
       const card = el('details', 'scene-card');
       const sum = el('summary');
       sum.appendChild(el('span', 'scene-no', String(i + 1)));
       const t = el('span', 'scene-title');
-      t.appendChild(el('strong', null, n));
+      t.appendChild(el('strong', null, sc.name));
       t.appendChild(el('small', null, here.length + (here.length === 1 ? ' student on stage' : ' students on stage')));
       sum.appendChild(t);
       card.appendChild(sum);
@@ -1406,15 +1432,19 @@ function renderScenes(data, castData) {
           card.appendChild(list);
         }
         if (!list) { list = el('ul', 'scene-card-list'); card.appendChild(list); }
-        const c = r.cells[n];
         const li = el('li');
         const who = el('button', 'who-link', r.student);
         who.type = 'button';
         who.addEventListener('click', () => showStudent(r.student));
         li.appendChild(who);
-        const cos = el('span', 'cos ' + costumeClass(costumeOrder(r, scenes), c.costume), c.costume);
-        li.appendChild(cos);
-        if (c.role) li.appendChild(el('small', null, 'as ' + c.role));
+        const order = costumeOrder(r, columns);
+        sc.parts.forEach(p => {
+          const c = r.cells[p.col];
+          if (!c) return;
+          li.appendChild(el('span', 'cos ' + costumeClass(order, c.costume), c.costume));
+          const note = [p.part, c.role ? 'as ' + c.role : ''].filter(Boolean).join(' · ');
+          if (note) li.appendChild(el('small', null, note));
+        });
         list.appendChild(li);
       });
       sceneList.appendChild(card);
@@ -1454,7 +1484,7 @@ function renderScenes(data, castData) {
       card.appendChild(h);
       const roles = rolesFor(r.student, r.track);
       const { on, items } = sceneRun(r, scenes);
-      const order = costumeOrder(r, scenes);
+      const order = costumeOrder(r, columns);
       const changes = items.filter(x => x.type === 'change');
       card.appendChild(el('p', 'track-sub',
         (roles.length ? roles.join(' · ') + ' — ' : '') +
@@ -1492,7 +1522,7 @@ function renderScenes(data, castData) {
             'Off stage · ' + (n === 1 ? 'scene ' + (it.from + 1) : n + ' scenes, ' + (it.from + 1) + '–' + (it.to + 1))));
           const cue = el('span', 'off-cue');
           cue.appendChild(document.createTextNode('Be ready during '));
-          cue.appendChild(el('strong', null, (it.to + 1) + '. ' + scenes[it.to]));
+          cue.appendChild(el('strong', null, (it.to + 1) + '. ' + sceneNames[it.to]));
           cue.appendChild(document.createTextNode(' — you are on next'));
           sum.appendChild(cue);
           box.appendChild(sum);
@@ -1500,7 +1530,7 @@ function renderScenes(data, castData) {
           for (let i = it.from; i <= it.to; i++) {
             const item = el('li', i === it.to ? 'is-cue' : null);
             item.appendChild(el('span', 'run-num', String(i + 1)));
-            item.appendChild(el('span', null, scenes[i] + (i === it.to ? ' · get ready' : '')));
+            item.appendChild(el('span', null, sceneNames[i] + (i === it.to ? ' · get ready' : '')));
             inner.appendChild(item);
           }
           box.appendChild(inner);
@@ -1510,9 +1540,24 @@ function renderScenes(data, castData) {
           const d = el('div', 'run-on');
           const left = el('div');
           left.appendChild(el('strong', null, it.app.name));
-          if (it.app.role) left.appendChild(el('small', null, 'as ' + it.app.role));
+          const roles = [...new Set(it.app.bits.map(b => b.role).filter(Boolean))];
+          if (roles.length) left.appendChild(el('small', null, 'as ' + roles.join(', ')));
           d.appendChild(left);
-          d.appendChild(el('span', 'cos ' + costumeClass(order, it.app.costume), it.app.costume));
+          // A scene in parts says which parts they are in, and names a costume
+          // change that happens inside the scene.
+          const cosBox = el('div', 'run-cos');
+          it.app.bits.forEach(b => {
+            const chip = el('span', 'cos ' + costumeClass(order, b.costume), b.costume);
+            if (b.part) {
+              const pair = el('span', 'run-part');
+              pair.appendChild(el('small', null, b.part));
+              pair.appendChild(chip);
+              cosBox.appendChild(pair);
+            } else {
+              cosBox.appendChild(chip);
+            }
+          });
+          d.appendChild(cosBox);
           li.appendChild(d);
         }
         list.appendChild(li);

@@ -954,6 +954,13 @@ table.scene-grid td.cell.on { background: var(--cos-bg); box-shadow: inset 0 0 0
 .scene-card-list small { color: var(--ink-soft); }
 .scene-card .filter-note { padding: 0 14px 12px; margin: 6px 0 0; }
 
+/* A scene split over two columns keeps them together under one number. */
+table.scene-grid th.scene-col.part-more span { color: var(--ink-soft); }
+table.scene-grid th.scene-col:not(.part-more), table.scene-grid td.cell.part-start { border-left: 1px solid var(--line); }
+.run-cos { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.run-part { display: inline-flex; gap: 5px; align-items: center; }
+.run-part small { color: var(--ink-soft); }
+
 @media print {
   .nav, .banner, .search-row, .legend, footer.site { display: none; }
   body { background: #fff; }

@@ -186,6 +186,10 @@ add what they are doing in that scene, put it in brackets after the costume, lik
 is different from the one they had on last, and it warns about a quick change when there is no
 scene in between.
 
+Two columns that are really one scene, like the Who I'd Be solos and the choir, share a name
+before a colon: `Who I'd Be: Solos` and `Who I'd Be: Choir`. They count as one scene, so a
+student who only sings in the choir is not told they are off stage for the solos.
+
 Renaming a scene column renames it on the page. Moving a column moves the scene in the running
 order, and adding a column adds a scene. Everything on the page comes from this tab, so this is
 the only place to change it.
