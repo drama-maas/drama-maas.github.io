@@ -154,7 +154,7 @@ a { color: var(--green-700); }
   position: sticky; top: 0; z-index: 30;
 }
 .nav .wrap {
-  display: flex; gap: 2px; flex-wrap: nowrap; justify-content: center;
+  display: flex; gap: 2px; flex-wrap: nowrap; justify-content: safe center;
   padding: 0 8px; overflow-x: auto; scrollbar-width: none;
 }
 .nav .wrap::-webkit-scrollbar { display: none; }
@@ -164,7 +164,8 @@ a { color: var(--green-700); }
   border-bottom: 3px solid transparent; margin-bottom: -3px;
 }
 @media (max-width: 480px) {
-  .nav a { padding: 12px 9px; font-size: .84rem; }
+  .nav .wrap { gap: 0; padding: 0 4px; }
+  .nav a { padding: 12px 7px; font-size: .82rem; }
 }
 @media (max-width: 760px) {
   :root { --art-inset: 14px; --art-inset-wide: 24px; }
