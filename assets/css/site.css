@@ -583,6 +583,16 @@ table.cast td.actor {
   border-right: 1px solid var(--line);
 }
 table.cast td.actor .actor-name { display: block; }
+table.cast td.actor a.actor-name {
+  color: inherit; text-decoration: underline dotted;
+  text-decoration-color: var(--ink-soft); text-underline-offset: 3px;
+}
+table.cast td.actor a.actor-name:hover,
+table.cast td.actor a.actor-name:focus-visible { color: var(--green-700); text-decoration: underline; }
+:root[data-theme="dark"] table.cast td.actor a.actor-name:hover { color: var(--green-300); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) table.cast td.actor a.actor-name:hover { color: var(--green-300); }
+}
 table.cast td.actor .actor-count {
   display: block; font-weight: 600; font-size: .72rem;
   letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);

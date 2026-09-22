@@ -935,7 +935,9 @@ function renderPerformances(data, site) {
 
 /* ---------- cast ---------- */
 
-function renderCast(data) {
+// sceneStudents: names on the Scenes tab, or null when it could not be read, in
+// which case every named cast member links through.
+function renderCast(data, sceneStudents) {
   const host = slot('cast');
   if (!host) return;
   host.innerHTML = '';
@@ -1036,7 +1038,15 @@ function renderCast(data) {
       if (i === 0) {
         const actorCell = el('td', 'actor');
         actorCell.rowSpan = parts.length;
-        actorCell.appendChild(el('span', 'actor-name', m.actor));
+        // A name opens that student's own page of scenes.
+        const hasScenes = !/^tbd$/i.test(m.actor) && (!sceneStudents || sceneStudents.has(m.actor));
+        if (hasScenes) {
+          const a = link('scenes.html?student=' + encodeURIComponent(m.actor), m.actor, 'actor-name');
+          a.title = 'See ' + m.actor + '’s scenes';
+          actorCell.appendChild(a);
+        } else {
+          actorCell.appendChild(el('span', 'actor-name', m.actor));
+        }
         if (parts.length > 1) {
           actorCell.appendChild(el('span', 'actor-count', parts.length + ' roles'));
         }
@@ -1582,13 +1592,14 @@ function renderScenes(data, castData) {
 
   // Open where they left off, or on the name in the address, so a student can
   // bookmark their own page.
-  let start = new URLSearchParams(location.search).get('student') || '';
+  const asked = new URLSearchParams(location.search).get('student') || '';
+  let start = asked;
   if (!start) { try { start = localStorage.getItem('scenes-student') || ''; } catch (err) { start = ''; } }
   if (names.includes(start)) select.value = start;
   drawStudent(select.value);
   let savedView = '';
   try { savedView = localStorage.getItem('scenes-view') || ''; } catch (err) { savedView = ''; }
-  if (savedView === 'grid') buttons[1].click();
+  if (savedView === 'grid' && !names.includes(asked)) buttons[1].click();
 }
 
 /* ---------- boot ---------- */
@@ -1635,7 +1646,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       jobs.push(calendarData.then(cal => { renderPerformances(cal, site); doneLoading('performances'); }));
     }
     if (slot('cast')) {
-      jobs.push(castData.then(cast => { renderCast(cast); doneLoading('cast'); }));
+      // The Scenes tab says which names have a scene page to link to.
+      const sceneStudents = fetchPublished('scenes')
+        .then(text => new Set(sheetRows(text, ['Track', 'Student']).map(r => r['Student'])))
+        .catch(() => null);
+      jobs.push(Promise.all([castData, sceneStudents]).then(([cast, names]) => {
+        renderCast(cast, names);
+        doneLoading('cast');
+      }));
     }
     if (slot('scenes')) {
       const sceneData = contentFor('scenes', Promise.resolve(null), ['Track', 'Student'], scenesFromSheet);
