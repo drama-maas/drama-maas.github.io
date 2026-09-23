@@ -619,6 +619,7 @@ ol.my-scenes > li { border-top: 1px dashed var(--line); padding-top: 8px; }
 .my-scene-head small { color: var(--ink-soft); }
 
 /* Meet the characters: one card per role. */
+.cast-list-head { margin-top: 28px; }
 .characters { margin-top: 36px; }
 .characters h3 { margin: 22px 0 10px; }
 .character-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
@@ -746,10 +747,10 @@ main.has-art + footer.site { margin-top: 0; padding-top: 46px; }
 
 /* Held back until the page has drawn, so the scenery does not flash near the
    top of a still-empty page and then drop into place. */
-.page-art, .duloc { opacity: 0; transition: opacity .35s ease; }
-body.art-ready .page-art, body.art-ready .duloc { opacity: 1; }
+.page-art, .duloc, .citizens { opacity: 0; transition: opacity .35s ease; }
+body.art-ready .page-art, body.art-ready .duloc, body.art-ready .citizens { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
-  .page-art, .duloc { transition: none; }
+  .page-art, .duloc, .citizens { transition: none; }
 }
 
 /* Home: Shrek's house. Its foundation sits 10.86% up from the foot of the
@@ -812,6 +813,19 @@ main.has-castle { padding-bottom: 210px; }
   .duloc-tower { height: 150px; }
   .duloc-tower.right { right: calc(var(--art-inset-wide) - 2px); }
   .duloc-door { height: 53px; }
+}
+
+/* Scenes: a line of Duloc citizens from the show flyer, repeated across the
+   window. Bob hair and red top alternates with pigtails and blue top, and the
+   tile is eight wide so each of the flyer's four skin tones wears both. */
+main.has-citizens { padding-bottom: 28px; }
+.citizens {
+  height: 110px; pointer-events: none; user-select: none;
+  background: url("../img/duloc-citizens.svg") repeat-x center bottom / auto 100%;
+}
+.citizens + footer.site { margin-top: 0; padding-top: 20px; }
+@media (max-width: 760px) {
+  .citizens { height: 80px; }
 }
 
 /* Card surfaces are slightly see-through so the page artwork reads behind them. */

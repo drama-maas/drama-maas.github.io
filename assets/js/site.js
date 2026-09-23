@@ -1139,6 +1139,8 @@ function renderCast(data, sceneData, songData) {
   head.appendChild(banner);
   host.appendChild(head);
 
+  host.appendChild(el('h2', 'cast-list-head', 'Cast & scenes'));
+
   // Only the tracks someone is actually on, so "TBD" drops out once every
   // role is settled.
   const usedTracks = new Set((data.members || []).flatMap(m => (m.parts || []).map(p => p.track)));
