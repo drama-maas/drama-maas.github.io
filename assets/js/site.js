@@ -935,9 +935,183 @@ function renderPerformances(data, site) {
 
 /* ---------- cast ---------- */
 
-// sceneStudents: names on the Scenes tab, or null when it could not be read, in
-// which case every named cast member links through.
-function renderCast(data, sceneStudents) {
+// One student's scenes on one track, as a list: each scene with what they wear
+// (and do) in it, and its songs with their practice tracks.
+function castSceneList(on, songsFor) {
+  const list = el('ol', 'my-scenes');
+  on.forEach(app => {
+    const li = el('li');
+    const head = el('div', 'my-scene-head');
+    head.appendChild(el('strong', 'my-scene-name', (app.i + 1) + '. ' + app.name));
+    const wear = [...new Set(app.bits.map(b => b.costume + (b.role ? ' (' + b.role + ')' : '')))];
+    head.appendChild(el('small', null, 'as ' + wear.join(', ')));
+    li.appendChild(head);
+    const songs = songsFor(app.name);
+    if (songs.length) {
+      const ul = el('ul', 'songs');
+      songs.forEach(x => ul.appendChild(songLine(x)));
+      li.appendChild(ul);
+    }
+    list.appendChild(li);
+  });
+  return list;
+}
+
+// The sentences every description of a role shares, so a note about one actor
+// ("This actor also plays...") drops out. With nothing in common, the first one.
+function sharedDescription(list) {
+  if (list.length < 2) return list[0] || '';
+  const split = d => d.match(/[^.!?]+[.!?]*["”']?\s*/g).map(x => x.trim()).filter(Boolean);
+  const common = split(list[0]).filter(x => list.every(d => split(d).includes(x)));
+  return common.length ? common.join(' ') : list[0];
+}
+
+const descKey = d => String(d || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+// A shared card's name: "Guard 1–5" for a numbered set, otherwise "A, B & C".
+function cardName(names) {
+  if (names.length === 1) return names[0];
+  const nums = names.map(n => n.match(/^(.*\S)\s+(\d+)$/));
+  if (nums.every(m => m && m[1] === nums[0][1])) {
+    const ns = nums.map(m => +m[2]).sort((a, b) => a - b);
+    return nums[0][1] + ' ' + ns[0] + '–' + ns[ns.length - 1];
+  }
+  return names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1];
+}
+
+// "Meet the characters": one card per character with who plays it and what the
+// character is like. Headings and order come from the characters block in
+// data/cast.json; a role not listed there goes under its students' group on
+// the Scenes tab. The roles in each of its "cards" share one card under that
+// name; otherwise roles with the same description share a card, as do roles
+// where one description simply adds to the other (Young and Teen Fiona).
+function renderCharacters(members, sceneData, config) {
+  config = config || {};
+  const skip = new Set((config.skip || []).map(sceneKey));
+  const rows = (sceneData && sceneData.cast) || [];
+  const onStage = new Set(rows.map(r => r.student));
+
+  const roles = new Map();
+  members.forEach(m => m.parts.forEach(p => {
+    if (!p.role || skip.has(sceneKey(p.role))) return;
+    if (!roles.has(p.role)) roles.set(p.role, { name: p.role, who: [], descriptions: [] });
+    const r = roles.get(p.role);
+    if (!/^tbd$/i.test(m.actor)) r.who.push({ actor: m.actor, track: p.track });
+    if (p.description && !r.descriptions.includes(p.description)) r.descriptions.push(p.description);
+  }));
+  // Someone who is never on stage is crew, not a character.
+  if (rows.length) roles.forEach((r, k) => { if (r.who.length && !r.who.some(w => onStage.has(w.actor))) roles.delete(k); });
+  roles.forEach(r => { r.description = sharedDescription(r.descriptions); });
+
+  // Headings: the listed groups first, then the Scenes tab's groups for anything
+  // new, skipping Leads, which only ever holds the roles listed under it.
+  const groups = new Map();
+  const placed = new Set();
+  (config.groups || []).forEach(g => {
+    const list = groups.get(g.title) || [];
+    (g.roles || []).forEach(name => {
+      const role = [...roles.values()].find(r => sceneKey(r.name) === sceneKey(name));
+      if (role && !placed.has(role)) { list.push(role); placed.add(role); }
+    });
+    groups.set(g.title, list);
+  });
+  const groupOf = role => {
+    const votes = new Map();
+    role.who.forEach(w => rows.filter(r => r.student === w.actor && r.group && !/^leads$/i.test(r.group))
+      .forEach(r => votes.set(r.group, (votes.get(r.group) || 0) + 1)));
+    let best = '';
+    votes.forEach((n, g) => { if (!best || n > votes.get(best)) best = g; });
+    return best || 'More characters';
+  };
+  roles.forEach(role => {
+    if (placed.has(role)) return;
+    const g = groupOf(role);
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g).push(role);
+  });
+
+  const section = el('section', 'characters');
+  section.id = 'characters';
+  section.appendChild(el('h2', null, 'Meet the characters'));
+  section.appendChild(el('p', 'section-intro', 'Every character in the show, who plays them, and what they are like.'));
+  // Named cards from data/cast.json, keyed by each of their roles.
+  const named = new Map();
+  (config.cards || []).forEach(c => (c.roles || []).forEach(r => named.set(sceneKey(r), c)));
+
+  groups.forEach((list, title) => {
+    // A named card collects its roles; the rest share a card when their
+    // descriptions match, or one starts with the other.
+    const cards = [];
+    list.forEach(role => {
+      const def = named.get(sceneKey(role.name));
+      const k = descKey(role.description);
+      const card = def
+        ? cards.find(c => c.def === def)
+        : k && cards.find(c => !c.def && c.keys.some(ck => ck.startsWith(k) || k.startsWith(ck)));
+      if (card) { card.roles.push(role); card.keys.push(k); }
+      else cards.push({ def, name: def && def.name, roles: [role], keys: [k] });
+    });
+    if (!cards.length) return;
+    section.appendChild(el('h3', null, title));
+    const grid = el('div', 'character-grid');
+    cards.forEach(c => {
+      const card = el('article', 'character');
+      const title = c.name || cardName(c.roles.map(r => r.name));
+      const head = el('div', 'character-head');
+      const icon = el('span', 'character-icon', (config.icons || {})[title] || '🎭');
+      icon.setAttribute('aria-hidden', 'true');
+      head.appendChild(icon);
+      head.appendChild(el('span', 'character-name', title));
+      card.appendChild(head);
+      const shared = c.roles.length > 1;
+      const trackOrder = { Castle: 0, Storybook: 1 };
+      const who = c.roles.flatMap(r => r.who.map(w => Object.assign({ role: r.name }, w))
+        .sort((a, b) => (trackOrder[a.track] ?? 2) - (trackOrder[b.track] ?? 2)));
+      if (who.length) {
+        const tags = el('div', 'character-tags');
+        who.forEach(w => {
+          const tag = el('span', 'character-who');
+          tag.appendChild(document.createTextNode(w.actor));
+          // The card's name already says "Fiona", so Human Fiona reads as just "Human".
+          const last = title.split(/\s+/).pop().toLowerCase();
+          const short = w.role.replace(/\s+(\S+)$/, (m, word) => word.toLowerCase() === last ? '' : m);
+          if (shared) tag.appendChild(el('small', null, short || w.role));
+          if (w.track !== 'Both') tag.appendChild(el('span', 'track track-' + (TRACK_CLASS[w.track] || 'both'), w.track));
+          tags.appendChild(tag);
+        });
+        card.appendChild(tags);
+      }
+      // One description for the card when the roles share it; a role whose
+      // description adds to it gets a note; roles that are just different
+      // (the Three Bears) each get their own line.
+      const note = (label, text) => {
+        const p = el('p', 'character-desc');
+        if (label) p.appendChild(el('strong', null, label + ': '));
+        p.appendChild(document.createTextNode(text));
+        card.appendChild(p);
+      };
+      const withDesc = c.roles.filter(r => r.description);
+      const base = withDesc.map(r => r.description).sort((a, b) => a.length - b.length)[0];
+      const repeatsTitle = base && descKey(title).startsWith(descKey(base));
+      if (base && withDesc.every(r => r.description.startsWith(base))) {
+        if (!repeatsTitle) note('', base);
+        withDesc.forEach(r => {
+          const extra = r.description.slice(base.length).trim();
+          if (extra) note(r.name, extra);
+        });
+      } else {
+        withDesc.forEach(r => note(r.name, r.description));
+      }
+      grid.appendChild(card);
+    });
+    section.appendChild(grid);
+  });
+  return section;
+}
+
+// sceneData: the Scenes tab, or null when it could not be read, in which case
+// every named cast member links through and the scenes column says so.
+function renderCast(data, sceneData, songData) {
   const host = slot('cast');
   if (!host) return;
   host.innerHTML = '';
@@ -965,8 +1139,12 @@ function renderCast(data, sceneStudents) {
   head.appendChild(banner);
   host.appendChild(head);
 
+  // Only the tracks someone is actually on, so "TBD" drops out once every
+  // role is settled.
+  const usedTracks = new Set((data.members || []).flatMap(m => (m.parts || []).map(p => p.track)));
   const legend = el('div', 'legend');
   Object.entries(data.tracks || {}).forEach(([name, text]) => {
+    if (!usedTracks.has(name)) return;
     const item = el('span', 'legend-item');
     item.appendChild(el('span', 'track track-' + (TRACK_CLASS[name] || 'both'), name));
     item.appendChild(el('span', 'legend-text', text));
@@ -1003,6 +1181,9 @@ function renderCast(data, sceneStudents) {
     filters.appendChild(b);
   });
   controls.appendChild(filters);
+  const toggle = el('button', 'filter', 'Open every scene list');
+  toggle.type = 'button';
+  controls.appendChild(toggle);
   const count = el('div', 'count');
   controls.appendChild(count);
   host.appendChild(controls);
@@ -1014,62 +1195,90 @@ function renderCast(data, sceneStudents) {
   const table = el('table', 'cast');
   const thead = el('thead');
   const hr = el('tr');
-  ['Actor', 'Role', 'Track', 'Description'].forEach(h => hr.appendChild(el('th', null, h)));
+  ['Actor', 'Role', 'Scenes & songs'].forEach(h => hr.appendChild(el('th', null, h)));
   thead.appendChild(hr);
   table.appendChild(thead);
   scroll.appendChild(table);
   host.appendChild(scroll);
 
-  // One <tbody> per person, one <tr> per role, so each role sits on the same line as
-  // its own track and description. Rows are rebuilt when the filter changes, because
-  // the actor cell spans however many roles are currently on show.
+  const scenes = sceneData ? showScenes(sceneData.scenes) : [];
+  const { songsFor } = songIndex(songData);
+  const sceneRows = name => sceneData ? sceneData.cast.filter(r => r.student === name) : [];
+
+  // One <tbody> per person. Rows are rebuilt when the filter changes, so a track
+  // filter hides the other track's roles and scene list.
   const members = (data.members || []).map(m => ({
     actor: m.actor,
     parts: m.parts && m.parts.length ? m.parts : [{ role: '', track: 'Both', description: '' }],
+    rows: /^tbd$/i.test(m.actor) ? [] : sceneRows(m.actor),
     group: el('tbody', 'member'),
     search: (m.actor + ' ' + (m.parts || []).map(p => p.role).join(' ')).toLowerCase()
   }));
   members.forEach(m => table.appendChild(m.group));
 
+  // A student's scene list per track. When both tracks are the same, one list
+  // stands for both.
+  function sceneBoxes(m) {
+    const runs = m.rows
+      .filter(r => activeTrack === 'All' || r.track === activeTrack)
+      .map(r => ({ track: r.track, on: sceneRun(r, scenes).on }));
+    const sig = run => JSON.stringify(run.on.map(a => [a.i, a.bits.map(b => b.costume + '|' + b.role)]));
+    if (runs.length === 2 && sig(runs[0]) === sig(runs[1])) {
+      runs.pop();
+      runs[0].track = 'Both';
+    }
+    return runs.map(run => {
+      const songCount = run.on.reduce((n, a) => n + songsFor(a.name).length, 0);
+      const box = el('details', 'my-scenes-box');
+      const sum = el('summary');
+      sum.appendChild(el('span', 'track track-' + (TRACK_CLASS[run.track] || 'both'),
+        run.track === 'Both' ? 'Both tracks' : run.track));
+      sum.appendChild(document.createTextNode(' '));
+      sum.appendChild(el('strong', null, run.on.length + (run.on.length === 1 ? ' scene' : ' scenes')));
+      sum.appendChild(document.createTextNode(' · ' + songCount + (songCount === 1 ? ' song' : ' songs')));
+      sum.appendChild(el('span', 'scene-nums', run.on.map(a => a.i + 1).join(', ')));
+      box.appendChild(sum);
+      box.appendChild(castSceneList(run.on, songsFor));
+      box.addEventListener('toggle', () => {
+        if (!box.open && openPlayer && box.contains(openPlayer.box)) closePlayer();
+      });
+      return box;
+    });
+  }
+
   function fillGroup(m, parts) {
     m.group.innerHTML = '';
-    parts.forEach((p, i) => {
-      const tr = el('tr', i === 0 ? 'first' : 'more');
-      if (i === 0) {
-        const actorCell = el('td', 'actor');
-        actorCell.rowSpan = parts.length;
-        // A name opens that student's own page of scenes.
-        const hasScenes = !/^tbd$/i.test(m.actor) && (!sceneStudents || sceneStudents.has(m.actor));
-        if (hasScenes) {
-          const a = link('scenes.html?student=' + encodeURIComponent(m.actor), m.actor, 'actor-name');
-          a.title = 'See ' + m.actor + '’s scenes';
-          actorCell.appendChild(a);
-        } else {
-          actorCell.appendChild(el('span', 'actor-name', m.actor));
-        }
-        if (parts.length > 1) {
-          actorCell.appendChild(el('span', 'actor-count', parts.length + ' roles'));
-        }
-        tr.appendChild(actorCell);
-      }
+    const tr = el('tr', 'first');
 
-      const roleCell = el('td', 'role');
-      roleCell.setAttribute('data-label', 'Role');
-      roleCell.textContent = p.role;
-      tr.appendChild(roleCell);
+    const actorCell = el('td', 'actor');
+    // A name opens that student's own page of scenes.
+    const hasScenes = !/^tbd$/i.test(m.actor) && (!sceneData || m.rows.length > 0);
+    if (hasScenes) {
+      const a = link('scenes.html?student=' + encodeURIComponent(m.actor), m.actor, 'actor-name');
+      a.title = 'See ' + m.actor + '’s scenes';
+      actorCell.appendChild(a);
+    } else {
+      actorCell.appendChild(el('span', 'actor-name', m.actor));
+    }
+    if (parts.length > 1) actorCell.appendChild(el('span', 'actor-count', parts.length + ' roles'));
+    tr.appendChild(actorCell);
 
-      const trackCell = el('td', 'track-col');
-      trackCell.setAttribute('data-label', 'Track');
-      trackCell.appendChild(el('span', 'track track-' + (TRACK_CLASS[p.track] || 'both'), p.track));
-      tr.appendChild(trackCell);
-
-      const descCell = el('td', 'desc');
-      descCell.setAttribute('data-label', 'Description');
-      descCell.textContent = p.description || '';
-      tr.appendChild(descCell);
-
-      m.group.appendChild(tr);
+    const roleCell = el('td', 'role');
+    parts.forEach(p => {
+      const line = el('div', 'role-line');
+      line.appendChild(el('span', 'role-name', p.role));
+      line.appendChild(el('span', 'track track-' + (TRACK_CLASS[p.track] || 'both'), p.track));
+      roleCell.appendChild(line);
     });
+    tr.appendChild(roleCell);
+
+    const cell = el('td', 'scenes-cell');
+    const boxes = sceneData ? sceneBoxes(m) : [];
+    if (boxes.length) boxes.forEach(b => cell.appendChild(b));
+    else cell.appendChild(el('span', 'song-none', sceneData ? 'No scenes listed yet' : 'Scenes could not be loaded just now'));
+    tr.appendChild(cell);
+
+    m.group.appendChild(tr);
   }
 
   const NOTES = {
@@ -1083,6 +1292,7 @@ function renderCast(data, sceneStudents) {
     activeTrack === 'All' || p.track === activeTrack || p.track === 'Both' || p.track === 'TBD';
 
   function apply() {
+    closePlayer();
     const q = input.value.trim().toLowerCase();
     let shown = 0;
     members.forEach(m => {
@@ -1099,6 +1309,7 @@ function renderCast(data, sceneStudents) {
     count.textContent = shown + (shown === 1 ? ' person' : ' people');
     note.textContent = NOTES[activeTrack] || '';
     note.hidden = !note.textContent;
+    toggle.textContent = 'Open every scene list';
 
     // Filtering can shorten the page under the reader's feet. Bring the controls
     // back into view rather than leaving them stranded above the window.
@@ -1108,6 +1319,14 @@ function renderCast(data, sceneStudents) {
   }
   let started = false;
   input.addEventListener('input', apply);
+
+  const boxes = () => [...table.querySelectorAll('details.my-scenes-box')];
+  toggle.addEventListener('click', () => {
+    const open = !boxes().every(b => b.open);
+    boxes().forEach(b => { b.open = open; });
+    toggle.textContent = open ? 'Close every scene list' : 'Open every scene list';
+  });
+
   apply();
   started = true;
 
@@ -1116,6 +1335,8 @@ function renderCast(data, sceneStudents) {
     data.closing.forEach(p => box.appendChild(el('p', null, p)));
     host.appendChild(box);
   }
+
+  host.appendChild(renderCharacters(data.members || [], sceneData, data.characters));
 }
 
 /* ---------- boosters ---------- */
@@ -1242,6 +1463,21 @@ function sceneParts(names) {
   return scenes;
 }
 
+// The scenes as the page numbers them. An "Intermission" column is not a scene:
+// it becomes a line before the scene that follows it (breakBefore).
+function showScenes(names) {
+  const out = [];
+  let brk = false;
+  sceneParts(names).forEach(sc => {
+    if (/^intermission$/i.test(sc.name)) { brk = true; return; }
+    sc.n = out.length + 1;
+    sc.breakBefore = brk;
+    brk = false;
+    out.push(sc);
+  });
+  return out;
+}
+
 // Each student's costumes in the order they first wear them, so the same costume
 // keeps the same colour down their row and through their scene list.
 function costumeOrder(row, scenes) {
@@ -1268,7 +1504,8 @@ function sceneRun(row, sceneList) {
   on.forEach((app, k) => {
     const prev = on[k - 1];
     if (prev && prev.last !== app.first) {
-      items.push({ type: 'change', costume: app.first, after: prev.name, gap: app.i - prev.i - 1 });
+      const overBreak = sceneList.slice(prev.i + 1, app.i + 1).some(sc => sc.breakBefore);
+      items.push({ type: 'change', costume: app.first, after: prev.name, gap: app.i - prev.i - 1, overBreak });
     }
     const from = prev ? prev.i + 1 : 0;
     if (app.i > from) items.push({ type: 'off', from, to: app.i - 1 });
@@ -1352,18 +1589,47 @@ function songLine(song) {
 // "duloc 1" or a stray apostrophe style still line up.
 const sceneKey = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
+// songs.json's scenes that have songs, and a lookup from a scene to its songs.
+function songIndex(songData) {
+  const groups = (songData && songData.scenes || []).filter(g => (g.songs || []).length);
+  const byKey = new Map(groups.map(g => [sceneKey(g.scene), g.songs]));
+  return { groups, songsFor: sc => byKey.get(sceneKey(sc && sc.name != null ? sc.name : sc)) || [] };
+}
+
 function renderScenes(data, castData, songData) {
   const host = slot('scenes');
   if (!host) return;
   host.innerHTML = '';
-  const columns = data.scenes;
-  const scenes = sceneParts(columns);
+  const scenes = showScenes(data.scenes);
+  const columns = scenes.flatMap(sc => sc.parts.map(p => p.col));
+  const breakCol = new Set(scenes.filter(sc => sc.breakBefore).map(sc => sc.parts[0].col));
+  const { groups: songGroups, songsFor } = songIndex(songData);
   const sceneNames = scenes.map(sc => sc.name);
   const sceneStart = new Set(scenes.map(sc => sc.parts[0].col));
   const partsOf = new Map();
   (castData && castData.members || []).forEach(m => partsOf.set(m.actor, m.parts));
   const rolesFor = (student, track) => (partsOf.get(student) || [])
     .filter(p => p.track === track || p.track === 'Both').map(p => p.role);
+
+  // The grid groups each student's row the way Meet the characters groups their
+  // roles (the characters block in data/cast.json): under the first group that
+  // holds one of their roles on that track, and within it in that group's role
+  // order, so Shrek comes first. A row with no listed role keeps its Scenes tab group.
+  const charGroups = (castData && castData.characters && castData.characters.groups) || [];
+  const placeRow = r => {
+    const mine = rolesFor(r.student, r.track).map(sceneKey);
+    for (let g = 0; g < charGroups.length; g++) {
+      const at = (charGroups[g].roles || []).map(sceneKey).findIndex(k => mine.includes(k));
+      if (at >= 0) return { group: charGroups[g].title, rank: g, pos: at };
+    }
+    return { group: r.group, rank: Infinity, pos: 0 };
+  };
+  const sheetGroups = [...new Set(data.cast.map(r => r.group))];
+  const gridRows = data.cast
+    .map((r, i) => Object.assign({}, r, placeRow(r), { i }))
+    .sort((a, b) => (a.rank - b.rank) ||
+      (a.rank === Infinity ? sheetGroups.indexOf(a.group) - sheetGroups.indexOf(b.group) : 0) ||
+      (a.pos - b.pos) || (a.i - b.i));
 
   const head = el('div', 'scene-head');
   head.appendChild(el('h2', null, 'Scene by scene'));
@@ -1407,16 +1673,19 @@ function renderScenes(data, castData, songData) {
   panels.songs.appendChild(el('p', 'filter-note',
     'Every song in the show, scene by scene. “With vocals” is for learning the part; ' +
     '“Accompaniment” is the music alone, to sing along to.'));
-  const sceneNo = new Map(sceneNames.map((n, i) => [sceneKey(n), i + 1]));
-  const songGroups = (songData && songData.scenes || []).filter(g => (g.songs || []).length);
-  // The same songs appear under each scene in Student view.
-  const songsFor = new Map(songGroups.map(g => [sceneKey(g.scene), g.songs]));
+  const sceneNo = new Map(scenes.map(sc => [sceneKey(sc.name), sc]));
   if (!songGroups.length) {
     panels.songs.appendChild(el('p', 'filter-note', 'The song list could not be loaded just now.'));
   } else {
     const songList = el('div', 'song-scenes');
+    let breakShown = false;
     songGroups.forEach(g => {
-      const n = sceneNo.get(sceneKey(g.scene));
+      const sc = sceneNo.get(sceneKey(g.scene));
+      const n = sc && sc.n;
+      if (sc && !breakShown && scenes.some(x => x.breakBefore && x.n <= n)) {
+        songList.appendChild(el('div', 'break-line', 'Intermission'));
+        breakShown = true;
+      }
       const box = el('div', 'song-scene');
       if (n) box.id = 'songs-' + n;
       box.appendChild(el('h4', null, (n ? n + '. ' : '') + g.scene));
@@ -1453,16 +1722,25 @@ function renderScenes(data, castData, songData) {
 
   function drawGrid() {
     gridWrap.innerHTML = '';
-    const rows = data.cast.filter(r => r.track === gridTrack);
+    const rows = gridRows.filter(r => r.track === gridTrack);
     const table = el('table', 'scene-grid');
     const thead = el('thead');
     const hr = el('tr');
     hr.appendChild(el('th', 'corner', gridTrack + ' Track'));
     scenes.forEach((sc, i) => {
       sc.parts.forEach((p, k) => {
-        const th = el('th', 'scene-col' + (k ? ' part-more' : ''));
+        const songs = songsFor(sc);
+        const th = el('th', 'scene-col' + (k ? ' part-more' : '') +
+          (songs.length ? ' has-song' : '') + (breakCol.has(p.col) ? ' after-break' : ''));
         th.scope = 'col';
+        th.title = (breakCol.has(p.col) ? 'After the intermission · ' : '') + (i + 1) + '. ' + sc.name +
+          (p.part ? ' — ' + p.part : '') + (songs.length ? ' · 🎵 ' + songs.map(x => x.title).join(', ') : '');
         th.appendChild(el('span', null, (k ? '' : (i + 1) + '. ') + sc.name + (p.part ? ' — ' + p.part : '')));
+        if (songs.length && !k) {
+          const mark = el('b', 'song-mark', '♪');
+          mark.setAttribute('aria-label', 'has a song');
+          th.appendChild(mark);
+        }
         hr.appendChild(th);
       });
     });
@@ -1493,7 +1771,7 @@ function renderScenes(data, castData, songData) {
       tr.appendChild(nameCell);
       columns.forEach(n => {
         const c = r.cells[n];
-        const td = el('td', 'cell' + (sceneStart.has(n) ? ' part-start' : ''));
+        const td = el('td', 'cell' + (sceneStart.has(n) ? ' part-start' : '') + (breakCol.has(n) ? ' after-break' : ''));
         if (c) {
           td.classList.add('on', costumeClass(order, c.costume));
           td.title = r.student + ' · ' + n + ' · ' + c.costume + (c.role ? ' (' + c.role + ')' : '');
@@ -1510,7 +1788,8 @@ function renderScenes(data, castData, songData) {
     gridWrap.appendChild(table);
     gridWrap.appendChild(el('p', 'filter-note',
       'A block means that student is on stage in that scene. The number and colour are which of ' +
-      'their costumes they wear, counting from the first one they put on. Tap a name for their own scene list.'));
+      'their costumes they wear, counting from the first one they put on. ♪ marks a scene with a song, ' +
+      'and the gold line is the intermission. Tap a name for their own scene list.'));
     drawSceneList(rows);
   }
 
@@ -1522,13 +1801,16 @@ function renderScenes(data, castData, songData) {
       'Open a scene to see who is on stage in it and what they are wearing. ' +
       'Tap a name for that student\u2019s own scene list.'));
     scenes.forEach((sc, i) => {
+      if (sc.breakBefore) sceneList.appendChild(el('div', 'break-line', 'Intermission'));
       const here = rows.filter(r => sc.parts.some(p => r.cells[p.col]));
+      const songs = songsFor(sc);
       const card = el('details', 'scene-card');
       const sum = el('summary');
       sum.appendChild(el('span', 'scene-no', String(i + 1)));
       const t = el('span', 'scene-title');
       t.appendChild(el('strong', null, sc.name));
-      t.appendChild(el('small', null, here.length + (here.length === 1 ? ' student on stage' : ' students on stage')));
+      t.appendChild(el('small', null, here.length + (here.length === 1 ? ' student on stage' : ' students on stage') +
+        (songs.length ? ' · 🎵 ' + songs.map(x => x.title).join(', ') : '')));
       sum.appendChild(t);
       card.appendChild(sum);
       if (!here.length) {
@@ -1612,7 +1894,16 @@ function renderScenes(data, castData, songData) {
         return;
       }
       const list = el('ol', 'scene-run');
+      // The intermission is a line in the run: inside an off-stage stretch that
+      // spans it, or on its own before the first scene after it.
+      const breakAt = scenes.findIndex(sc => sc.breakBefore);
+      let breakShown = breakAt < 0;
       items.forEach(it => {
+        if (!breakShown && ((it.type === 'on' && it.app.i >= breakAt) || (it.type === 'off' && it.from >= breakAt))) {
+          list.appendChild(el('li', 'run-break', 'Intermission'));
+          breakShown = true;
+        }
+        if (it.type === 'off' && it.from < breakAt && it.to >= breakAt) breakShown = true;
         const li = el('li');
         if (it.type === 'start') {
           const d = el('div', 'run-change');
@@ -1620,14 +1911,18 @@ function renderScenes(data, castData, songData) {
           d.appendChild(el('span', 'cos ' + costumeClass(order, it.costume), it.costume));
           li.appendChild(d);
         } else if (it.type === 'change') {
-          const quick = it.gap === 0;
+          const quick = it.gap === 0 && !it.overBreak;
           const d = el('div', 'run-change' + (quick ? ' is-quick' : ''));
           if (quick) d.appendChild(el('strong', null, 'Quick change! '));
           d.appendChild(document.createTextNode('Change into '));
           d.appendChild(el('span', 'cos ' + costumeClass(order, it.costume), it.costume));
+          const gapText = [
+            it.gap ? it.gap + (it.gap === 1 ? ' scene' : ' scenes') : '',
+            it.overBreak ? 'the intermission' : ''
+          ].filter(Boolean).join(' and ');
           d.appendChild(document.createTextNode(quick
             ? ' straight after ' + it.after + ', with no scene in between'
-            : ' after ' + it.after + ' (' + it.gap + (it.gap === 1 ? ' scene' : ' scenes') + ' to change)'));
+            : ' after ' + it.after + ' (' + gapText + ' to change)'));
           li.appendChild(d);
         } else if (it.type === 'off') {
           const box = el('details', 'run-off');
@@ -1643,6 +1938,7 @@ function renderScenes(data, castData, songData) {
           box.appendChild(sum);
           const inner = el('ol', 'off-list');
           for (let i = it.from; i <= it.to; i++) {
+            if (i === breakAt && i > it.from) inner.appendChild(el('li', 'off-break', 'Intermission'));
             const item = el('li', i === it.to ? 'is-cue' : null);
             item.appendChild(el('span', 'run-num', String(i + 1)));
             item.appendChild(el('span', null, sceneNames[i] + (i === it.to ? ' · get ready' : '')));
@@ -1674,7 +1970,7 @@ function renderScenes(data, castData, songData) {
             }
           });
           d.appendChild(cosBox);
-          const songs = songsFor.get(sceneKey(it.app.name)) || [];
+          const songs = songsFor(it.app.name);
           if (songs.length) {
             const ul = el('ul', 'songs');
             songs.forEach(x => ul.appendChild(songLine(x)));
@@ -1761,19 +2057,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (slot('performances')) {
       jobs.push(calendarData.then(cal => { renderPerformances(cal, site); doneLoading('performances'); }));
     }
+    const songData = (slot('cast') || slot('scenes'))
+      ? loadJSON('data/songs.json').catch(err => { console.error(err); return null; })
+      : null;
     if (slot('cast')) {
-      // The Scenes tab says which names have a scene page to link to.
-      const sceneStudents = fetchPublished('scenes')
-        .then(text => new Set(sheetRows(text, ['Track', 'Student']).map(r => r['Student'])))
+      // Each person's scenes and songs come from the Scenes tab.
+      const sceneData = fetchPublished('scenes')
+        .then(text => scenesFromSheet(sheetRows(text, ['Track', 'Student'])))
         .catch(() => null);
-      jobs.push(Promise.all([castData, sceneStudents]).then(([cast, names]) => {
-        renderCast(cast, names);
+      jobs.push(Promise.all([castData, sceneData, songData]).then(([cast, sc, songs]) => {
+        renderCast(cast, sc, songs);
         doneLoading('cast');
       }));
     }
     if (slot('scenes')) {
       const sceneData = contentFor('scenes', Promise.resolve(null), ['Track', 'Student'], scenesFromSheet);
-      const songData = loadJSON('data/songs.json').catch(err => { console.error(err); return null; });
       jobs.push(Promise.all([sceneData, castData.catch(() => null), songData]).then(([sc, cast, songs]) => {
         renderScenes(sc, cast, songs);
         doneLoading('scenes');

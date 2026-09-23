@@ -153,13 +153,16 @@ On the **Cast** tab, each row is one role.
 | Actor | The student. Repeat the name on each of their role rows |
 | Role | One role per row |
 | Track | `Castle`, `Storybook`, `Both` or `TBD` |
-| Description | What the character is like |
+| Description | What the character is like. It shows in **Meet the characters** at the bottom of the Cast page |
 
 A student's rows are gathered under their name in the order they first appear, so a student
 with three roles reads as three lines under one name. Use `Both` for any role that is not
 track-specific.
 
-When a role is cast, replace `TBD` in the Actor column with the student's name.
+When a role is cast, replace `TBD` in the Actor column with the student's name. The TBD key above the
+cast list only shows while some role still has `TBD` as its track.
+
+Next to each role, the Cast page lists that student's scenes and songs, read from the Scenes tab.
 
 The **Castle Track** and **Storybook Track** buttons above the table keep everybody on
 screen and simply hide the other track's version of a role. Roles played both weekends stay
@@ -175,7 +178,7 @@ scene, in the order the scenes are performed.
 | Column | What it does |
 | --- | --- |
 | Track | `Castle` or `Storybook`. Each student gets one row per track they are in |
-| Group | The heading their row sits under in the grid, such as `Leads` or `Storytellers` |
+| Group | Only used when none of the student's roles is listed in Meet the characters (see below): then it is the heading their row sits under in the grid |
 | Student | Their name, spelled as on the Cast tab |
 | One column per scene | The costume they wear in that scene. Leave it empty when they are off stage |
 
@@ -188,6 +191,15 @@ scene in between.
 Two columns that are really one scene, like the Who I'd Be solos and the choir, share a name
 before a colon: `Who I'd Be: Solos` and `Who I'd Be: Choir`. They count as one scene, so a
 student who only sings in the choir is not told they are off stage for the solos.
+
+The grid groups students the same way **Meet the characters** groups roles on the Cast page
+(the `characters` block in `data/cast.json`): each row goes under the first group that holds
+one of that student's roles on that track, in that group's role order. So on the Castle Track,
+the student playing Papa Ogre is under Growing up, and on the Storybook Track, where they play
+Shrek, under Leads.
+
+A column named `Intermission` is not numbered as a scene. It shows as a gold line in the grid
+and as a line in each student's list of scenes.
 
 Renaming a scene column renames it on the page. Moving a column moves the scene in the running
 order, and adding a column adds a scene. Everything on the page comes from this tab, so this is
@@ -205,6 +217,7 @@ browser, click Save, and the website updates itself a minute or two later.
 | The headings and intros on the Calendar page | `data/calendar.json` |
 | The introduction and closing on the Cast page | `data/cast.json` |
 | The Join the Boosters page | `data/boosters.json` |
+| The headings and order of **Meet the characters** on the Cast page | `data/cast.json` (the `characters` block) |
 | The practice tracks on the Scenes page's **Songs** tab | `data/songs.json` |
 
 `data/calendar.json` and `data/cast.json` also hold an old copy of the dates and the cast. The
@@ -239,6 +252,19 @@ the whole file into <https://jsonlint.com> and click Validate to find the missin
 
 In `data/links.json`, copy an existing link block. Paste the web address between the quotes
 for `url`. Links under `"Boosters members only"` appear in the second group.
+
+### Group the characters on the Cast page
+
+**Meet the characters** at the bottom of the Cast page takes its headings from the
+`characters` block in `data/cast.json`. Each group has a `title` and the `roles` under it, in
+order, spelled as on the Cast tab. Each of `cards` puts its roles on one card under its own
+name, like `The Three Bears` for Papa, Mama and Baby Bear; roles with different descriptions
+each get their own line on it. Roles with the same description share one card even without
+being listed, like "Flora & Fauna"; when one description just adds to another, like
+Young Fiona's extra solo, that role's addition shows as a note on the shared card. A new role
+that isn't listed still shows, under its students' group on the Scenes tab, so add it to a
+group when you get a chance. Roles in `skip`, like Stage Crew, are not characters and are left
+out.
 
 ### Update the Boosters page
 
