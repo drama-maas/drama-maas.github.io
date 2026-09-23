@@ -1384,7 +1384,7 @@ function renderScenes(data, castData, songData) {
     b.type = 'button';
     b.addEventListener('click', () => {
       view = key;
-      if (key !== 'songs') closePlayer();
+      closePlayer();
       buttons.forEach(x => x.classList.toggle('is-on', x === b));
       Object.entries(panels).forEach(([k, p]) => { p.hidden = k !== key; });
       try { localStorage.setItem('scenes-view', key); } catch (err) { /* private window */ }
@@ -1409,6 +1409,8 @@ function renderScenes(data, castData, songData) {
     '“Accompaniment” is the music alone, to sing along to.'));
   const sceneNo = new Map(sceneNames.map((n, i) => [sceneKey(n), i + 1]));
   const songGroups = (songData && songData.scenes || []).filter(g => (g.songs || []).length);
+  // The same songs appear under each scene in Student view.
+  const songsFor = new Map(songGroups.map(g => [sceneKey(g.scene), g.songs]));
   if (!songGroups.length) {
     panels.songs.appendChild(el('p', 'filter-note', 'The song list could not be loaded just now.'));
   } else {
@@ -1580,6 +1582,7 @@ function renderScenes(data, castData, songData) {
   panels.student.appendChild(studentOut);
 
   function drawStudent(name) {
+    closePlayer();
     studentOut.innerHTML = '';
     if (!name) {
       studentOut.appendChild(el('p', 'filter-note', 'Pick your name to see every scene you are in.'));
@@ -1671,6 +1674,12 @@ function renderScenes(data, castData, songData) {
             }
           });
           d.appendChild(cosBox);
+          const songs = songsFor.get(sceneKey(it.app.name)) || [];
+          if (songs.length) {
+            const ul = el('ul', 'songs');
+            songs.forEach(x => ul.appendChild(songLine(x)));
+            d.appendChild(ul);
+          }
           li.appendChild(d);
         }
         list.appendChild(li);
