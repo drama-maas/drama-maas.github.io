@@ -979,6 +979,62 @@ function cardName(names) {
   return names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1];
 }
 
+// Roles under their headings: the groups in the characters block of
+// data/cast.json first, in its order, then the Scenes tab's groups for anything
+// not listed there (never Leads, which only holds the roles listed under it).
+// Each role is { name, who: [{ actor, track }] }. Returns Map(title -> roles).
+function roleGroups(roles, rows, config) {
+  const groups = new Map();
+  const placed = new Set();
+  ((config && config.groups) || []).forEach(g => {
+    const list = groups.get(g.title) || [];
+    (g.roles || []).forEach(name => {
+      const role = roles.find(r => sceneKey(r.name) === sceneKey(name));
+      if (role && !placed.has(role)) { list.push(role); placed.add(role); }
+    });
+    groups.set(g.title, list);
+  });
+  const groupOf = role => {
+    const votes = new Map();
+    role.who.forEach(w => rows.filter(r => r.student === w.actor && r.group && !/^leads$/i.test(r.group))
+      .forEach(r => votes.set(r.group, (votes.get(r.group) || 0) + 1)));
+    let best = '';
+    votes.forEach((n, g) => { if (!best || n > votes.get(best)) best = g; });
+    return best || 'More characters';
+  };
+  roles.forEach(role => {
+    if (placed.has(role)) return;
+    const g = groupOf(role);
+    if (!groups.has(g)) groups.set(g, []);
+    groups.get(g).push(role);
+  });
+  return groups;
+}
+
+// The role a scene cell names: its costume, or the role in brackets.
+const namedRole = (cell, mine) =>
+  mine.find(r => sceneKey(r) === sceneKey(cell.costume) || (cell.role && sceneKey(r) === sceneKey(cell.role)));
+
+// Which of a student's roles (mine) a scene belongs to, or null when it is not
+// one of them. The costume usually names the role. A crowd costume (one that
+// students playing different characters all wear, like Duloc or Old knight)
+// is the ensemble at work, so it counts only for a role in the characters
+// block's last group, Dance Team & ensemble. Any other costume, like Fiona's
+// wedding dress, is the role itself: the student's only role on the track, or
+// the one in the latest group when they have several.
+function sceneRole(cell, mine, rankOf, crowd, lastRank) {
+  const hit = namedRole(cell, mine);
+  if (hit) return hit;
+  const pick = list => {
+    if (list.length === 1) return list[0];
+    const ranks = list.map(rankOf);
+    const top = Math.max(...ranks);
+    return top >= 0 && ranks.filter(x => x === top).length === 1 ? list[ranks.indexOf(top)] : null;
+  };
+  if (crowd) return lastRank >= 0 ? pick(mine.filter(r => rankOf(r) === lastRank)) || null : null;
+  return pick(mine);
+}
+
 // "Meet the characters": one card per character with who plays it and what the
 // character is like. Headings and order come from the characters block in
 // data/cast.json; a role not listed there goes under its students' group on
@@ -1003,32 +1059,7 @@ function renderCharacters(members, sceneData, config) {
   if (rows.length) roles.forEach((r, k) => { if (r.who.length && !r.who.some(w => onStage.has(w.actor))) roles.delete(k); });
   roles.forEach(r => { r.description = sharedDescription(r.descriptions); });
 
-  // Headings: the listed groups first, then the Scenes tab's groups for anything
-  // new, skipping Leads, which only ever holds the roles listed under it.
-  const groups = new Map();
-  const placed = new Set();
-  (config.groups || []).forEach(g => {
-    const list = groups.get(g.title) || [];
-    (g.roles || []).forEach(name => {
-      const role = [...roles.values()].find(r => sceneKey(r.name) === sceneKey(name));
-      if (role && !placed.has(role)) { list.push(role); placed.add(role); }
-    });
-    groups.set(g.title, list);
-  });
-  const groupOf = role => {
-    const votes = new Map();
-    role.who.forEach(w => rows.filter(r => r.student === w.actor && r.group && !/^leads$/i.test(r.group))
-      .forEach(r => votes.set(r.group, (votes.get(r.group) || 0) + 1)));
-    let best = '';
-    votes.forEach((n, g) => { if (!best || n > votes.get(best)) best = g; });
-    return best || 'More characters';
-  };
-  roles.forEach(role => {
-    if (placed.has(role)) return;
-    const g = groupOf(role);
-    if (!groups.has(g)) groups.set(g, []);
-    groups.get(g).push(role);
-  });
+  const groups = roleGroups([...roles.values()], rows, config);
 
   const section = el('section', 'characters');
   section.id = 'characters';
@@ -1154,6 +1185,27 @@ function renderCast(data, sceneData, songData) {
   });
   if (legend.children.length) host.appendChild(legend);
 
+  // Two ways to read the list: a row per actor, or a row per role.
+  let view = 'actor';
+  try { if (localStorage.getItem('cast-view') === 'role') view = 'role'; } catch (err) { /* private window */ }
+  const views = el('div', 'filters scene-tabs cast-views');
+  views.setAttribute('role', 'group');
+  views.setAttribute('aria-label', 'Group the cast list');
+  const viewButtons = [];
+  [['actor', 'By actor'], ['role', 'By role']].forEach(([key, label]) => {
+    const b = el('button', 'filter' + (key === view ? ' is-on' : ''), label);
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      view = key;
+      viewButtons.forEach(x => x.classList.toggle('is-on', x === b));
+      try { localStorage.setItem('cast-view', key); } catch (err) { /* private window */ }
+      apply();
+    });
+    viewButtons.push(b);
+    views.appendChild(b);
+  });
+  host.appendChild(views);
+
   const controls = el('div', 'search-row');
   const input = el('input');
   input.type = 'search';
@@ -1203,6 +1255,16 @@ function renderCast(data, sceneData, songData) {
   scroll.appendChild(table);
   host.appendChild(scroll);
 
+  const roleScroll = el('div', 'table-scroll');
+  const roleTable = el('table', 'cast by-role');
+  const roleHead = el('thead');
+  const rhr = el('tr');
+  ['Role', 'Played by', 'Scenes & songs'].forEach(h => rhr.appendChild(el('th', null, h)));
+  roleHead.appendChild(rhr);
+  roleTable.appendChild(roleHead);
+  roleScroll.appendChild(roleTable);
+  host.appendChild(roleScroll);
+
   const scenes = sceneData ? showScenes(sceneData.scenes) : [];
   const { songsFor } = songIndex(songData);
   const sceneRows = name => sceneData ? sceneData.cast.filter(r => r.student === name) : [];
@@ -1218,12 +1280,13 @@ function renderCast(data, sceneData, songData) {
   }));
   members.forEach(m => table.appendChild(m.group));
 
-  // A student's scene list per track. When both tracks are the same, one list
-  // stands for both.
+  // A scene list per track, from runs of { track, on: [{ i, name, bits }] }.
+  // When both tracks are the same, one list stands for both.
   function sceneBoxes(m) {
-    const runs = m.rows
-      .filter(r => activeTrack === 'All' || r.track === activeTrack)
-      .map(r => ({ track: r.track, on: sceneRun(r, scenes).on }));
+    return runBoxes(m.rows.map(r => ({ track: r.track, on: sceneRun(r, scenes).on })));
+  }
+  function runBoxes(all) {
+    const runs = all.filter(r => activeTrack === 'All' || r.track === activeTrack);
     const sig = run => JSON.stringify(run.on.map(a => [a.i, a.bits.map(b => b.costume + '|' + b.role)]));
     if (runs.length === 2 && sig(runs[0]) === sig(runs[1])) {
       runs.pop();
@@ -1283,6 +1346,125 @@ function renderCast(data, sceneData, songData) {
     m.group.appendChild(tr);
   }
 
+  /* ---- by role: one row per role, under the character headings ---- */
+  const charConfig = data.characters || {};
+  const skipKeys = new Set((charConfig.skip || []).map(sceneKey));
+  const roleList = [];
+  (data.members || []).forEach(m => (m.parts || []).forEach(p => {
+    if (!p.role) return;
+    let r = roleList.find(x => x.name === p.role);
+    if (!r) roleList.push(r = { name: p.role, who: [] });
+    if (!/^tbd$/i.test(m.actor)) r.who.push({ actor: m.actor, track: p.track });
+  }));
+  const trackRank = { Castle: 0, Storybook: 1 };
+  roleList.forEach(r => r.who.sort((a, b) => (trackRank[a.track] ?? 2) - (trackRank[b.track] ?? 2)));
+  const onStageRoles = roleList.filter(r => !skipKeys.has(sceneKey(r.name)));
+  const roleGroupMap = roleGroups(onStageRoles, (sceneData && sceneData.cast) || [], charConfig);
+  const offStage = roleList.filter(r => skipKeys.has(sceneKey(r.name)));
+  if (offStage.length) roleGroupMap.set('Behind the scenes', offStage);
+
+  // Each role's scenes on each track, worked out cell by cell from the Scenes tab.
+  const rankOf = name => (charConfig.groups || []).findIndex(g => (g.roles || []).some(x => sceneKey(x) === sceneKey(name)));
+  const lastRank = (charConfig.groups || []).length - 1;
+  // A role's card in Meet the characters, so Guard 3 and Guard 5 (a named card)
+  // or Flora and Fauna (the same description) count as one character when
+  // telling a crowd costume from a character's own.
+  const descOf = new Map();
+  (data.members || []).forEach(m => (m.parts || []).forEach(p => {
+    if (p.role && p.description && !descOf.has(p.role)) descOf.set(p.role, descKey(p.description));
+  }));
+  const cardOf = role => {
+    const c = (charConfig.cards || []).find(x => (x.roles || []).some(y => sceneKey(y) === sceneKey(role)));
+    return c ? c.name : descOf.has(role) ? 'about:' + descOf.get(role) : role;
+  };
+  const roleRuns = new Map();
+  if (sceneData) {
+    const partsBy = new Map((data.members || []).map(m => [m.actor, m.parts || []]));
+    const mineOf = r => (partsBy.get(r.student) || [])
+      .filter(p => p.role && (p.track === r.track || p.track === 'Both')).map(p => p.role);
+    // Who wears each costume that doesn't name their own role.
+    const wearers = new Map();
+    sceneData.cast.forEach(r => {
+      const mine = mineOf(r);
+      Object.values(r.cells).forEach(cell => {
+        if (namedRole(cell, mine)) return;
+        const k = sceneKey(cell.costume);
+        if (!wearers.has(k)) wearers.set(k, new Set());
+        wearers.get(k).add(mine.length === 1 ? cardOf(mine[0]) : r.student + '|' + r.track);
+      });
+    });
+    sceneData.cast.forEach(r => {
+      const mine = mineOf(r);
+      if (!mine.length) return;
+      scenes.forEach((sc, i) => sc.parts.forEach(pt => {
+        const cell = r.cells[pt.col];
+        if (!cell) return;
+        const crowd = (wearers.get(sceneKey(cell.costume)) || new Set()).size > 1;
+        const role = sceneRole(cell, mine, rankOf, crowd, lastRank);
+        if (!role) return;
+        if (!roleRuns.has(role)) roleRuns.set(role, new Map());
+        const byTrack = roleRuns.get(role);
+        if (!byTrack.has(r.track)) byTrack.set(r.track, new Map());
+        const at = byTrack.get(r.track);
+        if (!at.has(i)) at.set(i, { i, name: sc.name, costumes: new Set() });
+        at.get(i).costumes.add(cell.costume);
+      }));
+    });
+  }
+  const runsForRole = role => {
+    const byTrack = roleRuns.get(role.name) || new Map();
+    const tracks = new Set(role.who.flatMap(w => w.track === 'Both' ? ['Castle', 'Storybook'] : [w.track]));
+    return ['Castle', 'Storybook'].filter(t => tracks.has(t)).map(t => ({
+      track: t,
+      on: [...(byTrack.get(t) || new Map()).values()].sort((a, b) => a.i - b.i)
+        .map(a => ({ i: a.i, name: a.name, bits: [...a.costumes].map(c => ({ costume: c, role: '' })) }))
+    })).filter(run => run.on.length);
+  };
+
+  const roleRows = [];
+  roleGroupMap.forEach((list, title) => {
+    if (!list.length) return;
+    const head = el('tbody', 'roster-group');
+    const gr = el('tr');
+    const gh = el('th', null, title);
+    gh.colSpan = 3;
+    gr.appendChild(gh);
+    head.appendChild(gr);
+    roleTable.appendChild(head);
+    list.forEach(role => {
+      const body = el('tbody', 'member');
+      roleTable.appendChild(body);
+      roleRows.push({
+        role, body, head,
+        search: (role.name + ' ' + role.who.map(w => w.actor).join(' ')).toLowerCase()
+      });
+    });
+  });
+
+  function fillRole(r, who) {
+    r.body.innerHTML = '';
+    const tr = el('tr', 'first');
+    tr.appendChild(el('td', 'role role-title', r.role.name));
+    const actors = el('td', 'actors');
+    if (!who.length) actors.appendChild(el('span', 'song-none', 'Not cast yet'));
+    who.forEach(w => {
+      const line = el('div', 'role-line');
+      const inScenes = !sceneData || sceneData.cast.some(x => x.student === w.actor);
+      line.appendChild(inScenes
+        ? link('scenes.html?student=' + encodeURIComponent(w.actor), w.actor, 'actor-name')
+        : el('span', 'actor-name', w.actor));
+      line.appendChild(el('span', 'track track-' + (TRACK_CLASS[w.track] || 'both'), w.track));
+      actors.appendChild(line);
+    });
+    tr.appendChild(actors);
+    const cell = el('td', 'scenes-cell');
+    const boxes = sceneData ? runBoxes(runsForRole(r.role)) : [];
+    if (boxes.length) boxes.forEach(b => cell.appendChild(b));
+    else cell.appendChild(el('span', 'song-none', sceneData ? 'No scenes listed yet' : 'Scenes could not be loaded just now'));
+    tr.appendChild(cell);
+    r.body.appendChild(tr);
+  }
+
   const NOTES = {
     All: 'Everyone performs both weekends. Pick a track to hide the roles that belong to the other one.',
     Castle: 'Showing the Castle Track, on stage as leads April 15-16, 2027. Roles played both weekends are still listed.',
@@ -1296,10 +1478,13 @@ function renderCast(data, sceneData, songData) {
   function apply() {
     closePlayer();
     const q = input.value.trim().toLowerCase();
+    const byRole = view === 'role';
+    scroll.hidden = byRole;
+    roleScroll.hidden = !byRole;
     let shown = 0;
     members.forEach(m => {
       const parts = m.parts.filter(partVisible);
-      const match = parts.length > 0 && (!q || m.search.includes(q));
+      const match = !byRole && parts.length > 0 && (!q || m.search.includes(q));
       m.group.hidden = !match;
       if (match) {
         fillGroup(m, parts);
@@ -1308,7 +1493,24 @@ function renderCast(data, sceneData, songData) {
         m.group.innerHTML = '';
       }
     });
-    count.textContent = shown + (shown === 1 ? ' person' : ' people');
+    let rolesShown = 0;
+    roleRows.forEach(r => {
+      const who = r.role.who.filter(partVisible);
+      const match = byRole && (who.length > 0 || !r.role.who.length) && (!q || r.search.includes(q));
+      r.body.hidden = !match;
+      if (match) {
+        fillRole(r, who);
+        rolesShown++;
+      } else {
+        r.body.innerHTML = '';
+      }
+    });
+    // A heading shows only while a role under it does.
+    roleRows.forEach(r => { r.head.hidden = true; });
+    roleRows.forEach(r => { if (!r.body.hidden) r.head.hidden = false; });
+    count.textContent = byRole
+      ? rolesShown + (rolesShown === 1 ? ' role' : ' roles')
+      : shown + (shown === 1 ? ' person' : ' people');
     note.textContent = NOTES[activeTrack] || '';
     note.hidden = !note.textContent;
     toggle.textContent = 'Open every scene list';
@@ -1322,7 +1524,7 @@ function renderCast(data, sceneData, songData) {
   let started = false;
   input.addEventListener('input', apply);
 
-  const boxes = () => [...table.querySelectorAll('details.my-scenes-box')];
+  const boxes = () => [...(view === 'role' ? roleTable : table).querySelectorAll('details.my-scenes-box')];
   toggle.addEventListener('click', () => {
     const open = !boxes().every(b => b.open);
     boxes().forEach(b => { b.open = open; });

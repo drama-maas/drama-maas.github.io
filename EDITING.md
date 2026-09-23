@@ -163,6 +163,13 @@ When a role is cast, replace `TBD` in the Actor column with the student's name. 
 cast list only shows while some role still has `TBD` as its track.
 
 Next to each role, the Cast page lists that student's scenes and songs, read from the Scenes tab.
+Its **By role** button turns the list around: one row per role, under the Meet the characters
+headings, with who plays it and the scenes that role is in. A scene counts for a role when the
+costume names it (`Shrek`, or `Duloc (Guard)`), or when it is that character's own costume, like
+Fiona's wedding dress. A crowd costume that students playing different characters all wear,
+like `Duloc` or `Old knight`, counts only for Dance Team, Duloc Dancer, Rat-Rockette or Ensemble
+(the last group in Meet the characters), so a Storyteller's Duloc numbers show under Dance Team
+rather than under Storyteller.
 
 The **Castle Track** and **Storybook Track** buttons above the table keep everybody on
 screen and simply hide the other track's version of a role. Roles played both weekends stay
