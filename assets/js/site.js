@@ -1857,12 +1857,15 @@ function renderScenes(data, castData, songData) {
       closePlayer();
       buttons.forEach(x => x.classList.toggle('is-on', x === b));
       Object.entries(panels).forEach(([k, p]) => { p.hidden = k !== key; });
+      // Only the grid needs the extra-wide page; the others read at normal width.
+      host.closest('main').classList.toggle('wrap-wide', key === 'grid');
       try { localStorage.setItem('scenes-view', key); } catch (err) { /* private window */ }
     });
     buttons.push(b);
     tabs.appendChild(b);
   });
   host.appendChild(tabs);
+  host.closest('main').classList.toggle('wrap-wide', view === 'grid');
 
   panels.student = el('div', 'scene-panel');
   panels.grid = el('div', 'scene-panel');
@@ -2079,11 +2082,18 @@ function renderScenes(data, castData, songData) {
       studentOut.appendChild(el('p', 'filter-note', 'We do not have scenes for ' + name + ' yet.'));
       return;
     }
-    mine.forEach(r => {
+    // When both tracks are the same night for them, show it once.
+    const sameCell = (a, b) => (!a && !b) || (a && b && a.costume === b.costume && a.role === b.role);
+    const cards = mine.length === 2 && columns.every(n => sameCell(mine[0].cells[n], mine[1].cells[n]))
+      ? [Object.assign({}, mine[0], { track: 'Both' })]
+      : mine;
+    cards.forEach(r => {
       const card = el('section', 'track-card track-card-' + TRACK_CLASS[r.track]);
-      const h = el('h3', null, r.track + ' Track');
+      const h = el('h3', null, r.track === 'Both' ? 'Castle & Storybook Tracks' : r.track + ' Track');
       card.appendChild(h);
-      const roles = rolesFor(r.student, r.track);
+      const roles = r.track === 'Both'
+        ? [...new Set(rolesFor(r.student, 'Castle').concat(rolesFor(r.student, 'Storybook')))]
+        : rolesFor(r.student, r.track);
       const { on, items } = sceneRun(r, scenes);
       const order = costumeOrder(r, columns);
       const changes = items.filter(x => x.type === 'change');
