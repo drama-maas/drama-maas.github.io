@@ -1278,7 +1278,81 @@ function sceneRun(row, sceneList) {
   return { on, items };
 }
 
-function renderScenes(data, castData) {
+/* ---- songs: practice tracks, grouped by scene (data/songs.json) ---- */
+
+function youtubeId(url) {
+  const m = String(url || '').match(
+    /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([\w-]{11})/);
+  return m ? m[1] : null;
+}
+
+// Only one practice track plays at a time, anywhere on the page.
+let openPlayer = null;
+function closePlayer() {
+  if (!openPlayer) return;
+  openPlayer.box.remove();
+  openPlayer.button.classList.remove('is-playing');
+  openPlayer.button.setAttribute('aria-expanded', 'false');
+  openPlayer = null;
+}
+
+// Opens a YouTube practice track in a player under its song, or closes it if it
+// is already open. Ctrl- or Cmd-click still opens YouTube in a new tab. Links
+// that are not YouTube, like a Google Drive file, just open in a new tab.
+function playInline(a, li, url, label) {
+  const id = youtubeId(url);
+  if (!id) return;
+  a.setAttribute('aria-expanded', 'false');
+  a.addEventListener('click', e => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    const same = openPlayer && openPlayer.button === a;
+    closePlayer();
+    if (same) return;
+    const box = el('div', 'song-player');
+    const frame = el('iframe');
+    frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
+    frame.title = label;
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    box.appendChild(frame);
+    const foot = el('div', 'song-player-foot');
+    foot.appendChild(link(url, 'Open on YouTube ↗', 'song-player-out'));
+    const close = el('button', 'song-player-close', 'Close ✕');
+    close.type = 'button';
+    close.addEventListener('click', () => { closePlayer(); a.focus(); });
+    foot.appendChild(close);
+    box.appendChild(foot);
+    li.appendChild(box);
+    a.classList.add('is-playing');
+    a.setAttribute('aria-expanded', 'true');
+    openPlayer = { box, button: a };
+  });
+}
+
+// A song with its two practice tracks, or a note that none is posted yet.
+function songLine(song) {
+  const li = el('li', 'song');
+  li.appendChild(el('span', 'song-title', '🎵 ' + song.title));
+  const links = el('span', 'song-links');
+  [[song.vocals, 'With vocals', 'song-link'], [song.track, 'Accompaniment', 'song-link is-track']]
+    .forEach(([url, label, cls]) => {
+      if (!url) return;
+      const a = link(url, label, cls);
+      playInline(a, li, url, song.title + ' - ' + label.toLowerCase());
+      links.appendChild(a);
+    });
+  if (!song.vocals && !song.track) links.appendChild(el('span', 'song-none', 'Practice track coming'));
+  li.appendChild(links);
+  return li;
+}
+
+// Scene names in songs.json are matched to the sheet loosely, so "Duloc 1" and
+// "duloc 1" or a stray apostrophe style still line up.
+const sceneKey = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+function renderScenes(data, castData, songData) {
   const host = slot('scenes');
   if (!host) return;
   host.innerHTML = '';
@@ -1295,7 +1369,8 @@ function renderScenes(data, castData) {
   head.appendChild(el('h2', null, 'Scene by scene'));
   head.appendChild(el('p', 'section-intro',
     'Every scene of Shrek, who is on stage in it, and the costume they wear. ' +
-    'Pick your name in Student view to see your own night, including when to change costume.'));
+    'Pick your name in Student view to see your own night, including when to change costume. ' +
+    'Songs has the practice tracks for every song, scene by scene.'));
   host.appendChild(head);
 
   const tabs = el('div', 'filters scene-tabs');
@@ -1304,11 +1379,12 @@ function renderScenes(data, castData) {
   const panels = {};
   let view = 'student';
   const buttons = [];
-  [['student', 'Student view'], ['grid', 'Grid view']].forEach(([key, label]) => {
+  [['student', 'Student view'], ['grid', 'Grid view'], ['songs', 'Songs']].forEach(([key, label]) => {
     const b = el('button', 'filter' + (key === view ? ' is-on' : ''), label);
     b.type = 'button';
     b.addEventListener('click', () => {
       view = key;
+      if (key !== 'songs') closePlayer();
       buttons.forEach(x => x.classList.toggle('is-on', x === b));
       Object.entries(panels).forEach(([k, p]) => { p.hidden = k !== key; });
       try { localStorage.setItem('scenes-view', key); } catch (err) { /* private window */ }
@@ -1320,9 +1396,35 @@ function renderScenes(data, castData) {
 
   panels.student = el('div', 'scene-panel');
   panels.grid = el('div', 'scene-panel');
+  panels.songs = el('div', 'scene-panel');
   panels.grid.hidden = true;
+  panels.songs.hidden = true;
   host.appendChild(panels.student);
   host.appendChild(panels.grid);
+  host.appendChild(panels.songs);
+
+  /* ---- songs: every song in running order, with both practice tracks ---- */
+  panels.songs.appendChild(el('p', 'filter-note',
+    'Every song in the show, scene by scene. “With vocals” is for learning the part; ' +
+    '“Accompaniment” is the music alone, to sing along to.'));
+  const sceneNo = new Map(sceneNames.map((n, i) => [sceneKey(n), i + 1]));
+  const songGroups = (songData && songData.scenes || []).filter(g => (g.songs || []).length);
+  if (!songGroups.length) {
+    panels.songs.appendChild(el('p', 'filter-note', 'The song list could not be loaded just now.'));
+  } else {
+    const songList = el('div', 'song-scenes');
+    songGroups.forEach(g => {
+      const n = sceneNo.get(sceneKey(g.scene));
+      const box = el('div', 'song-scene');
+      if (n) box.id = 'songs-' + n;
+      box.appendChild(el('h4', null, (n ? n + '. ' : '') + g.scene));
+      const ul = el('ul', 'songs');
+      g.songs.forEach(s => ul.appendChild(songLine(s)));
+      box.appendChild(ul);
+      songList.appendChild(box);
+    });
+    panels.songs.appendChild(songList);
+  }
 
   /* ---- grid: students down the side, scenes across ---- */
   let gridTrack = 'Castle';
@@ -1599,7 +1701,12 @@ function renderScenes(data, castData) {
   drawStudent(select.value);
   let savedView = '';
   try { savedView = localStorage.getItem('scenes-view') || ''; } catch (err) { savedView = ''; }
-  if (savedView === 'grid' && !names.includes(asked)) buttons[1].click();
+  // scenes.html#songs opens straight on the song list, for sharing.
+  if (location.hash === '#songs') savedView = 'songs';
+  if (!names.includes(asked)) {
+    if (savedView === 'grid') buttons[1].click();
+    else if (savedView === 'songs') buttons[2].click();
+  }
 }
 
 /* ---------- boot ---------- */
@@ -1657,8 +1764,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     if (slot('scenes')) {
       const sceneData = contentFor('scenes', Promise.resolve(null), ['Track', 'Student'], scenesFromSheet);
-      jobs.push(Promise.all([sceneData, castData.catch(() => null)]).then(([sc, cast]) => {
-        renderScenes(sc, cast);
+      const songData = loadJSON('data/songs.json').catch(err => { console.error(err); return null; });
+      jobs.push(Promise.all([sceneData, castData.catch(() => null), songData]).then(([sc, cast, songs]) => {
+        renderScenes(sc, cast, songs);
         doneLoading('scenes');
       }));
     }

@@ -205,6 +205,7 @@ browser, click Save, and the website updates itself a minute or two later.
 | The headings and intros on the Calendar page | `data/calendar.json` |
 | The introduction and closing on the Cast page | `data/cast.json` |
 | The Join the Boosters page | `data/boosters.json` |
+| The practice tracks on the Scenes page's **Songs** tab | `data/songs.json` |
 
 `data/calendar.json` and `data/cast.json` also hold an old copy of the dates and the cast. The
 website only falls back to it if a published copy goes missing, so there is no need to keep it
@@ -245,6 +246,19 @@ for `url`. Links under `"Boosters members only"` appear in the second group.
 committee list. A button with an empty `"url"` shows as a grey placeholder instead of a link,
 which is how the Donate button is set right now. Paste the donation address into its `url`
 and it turns into a working button.
+
+### Add or change a practice track
+
+`data/songs.json` feeds the **Songs** tab on the Scenes page. It lists the scenes in running
+order, and each scene lists its songs. Every song has a `"vocals"` link (the recording with
+singing) and a `"track"` link (the accompaniment alone). Leave one as `""` if there isn't one,
+and the song shows only the button it has.
+
+Write `"scene"` exactly as the scene is named on the Scenes tab of the Sheet (for a scene in
+parts, like `Who I'd Be: Solos`, use the part before the colon) and it gets its scene number.
+A name that isn't on the Scenes tab, like `Pre-Show`, still shows, just without a number.
+YouTube links play right on the page; any other link, like a Google Drive file, opens in a new
+tab. To add a song, copy a song line that already works and change the words.
 
 ## What updates itself
 

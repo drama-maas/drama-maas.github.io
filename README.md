@@ -12,6 +12,7 @@ plain HTML, drawn at load time from a published Google Sheet and the JSON files 
 | Calendar dates, announcements, cast list | The **Drama Club Website Content** Google Sheet, one tab each |
 | Calendar headings and intros, footer contacts, feedback link | `data/calendar.json`, `data/site.json` |
 | Links & Folders, the Boosters page | `data/links.json`, `data/boosters.json` |
+| Practice tracks on the Scenes page's Songs tab | `data/songs.json` |
 
 Publishing is deliberate. The pages read `data/sheet-cache/`, never the Sheet itself, so an
 editor's work in progress stays off the site. Choosing **Website → Publish changes to the
@@ -41,6 +42,7 @@ data/links.json     Links & folders section
 data/calendar.json  Calendar headings and intros; last-resort copy of the dates
 data/cast.json      Cast list intro and closing; last-resort copy of the cast
 data/boosters.json  Boosters page
+data/songs.json     Practice tracks for the Songs tab on the Scenes page
 data/sheet-cache/   Saved copy of the Sheet's tabs, written by the snapshot workflow
 assets/css/site.css Styling (light and dark)
 assets/js/site.js   Reads the Sheet and the JSON files and draws the pages
