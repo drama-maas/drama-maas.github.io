@@ -1,114 +1,116 @@
 {
-  "_comment": "The Songs tab on the Scenes page. One entry per scene, in running order. 'scene' must match a scene name on the Scenes tab of the sheet (the part before any colon), or it shows without a number. Each song has a 'vocals' link and a 'track' (accompaniment) link; leave either as \"\" if there isn't one.",
+  "_comment": "The Songs tab on the Scenes page, and the songs under each scene in Student view and on the Cast page. One entry per scene, in running order. 'scene' must match a scene name on the Scenes tab of the sheet (the part before any colon), or it shows without a number. Each song has YouTube links, 'vocals' (with singing) and 'track' (accompaniment), and the Google Drive files of the same, 'vocalsDrive' and 'trackDrive' (the file's ID, the long code in its Drive link). Leave any of them as \"\" if there isn't one.",
+  "_source": "Which to play: \"drive\" plays the Google Drive files, and falls back to YouTube for a song without one; \"youtube\" plays the YouTube links everywhere, if Drive ever stops working.",
+  "source": "drive",
   "scenes": [
     {
       "scene": "Pre-Show",
       "songs": [
-        { "title": "All Star", "vocals": "", "track": "https://www.youtube.com/watch?v=WrPDplMIKpE" }
+        {"title": "All Star", "vocals": "", "track": "https://www.youtube.com/watch?v=WrPDplMIKpE", "vocalsDrive": "", "trackDrive": "1S3CubpD6vkn_wOR6j2dzHONu57mEO3Mz"}
       ]
     },
     {
       "scene": "Who I'd Be",
       "songs": [
-        { "title": "Who I'd Be", "vocals": "https://www.youtube.com/watch?v=fVb1sMCXbKg", "track": "https://youtu.be/f_xia-fjg2Q" }
+        {"title": "Who I'd Be", "vocals": "https://www.youtube.com/watch?v=fVb1sMCXbKg", "track": "https://youtu.be/f_xia-fjg2Q", "vocalsDrive": "1ZqL3ePQsYh2UnEUthiyh8lfZn9HvCsWZ", "trackDrive": "10sNtFxh0ZNFByxhtO5YA54wgJ5yH7WGu"}
       ]
     },
     {
       "scene": "Opener - BBB World",
       "songs": [
-        { "title": "Big Bright Beautiful World", "vocals": "https://www.youtube.com/watch?v=7sqopU4V60w", "track": "https://www.youtube.com/watch?v=B82D0HInMs8" }
+        {"title": "Big Bright Beautiful World", "vocals": "https://www.youtube.com/watch?v=7sqopU4V60w", "track": "https://www.youtube.com/watch?v=B82D0HInMs8", "vocalsDrive": "1CIZEG_mTnLLbLNJDEUtA-kYmexwIjlxc", "trackDrive": "1WGoKxp-sfvdMx5uFpUnnlB7qz0_e_0rm"}
       ]
     },
     {
       "scene": "Story of my Life",
       "songs": [
-        { "title": "Story of My Life", "vocals": "https://www.youtube.com/watch?v=sEY9NW6-aVc", "track": "https://www.youtube.com/watch?v=tusgJ20HxXU" }
+        {"title": "Story of My Life", "vocals": "https://www.youtube.com/watch?v=sEY9NW6-aVc", "track": "https://www.youtube.com/watch?v=tusgJ20HxXU", "vocalsDrive": "1XDk0V9T9TlTOz62YWcEnk1aHHzs6oR-y", "trackDrive": "1eicr3bFeXUJ7ejExHXa25PuxUSxUU2yr"}
       ]
     },
     {
       "scene": "Duloc 1",
       "songs": [
-        { "title": "What's Up, Duloc? (Part 1)", "vocals": "https://www.youtube.com/watch?v=EUax9DSMqPo", "track": "https://www.youtube.com/watch?v=_wdiWTFy9l8" }
+        {"title": "What's Up, Duloc? (Part 1)", "vocals": "https://www.youtube.com/watch?v=EUax9DSMqPo", "track": "https://www.youtube.com/watch?v=_wdiWTFy9l8", "vocalsDrive": "1JFIRdBZXN70Yv9zzUQ5G7rDJ7NTeaoD5", "trackDrive": "1hFys2UT6ILo7GyZWkmFCOXdoNFvRJ5ME"}
       ]
     },
     {
       "scene": "Duloc 2",
       "songs": [
-        { "title": "What's Up, Duloc? (Part 2)", "vocals": "https://www.youtube.com/watch?v=umulek3SRss", "track": "https://www.youtube.com/watch?v=iRDIUCIIcrM" }
+        {"title": "What's Up, Duloc? (Part 2)", "vocals": "https://www.youtube.com/watch?v=umulek3SRss", "track": "https://www.youtube.com/watch?v=iRDIUCIIcrM", "vocalsDrive": "1i2EUzTZmb7-sEnNcq5Rrt0C1WKRgTBfa", "trackDrive": "1WGBkotiEGxRjzijw7gt33lBwppBNO0-G"}
       ]
     },
     {
       "scene": "Duloc 3",
       "songs": [
-        { "title": "What's Up, Duloc? (Reprise)", "vocals": "https://www.youtube.com/watch?v=86WUzWy57y8", "track": "https://www.youtube.com/watch?v=yo7AZM7nruM" }
+        {"title": "What's Up, Duloc? (Reprise)", "vocals": "https://www.youtube.com/watch?v=86WUzWy57y8", "track": "https://www.youtube.com/watch?v=yo7AZM7nruM", "vocalsDrive": "1DJO1o6HTfh1bsDWOc1CZxKwxpm_8KnlN", "trackDrive": "17ab5V6fyqiAorNslXC45vAKepKFWvKuI"}
       ]
     },
     {
       "scene": "I know it's today",
       "songs": [
-        { "title": "I Know It's Today", "vocals": "https://www.youtube.com/watch?v=yYwp7MEjKE8", "track": "https://www.youtube.com/watch?v=cCdm3r-X-eI" }
+        {"title": "I Know It's Today", "vocals": "https://www.youtube.com/watch?v=yYwp7MEjKE8", "track": "https://www.youtube.com/watch?v=cCdm3r-X-eI", "vocalsDrive": "1ctJTfWWZlTHqzLq7Ikl69LCcg5HAcJnm", "trackDrive": "1RcKxSuODCX1OnStYoWqblhqIsxskmPIY"}
       ]
     },
     {
       "scene": "Travel Song",
       "songs": [
-        { "title": "Travel Song", "vocals": "https://www.youtube.com/watch?v=OJ9xJJ57LAM", "track": "https://www.youtube.com/watch?v=QzgZPc3iTkk" }
+        {"title": "Travel Song", "vocals": "https://www.youtube.com/watch?v=OJ9xJJ57LAM", "track": "https://www.youtube.com/watch?v=QzgZPc3iTkk", "vocalsDrive": "1s_N7Pz7AOXftEL2qOixrb3QWXCUNsJMG", "trackDrive": "1ewgqmNoKGw1nwj0YogT3iUyGS1yhjMzd"}
       ]
     },
     {
       "scene": "Dragon",
       "songs": [
-        { "title": "Forever", "vocals": "https://www.youtube.com/watch?v=HBWTrelUuDQ", "track": "https://www.youtube.com/watch?v=LVhevQ2bL_4" }
+        {"title": "Forever", "vocals": "https://www.youtube.com/watch?v=HBWTrelUuDQ", "track": "https://www.youtube.com/watch?v=LVhevQ2bL_4", "vocalsDrive": "1BpNpQtsxZBnhWdvTYvb5LrarDX6VvlRb", "trackDrive": "1CydAYtYRdV0XRxdSqqUTjmpZch-Ma8ar"}
       ]
     },
     {
       "scene": "Dream come True",
       "songs": [
-        { "title": "This Is How A Dream Comes True", "vocals": "https://www.youtube.com/watch?v=O03OazJQGWE", "track": "https://www.youtube.com/watch?v=9nxssZxiuQg" }
+        {"title": "This Is How A Dream Comes True", "vocals": "https://www.youtube.com/watch?v=O03OazJQGWE", "track": "https://www.youtube.com/watch?v=9nxssZxiuQg", "vocalsDrive": "1V3V5awtGfH-yQRQF3ca_MJb6dGcPFs7h", "trackDrive": "1owsmlppkipegisEaC1gjBXqTjBoW3PtO"}
       ]
     },
     {
       "scene": "Morning Person",
       "songs": [
-        { "title": "Morning Person", "vocals": "https://www.youtube.com/watch?v=Jcn7hFgveQI", "track": "https://www.youtube.com/watch?v=LqRQfGArYxM" }
+        {"title": "Morning Person", "vocals": "https://www.youtube.com/watch?v=Jcn7hFgveQI", "track": "https://www.youtube.com/watch?v=LqRQfGArYxM", "vocalsDrive": "1sUKK7xpB9-jZxkyWdj6NZC6PPV7BxlKL", "trackDrive": "10r3yPCx4pOsB2nT51fdQhYlpZuIuUjpJ"}
       ]
     },
     {
       "scene": "Got you beat",
       "songs": [
-        { "title": "I Think I Got You Beat", "vocals": "https://www.youtube.com/watch?v=P9AR019WGac", "track": "https://www.youtube.com/watch?v=JdVigp-Ib0M" }
+        {"title": "I Think I Got You Beat", "vocals": "https://www.youtube.com/watch?v=P9AR019WGac", "track": "https://www.youtube.com/watch?v=JdVigp-Ib0M", "vocalsDrive": "1nc4oF7vxLed6f2-Lt62987m1za_7M1cj", "trackDrive": "17L-lhkj_PG-NaAhAcPg9FFWxffzT1Rp6"}
       ]
     },
     {
       "scene": "Make a move",
       "songs": [
-        { "title": "Make A Move", "vocals": "https://www.youtube.com/watch?v=8pNPJvE77bo", "track": "https://www.youtube.com/watch?v=C7TkGQEo5A4" }
+        {"title": "Make A Move", "vocals": "https://www.youtube.com/watch?v=8pNPJvE77bo", "track": "https://www.youtube.com/watch?v=C7TkGQEo5A4", "vocalsDrive": "17oO1MbR7njcoD2LqgSfxDUOc1UL0cXPw", "trackDrive": "1zy4PEg_Zh7SZyKA76Ax_vxCW3KLI0DOZ"}
       ]
     },
     {
       "scene": "Morning reprise",
       "songs": [
-        { "title": "Morning Person (Reprise)", "vocals": "https://www.youtube.com/watch?v=Pzuf3YYcYsw", "track": "https://www.youtube.com/watch?v=u4umY2EGYX8" }
+        {"title": "Morning Person (Reprise)", "vocals": "https://www.youtube.com/watch?v=Pzuf3YYcYsw", "track": "https://www.youtube.com/watch?v=u4umY2EGYX8", "vocalsDrive": "1MHs5KI7PI6XBeEFmeeDsRf0FqmCZSAcv", "trackDrive": "1J9Mt15VjvJbANRJpvPzU8U5eXC6PJ9vy"}
       ]
     },
     {
       "scene": "Freak Flag",
       "songs": [
-        { "title": "Freak Flag", "vocals": "https://www.youtube.com/watch?v=nSDetuag6zU", "track": "https://www.youtube.com/watch?v=gM1WwPYeSrI" }
+        {"title": "Freak Flag", "vocals": "https://www.youtube.com/watch?v=nSDetuag6zU", "track": "https://www.youtube.com/watch?v=gM1WwPYeSrI", "vocalsDrive": "1ahmdxqa0F6jWqvWCfDk3wX4nSJnvYfQB", "trackDrive": "1p-qQGH7TR5VGMzJsoo8F1QMMoWhWt9NA"}
       ]
     },
     {
       "scene": "Wedding",
       "songs": [
-        { "title": "Big Bright Beautiful World (Reprise)", "vocals": "https://www.youtube.com/watch?v=9cQIV4er4wE", "track": "https://www.youtube.com/watch?v=yTr1VOEiQ58" }
+        {"title": "Big Bright Beautiful World (Reprise)", "vocals": "https://www.youtube.com/watch?v=9cQIV4er4wE", "track": "https://www.youtube.com/watch?v=yTr1VOEiQ58", "vocalsDrive": "1z5Okg7U8IcMwMrlyP5zxnx3HKc6DYvnZ", "trackDrive": "1G2VphvOB5NnOVRCPdlzy4ICve0mOURsM"}
       ]
     },
     {
       "scene": "Finale",
       "songs": [
-        { "title": "Finale", "vocals": "https://www.youtube.com/watch?v=UGoNX3FPKi8", "track": "https://www.youtube.com/watch?v=Sf58Q7dqCRc" },
-        { "title": "I'm A Believer", "vocals": "https://www.youtube.com/watch?v=vDMhD8f2wa0", "track": "https://www.youtube.com/watch?v=tl9Odn0Zigs" },
-        { "title": "Extended Bows", "vocals": "", "track": "https://drive.google.com/file/d/10L1UzB-POMyhTysX7b09q_bQ71D4qme2/view" }
+        {"title": "Finale", "vocals": "https://www.youtube.com/watch?v=UGoNX3FPKi8", "track": "https://www.youtube.com/watch?v=Sf58Q7dqCRc", "vocalsDrive": "1EHmiwuCcJ_I1INFoT48jJ1aTLYkj1BCv", "trackDrive": "1KMRfv7tMrH6awCZ1n29HDyQQcy5iVnkq"},
+        {"title": "I'm A Believer", "vocals": "https://www.youtube.com/watch?v=vDMhD8f2wa0", "track": "https://www.youtube.com/watch?v=tl9Odn0Zigs", "vocalsDrive": "15Eu5NifuXu3ocZFvk3t6kF-f78oMPgTn", "trackDrive": "1MHsqIlRCndYbUTM1qeuQDbsuTn7EN8k8"},
+        {"title": "Extended Bows", "vocals": "", "track": "https://drive.google.com/file/d/10L1UzB-POMyhTysX7b09q_bQ71D4qme2/view", "vocalsDrive": "", "trackDrive": "10L1UzB-POMyhTysX7b09q_bQ71D4qme2"}
       ]
     }
   ]

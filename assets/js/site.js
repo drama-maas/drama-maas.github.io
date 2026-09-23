@@ -1737,12 +1737,40 @@ function closePlayer() {
   openPlayer = null;
 }
 
-// Opens a YouTube practice track in a player under its song, or closes it if it
-// is already open. Ctrl- or Cmd-click still opens YouTube in a new tab. Links
-// that are not YouTube, like a Google Drive file, just open in a new tab.
-function playInline(a, li, url, label) {
-  const id = youtubeId(url);
-  if (!id) return;
+// A Google Drive file's ID, from a bare ID or any Drive link to the file.
+function driveId(value) {
+  const v = String(value || '').trim();
+  const m = v.match(/(?:\/d\/|[?&]id=)([\w-]{20,})/);
+  return m ? m[1] : (/^[\w-]{20,}$/.test(v) ? v : null);
+}
+
+// Where the practice tracks play from: "drive" (the Google Drive copies) or
+// "youtube", set by "source" in data/songs.json. Filled in by songIndex().
+let songSource = 'youtube';
+
+// One version of a song as something to play: a Drive file when the source is
+// Drive and the song has one, otherwise its YouTube (or other) link.
+function trackFor(song, kind) {
+  const drive = driveId(song[kind + 'Drive']);
+  if (songSource === 'drive' && drive) {
+    return { kind: 'drive', id: drive, url: 'https://drive.google.com/file/d/' + drive + '/view' };
+  }
+  const url = song[kind] || '';
+  if (!url) return null;
+  const yt = youtubeId(url);
+  if (yt) return { kind: 'youtube', id: yt, url };
+  const other = driveId(url);
+  return other && /drive\.google\.com/.test(url)
+    ? { kind: 'drive', id: other, url }
+    : { kind: 'link', url };
+}
+
+// Opens a practice track in a player under its song, or closes it if it is
+// already open: Google Drive's audio player for a Drive file, YouTube's for a
+// video. Ctrl- or Cmd-click still opens it in a new tab, and any other link
+// just opens in a new tab.
+function playInline(a, li, track, label) {
+  if (!track || track.kind === 'link') return;
   a.setAttribute('aria-expanded', 'false');
   a.addEventListener('click', e => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
@@ -1750,16 +1778,19 @@ function playInline(a, li, url, label) {
     const same = openPlayer && openPlayer.button === a;
     closePlayer();
     if (same) return;
-    const box = el('div', 'song-player');
+    const drive = track.kind === 'drive';
+    const box = el('div', 'song-player' + (drive ? ' is-audio' : ''));
     const frame = el('iframe');
-    frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
+    frame.src = drive
+      ? 'https://drive.google.com/file/d/' + track.id + '/preview'
+      : 'https://www.youtube-nocookie.com/embed/' + track.id + '?autoplay=1&rel=0&modestbranding=1';
     frame.title = label;
     frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
     frame.allowFullscreen = true;
     frame.referrerPolicy = 'strict-origin-when-cross-origin';
     box.appendChild(frame);
     const foot = el('div', 'song-player-foot');
-    foot.appendChild(link(url, 'Open on YouTube ↗', 'song-player-out'));
+    foot.appendChild(link(track.url, drive ? 'Open in Google Drive ↗' : 'Open on YouTube ↗', 'song-player-out'));
     const close = el('button', 'song-player-close', 'Close ✕');
     close.type = 'button';
     close.addEventListener('click', () => { closePlayer(); a.focus(); });
@@ -1777,14 +1808,15 @@ function songLine(song) {
   const li = el('li', 'song');
   li.appendChild(el('span', 'song-title', '🎵 ' + song.title));
   const links = el('span', 'song-links');
-  [[song.vocals, 'With vocals', 'song-link'], [song.track, 'Accompaniment', 'song-link is-track']]
-    .forEach(([url, label, cls]) => {
-      if (!url) return;
-      const a = link(url, label, cls);
-      playInline(a, li, url, song.title + ' - ' + label.toLowerCase());
-      links.appendChild(a);
-    });
-  if (!song.vocals && !song.track) links.appendChild(el('span', 'song-none', 'Practice track coming'));
+  const tracks = [['vocals', 'With vocals', 'song-link'], ['track', 'Accompaniment', 'song-link is-track']]
+    .map(([kind, label, cls]) => ({ track: trackFor(song, kind), label, cls }))
+    .filter(t => t.track);
+  tracks.forEach(({ track, label, cls }) => {
+    const a = link(track.url, label, cls);
+    playInline(a, li, track, song.title + ' - ' + label.toLowerCase());
+    links.appendChild(a);
+  });
+  if (!tracks.length) links.appendChild(el('span', 'song-none', 'Practice track coming'));
   li.appendChild(links);
   return li;
 }
@@ -1795,6 +1827,7 @@ const sceneKey = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
 // songs.json's scenes that have songs, and a lookup from a scene to its songs.
 function songIndex(songData) {
+  songSource = songData && /^drive$/i.test(songData.source || '') ? 'drive' : 'youtube';
   const groups = (songData && songData.scenes || []).filter(g => (g.songs || []).length);
   const byKey = new Map(groups.map(g => [sceneKey(g.scene), g.songs]));
   return { groups, songsFor: sc => byKey.get(sceneKey(sc && sc.name != null ? sc.name : sc)) || [] };

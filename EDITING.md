@@ -282,16 +282,36 @@ and it turns into a working button.
 
 ### Add or change a practice track
 
-`data/songs.json` feeds the **Songs** tab on the Scenes page. It lists the scenes in running
-order, and each scene lists its songs. Every song has a `"vocals"` link (the recording with
-singing) and a `"track"` link (the accompaniment alone). Leave one as `""` if there isn't one,
-and the song shows only the button it has.
+`data/songs.json` feeds the **Songs** tab on the Scenes page, and the songs under each scene in
+Student view and on the Cast page. It lists the scenes in running order, and each scene lists
+its songs.
+
+The practice tracks are MP3s in the **Music** folder on Google Drive, next to the Drama Club
+Website Content sheet, shared as "Anyone with the link can view". Each song has:
+
+| Field | What it is |
+| --- | --- |
+| `vocalsDrive` | The Drive file with singing: its ID, the long code in its link (`drive.google.com/file/d/`**`this-part`**`/view`). A whole Drive link works too |
+| `trackDrive` | The Drive file of the accompaniment alone |
+| `vocals` | The YouTube link with singing, kept as a backup |
+| `track` | The YouTube link of the accompaniment, kept as a backup |
+
+Leave any of them as `""` if there isn't one; a song shows only the buttons it has. Tapping a
+button opens a player under the song, Google Drive's for a Drive file and YouTube's for a video.
+
+**Switching to YouTube.** `"source": "drive"` at the top of the file plays the Drive files, and
+falls back to YouTube for a song with no Drive file. If Drive ever stops working for families,
+change it to `"source": "youtube"` and every song plays its YouTube link instead. Change it
+back when Drive is fine again.
+
+To add a track, upload the MP3 to the Music folder (it takes the folder's sharing), open it,
+copy the ID from its link, and paste it into `vocalsDrive` or `trackDrive`. The files are named
+by their practice-track number, such as `21-morning-person-vocals.mp3`.
 
 Write `"scene"` exactly as the scene is named on the Scenes tab of the Sheet (for a scene in
 parts, like `Who I'd Be: Solos`, use the part before the colon) and it gets its scene number.
 A name that isn't on the Scenes tab, like `Pre-Show`, still shows, just without a number.
-YouTube links play right on the page; any other link, like a Google Drive file, opens in a new
-tab. To add a song, copy a song line that already works and change the words.
+To add a song, copy a song line that already works and change the words.
 
 ## What updates itself
 

@@ -1085,6 +1085,10 @@ li.song { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; fo
   border-radius: 12px; overflow: hidden; background: #000; box-shadow: var(--shadow);
 }
 .song-player iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
+/* A Google Drive audio file: Drive's player (play, waveform, time, volume and
+   progress). 180px leaves room under the volume button for its hover circle. */
+.song-player.is-audio { max-width: 460px; background: #1f1f1f; }
+.song-player.is-audio iframe { aspect-ratio: auto; height: 180px; }
 .song-player-foot {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
   padding: 6px 10px; background: var(--green-900); font-size: .8rem;
