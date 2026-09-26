@@ -114,7 +114,7 @@
   }
   .stage .sub { margin: 10px auto 0; max-width: 34em; opacity: .92; }
 
-  main { padding: 28px 0 40px; }
+  main.wrap { padding-top: 44px; padding-bottom: 40px; }
   h2 {
     font-family: var(--display); font-weight: 400;
     font-size: clamp(1.5rem, 4vw, 2rem);
@@ -156,14 +156,29 @@
   .btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
   .small { font-size: .88rem; opacity: .85; }
 
-  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  /* A numbered timeline that reads top to bottom at every width. */
+  .steps { list-style: none; margin: 0; padding: 0; max-width: 760px; counter-reset: step; }
   .steps li {
-    background: var(--bg-sunken);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 14px 16px;
+    position: relative;
+    counter-increment: step;
+    padding: 0 0 20px 56px;
   }
-  .steps strong { display: block; color: var(--accent); margin-bottom: 2px; }
+  .steps li::before {             /* the numbered marquee bulb */
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--gold); color: #2a1a00;
+    font-weight: 700;
+    box-shadow: 0 0 0 4px var(--tag-bg);
+  }
+  .steps li:not(:last-child)::after {   /* the line joining one step to the next */
+    content: "";
+    position: absolute; left: 18px; top: 42px; bottom: 4px;
+    width: 2px; background: var(--line);
+  }
+  .steps li:last-child { padding-bottom: 0; }
+  .steps strong { display: block; color: var(--accent); font-size: 1.05rem; padding-top: 6px; margin-bottom: 2px; }
 
   /* ---------- Characters ---------- */
   .jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
@@ -178,15 +193,30 @@
   .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
   .card {
     background: var(--bg-raised);
+    --stripe: var(--gold);
     border: 1px solid var(--line);
-    border-top: 4px solid var(--gold);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 18px 20px;
+    /* The colored stripe along the top is an inset shadow, so it follows the rounded corners. */
+    box-shadow: inset 0 4px 0 var(--stripe), var(--shadow);
+    padding: 22px 20px 18px;
     display: flex; flex-direction: column;
     scroll-margin-top: 16px;
   }
-  .card:target { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .card:target { border-color: var(--stripe); box-shadow: inset 0 4px 0 var(--stripe), 0 0 0 3px var(--stripe); }
+  .card.detective { --stripe: var(--curtain); }
+  .card.detective .emoji { background: var(--bg-sunken); border: 1px solid var(--line); }
+  .badge {
+    display: inline-block; margin: 0 0 10px; align-self: flex-start;
+    background: var(--curtain); color: #ffe6a3;
+    font-size: .74rem; font-weight: 700; letter-spacing: .06em;
+    padding: 3px 10px; border-radius: 999px;
+  }
+  .group-intro { margin: 0 0 14px; color: var(--ink-soft); }
+  h3.group {
+    font-size: .8rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink-soft); margin: 22px 0 10px;
+  }
+  .jump .sep { align-self: center; color: var(--ink-soft); font-size: .8rem; padding: 0 2px; }
   .card header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
   .emoji {
     flex: none; width: 46px; height: 46px; border-radius: 50%;
@@ -238,7 +268,7 @@
   </a>
   <p class="kicker">Mystery Dinner</p>
   <h1>Turmoil at the Talent Show</h1>
-  <p class="sub">Someone is trying to shut down the Mystic Falls Talent Show, and every contestant is a suspect. Pick who you want to be.</p>
+  <p class="sub">Someone is trying to shut down the Mystic Falls Talent Show, and every contestant is a suspect. Will you be one of them, or one of the detectives?</p>
 </header>
 
 <main id="main" class="wrap">
@@ -254,7 +284,7 @@
     <div class="panel cta">
       <h2>Choose your character</h2>
       <ol>
-        <li>Read about the contestants below.</li>
+        <li>Read about the characters below.</li>
         <li>Pick your first, second and third choices.</li>
         <li>Send them in on the form.</li>
       </ol>
@@ -265,19 +295,22 @@
 
   <section>
     <h2>How the night works</h2>
-    <ul class="steps">
+    <ol class="steps">
       <li><strong>Mingle and snoop</strong>You get a card with things to share and secrets to keep. Talk to everyone and figure out who's hiding what.</li>
       <li><strong>Talent show, Act One</strong>Half the contestants perform a short act, about one to two minutes.</li>
       <li><strong>The plot thickens</strong>The saboteur strikes again. New clues come out and the questioning gets serious.</li>
       <li><strong>Accuse and reveal</strong>Everyone makes their guess, then each character tells their side until the saboteur confesses.</li>
       <li><strong>Talent show, Act Two</strong>The rest of the contestants perform to close out the night.</li>
-    </ul>
+    </ol>
     <p class="note"><strong>You don't need a real talent.</strong> Performing is optional, and you can do any act you like. Each character's act from last year is listed below only as an idea. Stay in character all night, and have fun with your character's odd habits!</p>
   </section>
 
   <section id="characters">
-    <h2>Meet the contestants</h2>
+    <h2>Meet the characters</h2>
     <ul class="jump" aria-label="Jump to a character">
+      <li><a href="#jack">Jack/Jaqueline Cleusseu</a></li>
+      <li><a href="#sam">Sam/Samantha Gerard</a></li>
+      <li class="sep" aria-hidden="true">·</li>
       <li><a href="#max">Max Moreau</a></li>
       <li><a href="#nobel">Nobel Umbridge</a></li>
       <li><a href="#eden">Eden Crimson</a></li>
@@ -291,8 +324,34 @@
       <li><a href="#binx">Binx Buttons</a></li>
       <li><a href="#dree">Dree Deville</a></li>
       <li><a href="#reed">Reed Mudlark</a></li>
+      <li><a href="#salvy">Salvy Vader</a></li>
     </ul>
 
+    <h3 class="group">The detectives</h3>
+    <p class="group-intro">The detectives aren't suspects. They know every clue, and they field the audience's questions without giving the answer away.</p>
+    <div class="cards">
+
+      <article class="card detective" id="jack">
+        <header><span class="emoji" aria-hidden="true">🔍</span><div><h3>Jack/Jaqueline Cleusseu</h3><span class="role">Detective</span></div></header>
+        <span class="badge">Knows all the clues</span>
+        <p>Your job is to answer the audience's questions with more than an ounce of suspicious remarks, preferably in a French accent. But be careful not to be too obvious!</p>
+        <dl class="facts">
+          <div><dt>Accent</dt><dd>French, s'il vous plaît</dd></div>
+        </dl>
+      </article>
+
+      <article class="card detective" id="sam">
+        <header><span class="emoji" aria-hidden="true">🤠</span><div><h3>Sam/Samantha Gerard</h3><span class="role">FBI investigator</span></div></header>
+        <span class="badge">Knows all the clues</span>
+        <p>This one-armed FBI investigator adds tidbits of ridiculous Southern wisdom to every answer for our tediously inadequate audience. Keep them guessing, but also keep it Texan.</p>
+        <dl class="facts">
+          <div><dt>Accent</dt><dd>Texan, y'all</dd></div>
+        </dl>
+      </article>
+
+    </div>
+
+    <h3 class="group">The contestants</h3>
     <div class="cards">
 
       <article class="card" id="max">
@@ -466,6 +525,20 @@
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: a Shakespeare monologue</dd></div>
           <div><dt>Costume idea</dt><dd>Something Shakespearean</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="salvy">
+        <header><span class="emoji" aria-hidden="true">🧪</span><div><h3>Salvy Vader</h3><span class="role">Biologist</span></div></header>
+        <p>A modern-day mad scientist with a genius IQ, working at Medline, Incorporated, a company that researches medicines.</p>
+        <ul class="quirks">
+          <li>Remembers everything they see</li>
+          <li>Only eats green candy</li>
+          <li>Performs as a mime on Main Street every Saturday, just for fun</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Gold star mention: a mime routine</dd></div>
+          <div><dt>Costume idea</dt><dd>Mime</dd></div>
         </dl>
       </article>
 
