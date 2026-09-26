@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mystery Dinner Characters - Mesa Academy Drama Club</title>
+<meta name="description" content="Meet the contestants of the Mystic Falls Talent Show and pick the character you'd like to play at the Drama Club mystery dinner.">
+<!-- Not linked from the site menu yet. Keep it out of search results until it is. -->
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/drama-club-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Limelight&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --curtain: #8e1b2b;
+    --curtain-deep: #4a0b16;
+    --gold: #e8b64c;
+    --gold-deep: #9a6a12;
+    --bg: #faf6ef;
+    --bg-raised: #ffffff;
+    --bg-sunken: #f1ebdf;
+    --ink: #231a1c;
+    --ink-soft: #6a5b5e;
+    --line: #e4d9c6;
+    --accent: #8e1b2b;
+    --tag-bg: #fbecd0;
+    --tag-ink: #6e4a07;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(74, 11, 22, .06), 0 8px 24px rgba(74, 11, 22, .07);
+    --font: "Lexend", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --display: "Limelight", Georgia, serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #140d0f;
+      --bg-raised: #1f1518;
+      --bg-sunken: #191113;
+      --ink: #f4ecec;
+      --ink-soft: #b9a8ab;
+      --line: #3a2a2e;
+      --accent: #f08a98;
+      --tag-bg: #3a2c12;
+      --tag-ink: #f2cf82;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #140d0f;
+    --bg-raised: #1f1518;
+    --bg-sunken: #191113;
+    --ink: #f4ecec;
+    --ink-soft: #b9a8ab;
+    --line: #3a2a2e;
+    --accent: #f08a98;
+    --tag-bg: #3a2c12;
+    --tag-ink: #f2cf82;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); }
+  .wrap { width: 100%; max-width: 1020px; margin: 0 auto; padding: 0 16px; }
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 12px; top: 12px; background: #fff; color: #000; padding: 8px 12px; border-radius: 8px; z-index: 10; }
+
+  /* ---------- Header: a stage between two curtains ---------- */
+  .stage {
+    position: relative;
+    color: #fff;
+    text-align: center;
+    padding: 18px 16px 30px;
+    background:
+      radial-gradient(ellipse 60% 70% at 50% 0%, rgba(255, 214, 140, .28), transparent 70%),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 10px, rgba(255,255,255,.04) 10px 22px, rgba(0,0,0,.18) 22px 30px),
+      linear-gradient(180deg, var(--curtain), var(--curtain-deep));
+    overflow: hidden;
+  }
+  .stage::after {            /* marquee bulbs along the bottom edge */
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 8px; height: 8px;
+    background: radial-gradient(circle, #ffe6a3 0 3px, transparent 4px) 0 0 / 22px 8px repeat-x;
+    opacity: .9;
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: #fff; text-decoration: none;
+    font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600;
+    opacity: .9;
+  }
+  .brand img { width: 40px; height: auto; }
+  .stage .kicker {
+    margin: 18px 0 2px;
+    font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold);
+  }
+  .stage h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(2rem, 7vw, 3.4rem);
+    line-height: 1.05;
+    margin: 0;
+    color: #ffe6a3;
+    text-shadow: 0 2px 0 var(--gold-deep), 0 0 24px rgba(255, 200, 90, .45);
+  }
+  .stage .sub { margin: 10px auto 0; max-width: 34em; opacity: .92; }
+
+  main { padding: 28px 0 40px; }
+  h2 {
+    font-family: var(--display); font-weight: 400;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  section { margin-bottom: 36px; }
+
+  /* ---------- Intro + form call to action ---------- */
+  .intro { display: grid; gap: 16px; grid-template-columns: 1.4fr 1fr; align-items: start; }
+  .panel {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 22px;
+  }
+  .panel p { margin: 0 0 10px; }
+  .panel p:last-child { margin-bottom: 0; }
+  .cta {
+    background: linear-gradient(180deg, var(--curtain), var(--curtain-deep));
+    color: #fff;
+    border: 0;
+  }
+  .cta h2 { color: #ffe6a3; }
+  .cta ol { margin: 0 0 16px; padding-left: 1.2em; }
+  .cta li { margin-bottom: 6px; }
+  .btn {
+    display: inline-block;
+    background: var(--gold);
+    color: #2a1a00;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 999px;
+    box-shadow: 0 2px 0 var(--gold-deep);
+  }
+  .btn:hover { filter: brightness(1.06); }
+  .btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .small { font-size: .88rem; opacity: .85; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .steps li {
+    background: var(--bg-sunken);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .steps strong { display: block; color: var(--accent); margin-bottom: 2px; }
+
+  /* ---------- Characters ---------- */
+  .jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+  .jump a {
+    display: inline-block; text-decoration: none;
+    background: var(--bg-raised); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 12px; font-size: .88rem;
+  }
+  .jump a:hover { border-color: var(--accent); color: var(--accent); }
+
+  .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+  .card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--gold);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+    display: flex; flex-direction: column;
+    scroll-margin-top: 16px;
+  }
+  .card:target { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .card header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .emoji {
+    flex: none; width: 46px; height: 46px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 1.5rem;
+    background: var(--tag-bg);
+  }
+  .card h3 { margin: 0; font-size: 1.15rem; letter-spacing: .02em; }
+  .role {
+    display: inline-block; margin-top: 2px;
+    font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--tag-ink);
+  }
+  .card p { margin: 0 0 10px; }
+  .quirks { margin: 0 0 12px; padding-left: 1.1em; color: var(--ink-soft); font-size: .93rem; }
+  .quirks li { margin-bottom: 3px; }
+  .facts { margin: auto 0 0; display: grid; gap: 6px; font-size: .9rem; border-top: 1px dashed var(--line); padding-top: 10px; }
+  .facts div { display: grid; grid-template-columns: 92px 1fr; gap: 8px; }
+  .facts dt { font-weight: 600; color: var(--ink-soft); }
+  .facts dd { margin: 0; }
+
+  .note {
+    background: var(--tag-bg); color: var(--ink);
+    border-radius: var(--radius); padding: 14px 18px; margin-top: 18px;
+  }
+
+  footer.site {
+    border-top: 1px solid var(--line);
+    background: var(--bg-sunken);
+    padding: 22px 0 28px;
+    font-size: .9rem; color: var(--ink-soft); text-align: center;
+  }
+  footer.site p { margin: 4px 0; }
+
+  @media (max-width: 760px) {
+    .intro { grid-template-columns: 1fr; }
+    .panel { padding: 18px; }
+    .facts div { grid-template-columns: 84px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="stage">
+  <a class="brand" href="index.html">
+    <img src="assets/img/drama-club-logo.png" alt="">
+    Mesa Academy Drama Club
+  </a>
+  <p class="kicker">Mystery Dinner</p>
+  <h1>Turmoil at the Talent Show</h1>
+  <p class="sub">Someone is trying to shut down the Mystic Falls Talent Show, and every contestant is a suspect. Pick who you want to be.</p>
+</header>
+
+<main id="main" class="wrap">
+
+  <section class="intro">
+    <div class="panel">
+      <h2>The story</h2>
+      <p>The Mystic Falls Talent Show is days away, and contestants are arriving from all over for a shot at the grand prize: a spot on <em>World Talent Search</em>.</p>
+      <p>But the contest organizer, Dr. Black, has a problem. Someone keeps trying to wreck the show. Posters have gone missing, the show's website and social media were hacked, and the local paper even reported that the contest was cancelled.</p>
+      <p>You are one of the contestants. You've practiced your act all year, and you really want the saboteur caught. The trouble is, the saboteur is one of you.</p>
+    </div>
+
+    <div class="panel cta">
+      <h2>Choose your character</h2>
+      <ol>
+        <li>Read about the contestants below.</li>
+        <li>Pick your first, second and third choices.</li>
+        <li>Send them in on the form.</li>
+      </ol>
+      <p><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSf3EBzs9ZBKfhs0nLMcVWNcclII2fw8GexahsZ34ltKCD7fnQ/viewform" target="_blank" rel="noopener">Fill out the form »</a></p>
+      <p class="small">Would rather help behind the scenes? The form has a background and usher option too, and a "put me where you need me" choice.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>How the night works</h2>
+    <ul class="steps">
+      <li><strong>Mingle and snoop</strong>You get a card with things to share and secrets to keep. Talk to everyone and figure out who's hiding what.</li>
+      <li><strong>Talent show, Act One</strong>Half the contestants perform a short act, about one to two minutes.</li>
+      <li><strong>The plot thickens</strong>The saboteur strikes again. New clues come out and the questioning gets serious.</li>
+      <li><strong>Accuse and reveal</strong>Everyone makes their guess, then each character tells their side until the saboteur confesses.</li>
+      <li><strong>Talent show, Act Two</strong>The rest of the contestants perform to close out the night.</li>
+    </ul>
+    <p class="note"><strong>You don't need a real talent.</strong> Performing is optional, and you can do any act you like. Each character's act from last year is listed below only as an idea. Stay in character all night, and have fun with your character's odd habits!</p>
+  </section>
+
+  <section id="characters">
+    <h2>Meet the contestants</h2>
+    <ul class="jump" aria-label="Jump to a character">
+      <li><a href="#max">Max Moreau</a></li>
+      <li><a href="#nobel">Nobel Umbridge</a></li>
+      <li><a href="#eden">Eden Crimson</a></li>
+      <li><a href="#nox">Nox Nocturne</a></li>
+      <li><a href="#finn">Finn Frost</a></li>
+      <li><a href="#henley">Henley Hexx</a></li>
+      <li><a href="#north">North Blitz</a></li>
+      <li><a href="#kipling">Kipling Zorg</a></li>
+      <li><a href="#stass">Stass Sweeney</a></li>
+      <li><a href="#sage">Sage Tempus</a></li>
+      <li><a href="#binx">Binx Buttons</a></li>
+      <li><a href="#dree">Dree Deville</a></li>
+      <li><a href="#reed">Reed Mudlark</a></li>
+    </ul>
+
+    <div class="cards">
+
+      <article class="card" id="max">
+        <header><span class="emoji" aria-hidden="true">🎭</span><div><h3>Max Moreau</h3><span class="role">Actor</span></div></header>
+        <p>A hometown actor who is always on stage at the local playhouse, and who can't keep a secret to save their life.</p>
+        <ul class="quirks">
+          <li>Terrified of table salt</li>
+          <li>Eats very slowly, and in alphabetical order</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>3rd place: a dramatic reading of <em>Green Eggs and Ham</em></dd></div>
+          <div><dt>Costume idea</dt><dd>Something Dr. Seuss</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="nobel">
+        <header><span class="emoji" aria-hidden="true">💼</span><div><h3>Nobel Umbridge</h3><span class="role">Talent agent</span></div></header>
+        <p>A talent agent who will argue about anything with anyone, even the experts. Gets bored easily, and boredom leads to trouble.</p>
+        <ul class="quirks">
+          <li>Afraid of germs</li>
+          <li>Holds their breath whenever someone coughs or sneezes</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Did not place: the dance from <em>Napoleon Dynamite</em></dd></div>
+          <div><dt>Costume idea</dt><dd>Napoleon Dynamite</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="eden">
+        <header><span class="emoji" aria-hidden="true">🧘</span><div><h3>Eden Crimson</h3><span class="role">Fitness guru</span></div></header>
+        <p>A high-energy yoga teacher who can't get enough reality TV.</p>
+        <ul class="quirks">
+          <li>Taps on tables and walls to burn off extra energy</li>
+          <li>Likes things messy and thinks too clean is unhealthy</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Did not place: a workout routine to hip-hop music</dd></div>
+          <div><dt>Costume idea</dt><dd>'80s workout gear</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="nox">
+        <header><span class="emoji" aria-hidden="true">🍦</span><div><h3>Nox Nocturne</h3><span class="role">Ice cream truck driver</span></div></header>
+        <p>Runs the ice cream truck in Mystic Falls, and is the reigning champion of the talent show.</p>
+        <ul class="quirks">
+          <li>Can't get things clean enough, and washes the truck at sunrise</li>
+          <li>A night owl who hardly sleeps and loves candlelight</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd><strong>Won</strong> with a stand-up comedy routine</dd></div>
+          <div><dt>Costume idea</dt><dd>Anything ice cream</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="finn">
+        <header><span class="emoji" aria-hidden="true">🪶</span><div><h3>Finn Frost</h3><span class="role">Author</span></div></header>
+        <p>A gloomy writer who always wears black and keeps a pet raven.</p>
+        <ul class="quirks">
+          <li>Scared of cracks, like the ones in the sidewalk</li>
+          <li>Always doodling and scribbling</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Gold star mention: read from a murder mystery novel</dd></div>
+          <div><dt>Costume idea</dt><dd>Gothic poet, all in black</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="henley">
+        <header><span class="emoji" aria-hidden="true">🦒</span><div><h3>Henley Hexx</h3><span class="role">Zoologist</span></div></header>
+        <p>Head zookeeper at the Mystic Falls Zoo, and can quote a movie for any occasion.</p>
+        <ul class="quirks">
+          <li>Looks up at the ceiling while talking, as if reading a teleprompter</li>
+          <li>Colorblind, so their clothes never match</li>
+          <li>Has a very hard time making decisions</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Did not place: brought in five animals and talked about them</dd></div>
+          <div><dt>Costume idea</dt><dd>Safari explorer, mismatched on purpose</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="north">
+        <header><span class="emoji" aria-hidden="true">👩‍🍳</span><div><h3>North Blitz</h3><span class="role">Chef</span></div></header>
+        <p>An executive chef and environmentalist who never wastes anything. Nobody knows where North grew up, and the accent keeps changing.</p>
+        <ul class="quirks">
+          <li>Only eats at the top of the hour</li>
+          <li>Can't stand anything set out in odd numbers</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Did not place: one-minute guacamole, with a taste test for the judges</dd></div>
+          <div><dt>Costume idea</dt><dd>Chef's whites</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="kipling">
+        <header><span class="emoji" aria-hidden="true">🎸</span><div><h3>Kipling Zorg</h3><span class="role">Guitarist</span></div></header>
+        <p>A rock guitarist who laughs at everything, funny or not.</p>
+        <ul class="quirks">
+          <li>Has to sniff everything, people included</li>
+          <li>Does a headstand every morning</li>
+          <li>Gets the hiccups when nervous</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>2nd place: Beethoven's 5th on electric guitar</dd></div>
+          <div><dt>Costume idea</dt><dd>Rock and roll</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="stass">
+        <header><span class="emoji" aria-hidden="true">🩰</span><div><h3>Stass Sweeney</h3><span class="role">Dance instructor</span></div></header>
+        <p>A classically trained dancer who acts like an expert on every subject.</p>
+        <ul class="quirks">
+          <li>Walks on tiptoe out of habit</li>
+          <li>Fixes anyone's messy hair with their fingers</li>
+          <li>Cries at the smallest thing</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>4th place: a jazz dance to "Memory" from <em>Cats</em></dd></div>
+          <div><dt>Costume idea</dt><dd>Dance costume</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="sage">
+        <header><span class="emoji" aria-hidden="true">👗</span><div><h3>Sage Tempus</h3><span class="role">Fashion designer</span></div></header>
+        <p>A rising fashion star from Paris.</p>
+        <ul class="quirks">
+          <li>Shakes out both legs before sitting down</li>
+          <li>Never walks back the way they came</li>
+          <li>Can't stand silence, and curls up on the floor until the noise comes back</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Did not place: modeled their own fashion line</dd></div>
+          <div><dt>Costume idea</dt><dd>The trendiest outfit you can put together</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="binx">
+        <header><span class="emoji" aria-hidden="true">✈️</span><div><h3>Binx Buttons</h3><span class="role">Pilot</span></div></header>
+        <p>Captain Buttons flies for Budget Airlines, and speaks very properly.</p>
+        <ul class="quirks">
+          <li>Avoids anything warm: hot showers, cocoa, soup</li>
+          <li>A loud chewer</li>
+          <li>Never uses slang, and corrects anyone who does</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Gold star mention: a lecture on how to fly a plane</dd></div>
+          <div><dt>Costume idea</dt><dd>Pilot's uniform</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="dree">
+        <header><span class="emoji" aria-hidden="true">🩺</span><div><h3>Dree Deville</h3><span class="role">Nurse</span></div></header>
+        <p>An emergency room nurse at Mystic Falls General Hospital, with lots of close friends.</p>
+        <ul class="quirks">
+          <li>A daydreamer who often zones out</li>
+          <li>Always wants a hug</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Did not place: showed how to give stitches on an orange</dd></div>
+          <div><dt>Costume idea</dt><dd>Nurse's scrubs</dd></div>
+        </dl>
+      </article>
+
+      <article class="card" id="reed">
+        <header><span class="emoji" aria-hidden="true">🍔</span><div><h3>Reed Mudlark</h3><span class="role">Fast food cook</span></div></header>
+        <p>Cooks at the Food Barn, and is known around town for bright clothes and huge sunbonnets.</p>
+        <ul class="quirks">
+          <li>Outgoing, but always looks angry while insisting they're in a great mood</li>
+          <li>Avoids mirrors, and covers them with sheets every night</li>
+        </ul>
+        <dl class="facts">
+          <div><dt>Last year</dt><dd>Did not place: a Shakespeare monologue</dd></div>
+          <div><dt>Costume idea</dt><dd>Something Shakespearean</dd></div>
+        </dl>
+      </article>
+
+    </div>
+
+    <p class="note">Every character can be played by anyone. Ready to choose? <a href="https://docs.google.com/forms/d/e/1FAIpQLSf3EBzs9ZBKfhs0nLMcVWNcclII2fw8GexahsZ34ltKCD7fnQ/viewform" target="_blank" rel="noopener"><strong>Fill out the character form »</strong></a></p>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p>Questions? Email <a href="mailto:drama.maas@gmail.com">drama.maas@gmail.com</a></p>
+    <p><a href="index.html">Back to the Drama Club home page</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
