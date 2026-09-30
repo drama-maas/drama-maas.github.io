@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music Board - Mesa Academy Drama Club</title>
+<meta name="description" content="Rehearsal music board: every accompaniment track for Shrek The Musical JR. on one screen.">
+<!-- Not linked from the site menu. Keep it out of search results. -->
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/drama-club-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Bree+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-900: #14331f;
+    --green-700: #1f5c33;
+    --green-500: #3f8f4a;
+    --gold: #e0a53c;
+    --bg: #f4f6f1;
+    --bg-raised: #ffffff;
+    --tile: #e4efe0;
+    --tile-hover: #d4e6cd;
+    --tile-act2: #efe7d6;
+    --tile-act2-hover: #e7dac0;
+    --ink: #1d2a21;
+    --ink-soft: #556155;
+    --line: #d7dfd2;
+    --radius: 12px;
+    --font: "Lexend", ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --display: "Bree Serif", Georgia, serif;
+    --panel: 350px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10160e;
+      --bg-raised: #1b2318;
+      --tile: #1f2c1c;
+      --tile-hover: #28392a;
+      --tile-act2: #2a2618;
+      --tile-act2-hover: #373120;
+      --ink: #eef2e8;
+      --ink-soft: #a9b5a4;
+      --line: #2e3a2b;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10160e;
+    --bg-raised: #1b2318;
+    --tile: #1f2c1c;
+    --tile-hover: #28392a;
+    --tile-act2: #2a2618;
+    --tile-act2-hover: #373120;
+    --ink: #eef2e8;
+    --ink-soft: #a9b5a4;
+    --line: #2e3a2b;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font); font-size: 15px; line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* One screen: a slim header, then the song tiles beside the player panel. */
+  .board { height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto 1fr; }
+  header {
+    display: flex; align-items: center; gap: 12px; padding: 8px 16px;
+    background: var(--green-900); color: #fff;
+  }
+  header img { width: 32px; height: 32px; }
+  header h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.25rem; }
+  header .show { color: #a9d49a; font-size: .85rem; }
+  header a { color: #cfe0c8; font-size: .8rem; }
+  .warmup {
+    margin-left: auto; padding: 6px 14px; font: inherit; font-size: .85rem; font-weight: 700;
+    border: 0; border-radius: 999px; background: var(--gold); color: #2a1d00; cursor: pointer;
+  }
+  .warmup:hover { background: #ebb85c; }
+  .warmup.is-on { box-shadow: 0 0 0 3px #fff; }
+
+  main {
+    min-height: 0; display: grid; grid-template-columns: 1fr var(--panel);
+    gap: 14px; padding: 12px 16px 14px;
+  }
+
+  /* Tiles fill the space in a fixed grid, so every song is always on screen. */
+  .tiles {
+    min-height: 0; display: grid; gap: 8px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+  }
+  .tile {
+    min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px;
+    padding: 6px 12px; text-align: left; font: inherit; color: var(--ink);
+    background: var(--tile); border: 2px solid transparent; border-radius: var(--radius);
+    cursor: pointer; overflow: hidden;
+  }
+  .tile:hover { background: var(--tile-hover); }
+  .tile:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .tile.act2 { background: var(--tile-act2); }
+  .tile.act2:hover { background: var(--tile-act2-hover); }
+  .tile.is-on { border-color: var(--green-500); background: var(--green-700); color: #fff; }
+  .tile.is-on .scene { color: #f3d08a; }
+  .tile .scene { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #b07a17; }
+  .tile .name { font-weight: 700; font-size: clamp(.8rem, 1.05vw + .35vh, 1.05rem); line-height: 1.2; }
+  .break {
+    min-height: 0; display: flex; align-items: center; justify-content: center;
+    border: 2px dashed var(--line); border-radius: var(--radius);
+    color: var(--ink-soft); font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  }
+
+  /* The side panel: what is playing, the player, and the controls. */
+  .panel {
+    min-height: 0; display: flex; flex-direction: column; gap: 10px;
+    background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px;
+  }
+  .now .scene { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #b07a17; }
+  .now h2 { margin: 2px 0 0; font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.15; color: var(--green-700); }
+  :root[data-theme="dark"] .now h2 { color: #9ed48c; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .now h2 { color: #9ed48c; } }
+  .now .hint { margin: 4px 0 0; color: var(--ink-soft); font-size: .85rem; }
+
+  .versions { display: flex; gap: 6px; }
+  .versions button, .step button {
+    flex: 1; padding: 7px 10px; font: inherit; font-size: .85rem; font-weight: 600;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer;
+  }
+  .versions button.is-on { background: var(--green-700); border-color: var(--green-700); color: #fff; }
+  .versions button:disabled, .step button:disabled { opacity: .4; cursor: default; }
+
+  .player { border-radius: 10px; overflow: hidden; background: #1f1f1f; }
+  .player iframe { display: block; width: 100%; height: 180px; border: 0; }
+  .player.is-video iframe { height: auto; aspect-ratio: 16 / 9; }
+  .player .empty { height: 180px; display: grid; place-items: center; color: #bbb; font-size: .9rem; padding: 0 20px; text-align: center; }
+
+  .step { display: flex; gap: 6px; }
+  .panel .out { font-size: .8rem; color: var(--ink-soft); }
+  .panel .out a { color: inherit; }
+  .panel .keys { margin-top: auto; font-size: .75rem; color: var(--ink-soft); }
+  kbd { font: inherit; padding: 0 5px; border: 1px solid var(--line); border-radius: 4px; }
+  .error { padding: 20px; color: #b3261e; }
+
+  /* A phone or a narrow window: stack the panel on top and let the page scroll. */
+  @media (max-width: 760px) {
+    .board { height: auto; }
+    main { grid-template-columns: 1fr; }
+    .panel { order: -1; }
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; }
+    .tile { min-height: 64px; }
+    .panel .keys { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="board">
+  <header>
+    <img src="assets/img/drama-club-logo.png" alt="">
+    <h1>Music Board</h1>
+    <span class="show">Shrek The Musical JR.</span>
+    <button type="button" class="warmup" id="warmup">▶ Warm-up</button>
+    <a href="scenes.html#songs">Songs page</a>
+  </header>
+  <main>
+    <div class="tiles" id="tiles" role="list" aria-label="Songs in running order"></div>
+    <aside class="panel" aria-live="polite">
+      <div class="now">
+        <div class="scene" id="now-scene">Pick a song</div>
+        <h2 id="now-title">Music Board</h2>
+        <p class="hint" id="now-hint">Tap a song, then press play in the player.</p>
+      </div>
+      <div class="versions" role="group" aria-label="Version">
+        <button type="button" id="v-track" class="is-on">Accompaniment</button>
+        <button type="button" id="v-vocals">With vocals</button>
+      </div>
+      <div class="player" id="player"><div class="empty">The player appears here.</div></div>
+      <div class="step">
+        <button type="button" id="prev">‹ Previous</button>
+        <button type="button" id="next">Next ›</button>
+      </div>
+      <div class="out" id="out"></div>
+      <div class="keys"><kbd>←</kbd> <kbd>→</kbd> previous / next song · <kbd>V</kbd> switch version</div>
+    </aside>
+  </main>
+</div>
+
+<script>
+/* Music board: every song from data/songs.json as a tile, in running order,
+   with the scene numbers the Scenes page uses. The player follows the site's
+   "source" setting: Google Drive files, or YouTube if it says "youtube". */
+(function () {
+  const $ = id => document.getElementById(id);
+  const key = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const ytId = url => {
+    const m = String(url || '').match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([\w-]{11})/);
+    return m ? m[1] : null;
+  };
+  const driveId = v => {
+    v = String(v || '').trim();
+    const m = v.match(/(?:\/d\/|[?&]id=)([\w-]{20,})/);
+    return m ? m[1] : (/^[\w-]{20,}$/.test(v) ? v : null);
+  };
+
+  // The Scenes tab's first row: scene columns, numbered the way the site does.
+  function sceneNumbers(csvText) {
+    const line = csvText.replace(/^﻿/, '').split(/\r?\n/)[0];
+    const cells = [];
+    let cur = '', q = false;
+    for (const ch of line) {
+      if (ch === '"') q = !q;
+      else if (ch === ',' && !q) { cells.push(cur); cur = ''; }
+      else cur += ch;
+    }
+    cells.push(cur);
+    const nums = new Map();
+    let n = 0, last = '', act = 1;
+    cells.filter(c => !['Track', 'Group', 'Student'].includes(c.trim())).forEach(c => {
+      const name = c.split(':')[0].trim();
+      if (/^intermission$/i.test(name)) { act = 2; return; }
+      if (name === last) return;
+      last = name;
+      nums.set(key(name), { n: ++n, act });
+    });
+    return nums;
+  }
+
+  let songs = [], current = -1, version = 'track', source = 'youtube';
+
+  function playable(song, kind) {
+    const d = driveId(song[kind + 'Drive']);
+    if (source === 'drive' && d) return { drive: d };
+    const url = song[kind] || '';
+    const y = ytId(url);
+    if (y) return { youtube: y, url };
+    const d2 = driveId(url);
+    return d2 && /drive\.google\.com/.test(url) ? { drive: d2 } : null;
+  }
+
+  // The vocal warm-up, played in the same player as the songs.
+  const WARMUP = { url: 'https://www.youtube.com/watch?v=TtKzDokaps8', title: '5-minute vocal warm-up' };
+
+  function play(p, title) {
+    const box = $('player');
+    box.innerHTML = '';
+    box.classList.toggle('is-video', !!(p && p.youtube));
+    const out = $('out');
+    out.innerHTML = '';
+    if (!p) { box.innerHTML = '<div class="empty">No track for this song yet.</div>'; return; }
+    const f = document.createElement('iframe');
+    f.title = title;
+    f.allow = 'autoplay; encrypted-media; fullscreen';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.src = p.drive
+      ? 'https://drive.google.com/file/d/' + p.drive + '/preview'
+      : 'https://www.youtube-nocookie.com/embed/' + p.youtube + '?rel=0&modestbranding=1';
+    box.appendChild(f);
+    const a = document.createElement('a');
+    a.href = p.drive ? 'https://drive.google.com/file/d/' + p.drive + '/view' : p.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = p.drive ? 'Open in Google Drive ↗' : 'Open on YouTube ↗';
+    out.appendChild(a);
+  }
+
+  function showWarmup() {
+    current = -1;
+    document.querySelectorAll('.tile').forEach(t => { t.classList.remove('is-on'); t.setAttribute('aria-current', 'false'); });
+    $('warmup').classList.add('is-on');
+    $('now-scene').textContent = 'Before rehearsal';
+    $('now-title').textContent = 'Warm-up';
+    $('now-hint').textContent = 'Press play in the video below.';
+    $('v-track').disabled = $('v-vocals').disabled = true;
+    $('prev').disabled = true;
+    $('next').disabled = songs.length === 0;
+    play({ youtube: ytId(WARMUP.url), url: WARMUP.url }, WARMUP.title);
+  }
+
+  function show(i, kind) {
+    if (i < 0 || i >= songs.length) return;
+    current = i;
+    $('warmup').classList.remove('is-on');
+    const s = songs[i];
+    if (kind) version = kind;
+    if (!playable(s, version)) version = playable(s, 'track') ? 'track' : 'vocals';
+    document.querySelectorAll('.tile').forEach((t, k) => {
+      t.classList.toggle('is-on', k === i);
+      t.setAttribute('aria-current', k === i ? 'true' : 'false');
+    });
+    $('now-scene').textContent = s.label;
+    $('now-title').textContent = s.title;
+    $('now-hint').textContent = 'Press play in the player below.';
+    $('v-track').disabled = !playable(s, 'track');
+    $('v-vocals').disabled = !playable(s, 'vocals');
+    $('v-track').classList.toggle('is-on', version === 'track');
+    $('v-vocals').classList.toggle('is-on', version === 'vocals');
+    $('prev').disabled = i === 0;
+    $('next').disabled = i === songs.length - 1;
+
+    play(playable(s, version), s.title + (version === 'vocals' ? ' - with vocals' : ' - accompaniment'));
+  }
+
+  function build() {
+    const grid = $('tiles');
+    grid.innerHTML = '';
+    let breakShown = false;
+    songs.forEach((s, i) => {
+      if (s.act === 2 && !breakShown) {
+        const b = document.createElement('div');
+        b.className = 'break';
+        b.textContent = 'Intermission';
+        grid.appendChild(b);
+        breakShown = true;
+      }
+      const t = document.createElement('button');
+      t.type = 'button';
+      t.className = 'tile' + (s.act === 2 ? ' act2' : '');
+      t.setAttribute('role', 'listitem');
+      const sc = document.createElement('span');
+      sc.className = 'scene';
+      sc.textContent = s.num ? 'Scene ' + s.num : s.scene;
+      const nm = document.createElement('span');
+      nm.className = 'name';
+      nm.textContent = s.title;
+      t.append(sc, nm);
+      t.title = s.label + ' · ' + s.title;
+      t.addEventListener('click', () => show(i));
+      grid.appendChild(t);
+    });
+    // Rows sized so the whole grid fits the space, whatever the song count.
+    const cells = grid.children.length;
+    grid.style.gridTemplateRows = 'repeat(' + Math.ceil(cells / 5) + ', minmax(0, 1fr))';
+  }
+
+  $('warmup').addEventListener('click', showWarmup);
+  $('v-track').addEventListener('click', () => show(current, 'track'));
+  $('v-vocals').addEventListener('click', () => show(current, 'vocals'));
+  $('prev').addEventListener('click', () => show(current - 1));
+  $('next').addEventListener('click', () => show(current + 1));
+  document.addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('input, textarea')) return;
+    if (e.key === 'ArrowRight') show(current < 0 ? 0 : current + 1);
+    else if (e.key === 'ArrowLeft') show(Math.max(0, current - 1));
+    else if (e.key.toLowerCase() === 'v' && current >= 0) show(current, version === 'track' ? 'vocals' : 'track');
+  });
+  $('prev').disabled = $('next').disabled = true;
+  $('v-track').disabled = $('v-vocals').disabled = true;
+
+  const bust = '?t=' + Date.now();
+  Promise.all([
+    fetch('data/songs.json' + bust, { cache: 'no-store' }).then(r => r.json()),
+    fetch('data/sheet-cache/scenes.csv' + bust, { cache: 'no-store' }).then(r => r.ok ? r.text() : '').catch(() => '')
+  ]).then(([data, csv]) => {
+    source = /^drive$/i.test(data.source || '') ? 'drive' : 'youtube';
+    const nums = csv ? sceneNumbers(csv) : new Map();
+    let act = 1;
+    (data.scenes || []).forEach(g => {
+      const at = nums.get(key(g.scene));
+      if (at) act = at.act;
+      (g.songs || []).forEach(s => songs.push(Object.assign({}, s, {
+        scene: g.scene, num: at ? at.n : null, act,
+        label: at ? 'Scene ' + at.n + ' · ' + g.scene : g.scene
+      })));
+    });
+    build();
+    $('next').disabled = songs.length === 0;
+  }).catch(err => {
+    $('tiles').innerHTML = '<div class="error">Could not load the songs. Try reloading the page.</div>';
+    console.error(err);
+  });
+})();
+</script>
+</body>
+</html>
