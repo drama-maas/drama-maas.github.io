@@ -1848,25 +1848,20 @@ function renderScenes(data, castData, songData) {
   const rolesFor = (student, track) => (partsOf.get(student) || [])
     .filter(p => p.track === track || p.track === 'Both').map(p => p.role);
 
-  // The grid groups each student's row the way Meet the characters groups their
-  // roles (the characters block in data/cast.json): under the first group that
-  // holds one of their roles on that track, and within it in that group's role
-  // order, so Shrek comes first. A row with no listed role keeps its Scenes tab group.
-  const charGroups = (castData && castData.characters && castData.characters.groups) || [];
-  const placeRow = r => {
-    const mine = rolesFor(r.student, r.track).map(sceneKey);
-    for (let g = 0; g < charGroups.length; g++) {
-      const at = (charGroups[g].roles || []).map(sceneKey).findIndex(k => mine.includes(k));
-      if (at >= 0) return { group: charGroups[g].title, rank: g, pos: at };
-    }
-    return { group: r.group, rank: Infinity, pos: 0 };
+  // The grid reads best when students with the same pattern of scenes sit
+  // together, so a row's place comes from the scenes they are in: everyone on in
+  // scene 1 first, then within them everyone on in scene 2, and so on. That
+  // stacks each block of the show into one band and puts anyone who shares a
+  // costume plot side by side. The Scenes tab's Group column is not used here.
+  const onPattern = r => columns.map(c => (r.cells[c] ? '1' : '0')).join('');
+  const firstScene = r => {
+    const p = onPattern(r).indexOf('1');
+    return p < 0 ? columns.length : p;
   };
-  const sheetGroups = [...new Set(data.cast.map(r => r.group))];
   const gridRows = data.cast
-    .map((r, i) => Object.assign({}, r, placeRow(r), { i }))
-    .sort((a, b) => (a.rank - b.rank) ||
-      (a.rank === Infinity ? sheetGroups.indexOf(a.group) - sheetGroups.indexOf(b.group) : 0) ||
-      (a.pos - b.pos) || (a.i - b.i));
+    .map((r, i) => Object.assign({}, r, { pattern: onPattern(r), i }))
+    .sort((x, y) => (y.pattern > x.pattern ? 1 : y.pattern < x.pattern ? -1 : 0) ||
+      x.student.localeCompare(y.student) || (x.i - y.i));
 
   const head = el('div', 'scene-head');
   head.appendChild(el('h2', null, 'Scene by scene'));
@@ -1913,6 +1908,21 @@ function renderScenes(data, castData, songData) {
   panels.songs.appendChild(el('p', 'filter-note',
     'Every song in the show, scene by scene. “With vocals” is for learning the part; ' +
     '“Accompaniment” is the music alone, to sing along to.'));
+  // Warm up before you sing anything, and the Music Board is the rehearsal view
+  // of the same tracks.
+  const warm = songData && songData.warmup;
+  if (warm && warm.title) {
+    const box = el('div', 'song-scene warm-up');
+    box.appendChild(el('h4', null, 'Start here'));
+    const ul = el('ul', 'songs');
+    ul.appendChild(songLine(warm));
+    box.appendChild(ul);
+    panels.songs.appendChild(box);
+  }
+  const board = el('p', 'music-link');
+  board.appendChild(link('music.html', 'Open the Music Board »'));
+  board.appendChild(el('span', null, ' — the same tracks, laid out for rehearsal.'));
+  panels.songs.appendChild(board);
   const sceneNo = new Map(scenes.map(sc => [sceneKey(sc.name), sc]));
   if (!songGroups.length) {
     panels.songs.appendChild(el('p', 'filter-note', 'The song list could not be loaded just now.'));
@@ -1987,19 +1997,14 @@ function renderScenes(data, castData, songData) {
     thead.appendChild(hr);
     table.appendChild(thead);
     const tbody = el('tbody');
-    let group = null;
+    let entersAt = null;
     rows.forEach(r => {
-      if (r.group && r.group !== group) {
-        group = r.group;
-        const gr = el('tr', 'group-row');
-        const gh = el('th', null, group);
-        gh.colSpan = columns.length + 1;
-        gh.scope = 'colgroup';
-        gr.appendChild(gh);
-        tbody.appendChild(gr);
-      }
+      // A line between the bands: these students first come on in a later scene.
+      const first = firstScene(r);
+      const newBand = entersAt !== null && first !== entersAt;
+      entersAt = first;
       const order = costumeOrder(r, columns);
-      const tr = el('tr');
+      const tr = el('tr', newBand ? 'band-start' : null);
       const nameCell = el('th', 'who');
       nameCell.scope = 'row';
       const pick = el('button', 'who-link', r.student);
@@ -2058,16 +2063,9 @@ function renderScenes(data, castData, songData) {
         sceneList.appendChild(card);
         return;
       }
-      let group = null;
-      let list = null;
-      here.forEach(r => {
-        if (r.group && r.group !== group) {
-          group = r.group;
-          card.appendChild(el('h4', 'scene-card-group', group));
-          list = el('ul', 'scene-card-list');
-          card.appendChild(list);
-        }
-        if (!list) { list = el('ul', 'scene-card-list'); card.appendChild(list); }
+      const list = el('ul', 'scene-card-list');
+      card.appendChild(list);
+      here.slice().sort((x, y) => x.student.localeCompare(y.student)).forEach(r => {
         const li = el('li');
         const who = el('button', 'who-link', r.student);
         who.type = 'button';

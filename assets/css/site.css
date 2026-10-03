@@ -1109,6 +1109,12 @@ table.scene-grid th.scene-col.after-break, table.scene-grid td.cell.after-break 
 .run-part { display: inline-flex; gap: 5px; align-items: center; }
 .run-part small { color: var(--ink-soft); }
 
+/* The grid bands students by where they first come on, so a hairline marks each
+   new entrance point instead of a character-group heading. */
+table.scene-grid tr.band-start td.cell, table.scene-grid tr.band-start th.who { border-top: 1px solid var(--line); }
+.song-scene.warm-up { border-color: var(--gold); background: var(--gold-soft); }
+.music-link { margin: 12px 0 0; font-size: .92rem; color: var(--ink-soft); }
+
 @media print {
   .nav, .banner, .search-row, .legend, footer.site { display: none; }
   body { background: #fff; }
