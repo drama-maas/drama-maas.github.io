@@ -167,8 +167,8 @@ Its **By role** button turns the list around: one row per role, under the Meet t
 headings, with who plays it and the scenes that role is in. A scene counts for a role when the
 costume names it (`Shrek`, or `Duloc (Guard)`), or when it is that character's own costume, like
 Fiona's wedding dress. A crowd costume that students playing different characters all wear,
-like `Duloc` or `Old knight`, counts only for Dance Team, Duloc Dancer, Rat-Rockette or Ensemble
-(the last group in Meet the characters), so a Storyteller's Duloc numbers show under Dance Team
+like `Duloc` or `Old knight`, counts only for Duloc Dancer or Rat-Rockette (the Dance Team
+group, last in Meet the characters), so a Storyteller's Duloc numbers show under Dance Team
 rather than under Storyteller.
 
 The **Castle Track** and **Storybook Track** buttons above the table keep everybody on
@@ -199,11 +199,10 @@ Two columns that are really one scene, like the Who I'd Be solos and the choir, 
 before a colon: `Who I'd Be: Solos` and `Who I'd Be: Choir`. They count as one scene, so a
 student who only sings in the choir is not told they are off stage for the solos.
 
-The grid groups students the same way **Meet the characters** groups roles on the Cast page
-(the `characters` block in `data/cast.json`): each row goes under the first group that holds
-one of that student's roles on that track, in that group's role order. So on the Castle Track,
-the student playing Papa Ogre is under Growing up, and on the Storybook Track, where they play
-Shrek, under Leads.
+The grid has no headings. A row's place comes from the scenes the student is in: everyone on
+in scene 1 first, then within them everyone on in scene 2, and so on, so students who share a
+run of scenes sit together. A hairline marks each new first-entrance point. The Scenes tab's
+**Group** column is not used by the page; it is only a note to yourself.
 
 A column named `Intermission` is not numbered as a scene. It shows as a gold line in the grid
 and as a line in each student's list of scenes.

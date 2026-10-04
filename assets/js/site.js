@@ -981,7 +981,8 @@ function cardName(names) {
 
 // Roles under their headings: the groups in the characters block of
 // data/cast.json first, in its order, then the Scenes tab's groups for anything
-// not listed there (never Leads, which only holds the roles listed under it).
+// not listed there. A Scenes-tab group called Leads is ignored; the characters
+// block has no such heading.
 // Each role is { name, who: [{ actor, track }] }. Returns Map(title -> roles).
 function roleGroups(roles, rows, config) {
   const groups = new Map();
@@ -1019,7 +1020,7 @@ const namedRole = (cell, mine) =>
 // one of them. The costume usually names the role. A crowd costume (one that
 // students playing different characters all wear, like Duloc or Old knight)
 // is the ensemble at work, so it counts only for a role in the characters
-// block's last group, Dance Team & ensemble. Any other costume, like Fiona's
+// block's last group, Dance Team. Any other costume, like Fiona's
 // wedding dress, is the role itself: the student's only role on the track, or
 // the one in the latest group when they have several.
 function sceneRole(cell, mine, rankOf, crowd, lastRank) {
