@@ -827,7 +827,7 @@
       { "title": "Storytellers", "roles": ["Storyteller 1", "Storyteller 2", "Storyteller 3", "Storyteller 4", "Storyteller 5", "Storyteller 6"] },
       { "title": "Duloc & the castle", "roles": ["Lord Farquaad", "Captain Of The Guard", "Guard 1", "Guard 2", "Guard 3", "Guard 4", "Guard 5", "Guard 6", "Guard 7", "Guard 8", "Jeeves", "Magic Mirror"] },
       { "title": "Fairytale creatures", "roles": ["Donkey", "Dragon", "Pinocchio", "Gingy", "Snap", "Big Bad Wolf aka: Wolfie", "Little Pig 1", "Little Pig 2", "Little Pig 3", "Blind Mouse 1", "Blind Mouse 2", "Blind Mouse 3", "Papa Bear", "Mama Bear", "Baby Bear", "Peter Pan", "Tinkerbell", "Wicked Witch", "Evil Queen", "Pied Piper", "Puss in Boots", "Peter Rabbit", "Cottontail", "Flopsy", "Mopsy", "Hansel", "Gretel", "Bo Peep", "Red Riding Hood", "Ugly Duckling", "Frog Prince", "Jiminy Cricket", "Dwarf", "Edna the Elf", "Elf", "Fox or Hound", "Rumpelstiltskin", "Thumbelina", "The March Hare", "Swan Princess", "Flora", "Fauna", "Merryweather", "Parrot", "Pirate"] },
-      { "title": "Dance Team", "roles": ["Duloc Dancer", "Rat-Rockette"] }
+      { "title": "Dance Team", "roles": ["Duloc Dancer", "Rat-Rockette", "Dragon Dancer"] }
     ],
     "cards": [
       { "name": "Princess Fiona", "roles": ["Human Fiona", "Ogre Fiona"] },
@@ -840,7 +840,8 @@
       { "name": "The Three Bears", "roles": ["Papa Bear", "Mama Bear", "Baby Bear"] },
       { "name": "Peter Rabbit's pesky sisters", "roles": ["Cottontail", "Flopsy", "Mopsy"] },
       { "name": "The Fox & The Hound", "roles": ["Fox or Hound"] },
-      { "name": "Rat-Rockettes", "roles": ["Rat-Rockette"] }
+      { "name": "Rat-Rockettes", "roles": ["Rat-Rockette"] },
+      { "name": "Dragon Dancers", "roles": ["Dragon Dancer"] }
     ],
     "icons": {
       "Shrek": "🧅",
@@ -892,7 +893,7 @@
       "Parrot": "🦜",
       "Pirate": "🏴‍☠️",
       "Dance Team": "🩰",
-      "Rat-Rockettes": "🐀",
+      "Rat-Rockettes": "🐀", "Dragon Dancers": "🔥",
       "Ensemble": "🎭"
     },
     "skip": ["Stage Crew", "Dance Team", "Ensemble"]
