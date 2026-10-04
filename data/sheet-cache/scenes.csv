@@ -27,9 +27,9 @@ Castle,Duloc & the castle,Kayson Nguyen,,,,Guard pitchforker,,Guard 4,,,Guard 4,
 Castle,Duloc & the castle,Paul Ibrahim,,Guard 5,,Guard pitchforker,,Guard 5,,,Guard 5,Guard 5,Guard 5,Guard 5,,,,,,,,,,,,,,,,,,Guard 5,,Guard 5,Guard 5
 Castle,Duloc & the castle,Reed Roberts,,,,,,,,Jeeves,Jeeves,Jeeves,Jeeves,Jeeves,,,,Old knight,,,,,,,,,,,,,,Jeeves,,Bishop (Bishop),Bishop
 Castle,Duloc & the castle,Gema Hernandez,,,,,,,,,,Magic Mirror,Magic Mirror,Magic Mirror,,,Magic Mirror,,,,,,,,,,,,,Magic Mirror,,,Magic Mirror,,Magic Mirror
-Castle,Dance Team & ensemble,Anna Margalis,,Duloc Dancer,,,,,,,,,,,,,Merryweather ,,,,,Merryweather ,,,,,,,,Merryweather ,,,Duloc Dancer,,Duloc Dancer
-Castle,Dance Team & ensemble,Roman Esmaeili,,,,Pitchforker,,,,,,,,,,,,Old man,,,,,,,,,,,,,,,Ensemble,,Ensemble
-Castle,Dance Team & ensemble,Juliette Habeeb,,Duloc (No wig),,,,,,Duloc,,Duloc,,,,,,,,,,,Rat-Rockette,,,,,,,,,,,Duloc Dancer,Duloc Dancer
+Castle,Fairytale creatures,Anna Margalis,,Duloc Dancer,,,,,,,,,,,,,Merryweather ,,,,,Merryweather ,,,,,,,,Merryweather ,,,Duloc Dancer,,Duloc Dancer
+Castle,Duloc & the castle,Roman Esmaeili,,,,Pitchforker,,,,,,,,,,,,Old man,,,,,,,,,,,,,,,Ensemble,,Ensemble
+Castle,Duloc & the castle,Juliette Habeeb,,Duloc (No wig),,,,,,Duloc,,Duloc,,,,,,,,,,,Rat-Rockette,,,,,,,,,,,Duloc Dancer,Duloc Dancer
 Castle,Fairytale creatures,Clara Cornia,,Baby Bear,,,Baby Bear,,,,,,,,,,,,,,,Baby Bear,,,,,,,,Baby Bear,,,Baby Bear,,Baby Bear
 Castle,Fairytale creatures,Mason Polito,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,Big Bad Wolf aka: Wolfie
 Castle,Fairytale creatures,Molly Green,Bo Peep,,,,Bo Peep,,,,,,,,,,Bo Peep,,,,,,,,,,,,,Bo Peep,,,Bo Peep,,Bo Peep
@@ -77,7 +77,7 @@ Storybook,Leads,Ellie Yauch,,Duloc,,,,,,Duloc,,Duloc,,,,Young Fiona,,,,,,,,,Youn
 Storybook,Leads,Roman Esmaeili,,,,,,,,,Lord Farquaad,Lord Farquaad,Lord Farquaad,Lord Farquaad,,,,,,,,,,,,,,,,,,Lord Farquaad,,Lord Farquaad,Lord Farquaad
 Storybook,Leads,Aurora Jensen,,Dragon,,,Dragon,,,,,,,,,,,Dragon,Dragon,,,,,,,,,,,,,,Dragon,,Dragon
 Storybook,Leads,Skylar Phillips,,,,Little Shrek,,,,,,,,,,,,,,,,Elf,,,Little Shrek,,,,,,,,Elf,,Elf
-Storybook,Duloc & the castle,David Yauch,,,,,,Guard (Guard),,,,,,,,,,,,,,,,,,,,,,,,Guard (Guard),,,Guard
+Storybook,Leads,Cameron Johnson,,Mama Ogre,,Mama Ogre,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,,,Rat-Rockette,,,,,,,,,,,Duloc Dancer,Duloc Dancer
 Storybook,Storytellers,Camille Pineda,,,,Storyteller 1,,,,Duloc,,Duloc,Duloc,Duloc,,,,Old knight,,,,Storyteller 1,Storyteller 1,,,,,,,,,,,Storyteller 1,Storyteller 1
 Storybook,Storytellers,Natalie Flood,Storyteller 2,,,Storyteller 2,,,,Duloc,,Duloc,Duloc,Duloc,,,,Dragon Dancer,,,,Storyteller 2,Storyteller 2,,,,,,,,,,,Storyteller 2,Storyteller 2
 Storybook,Storytellers,Zemira Carr,Storyteller 3,,,Storyteller 3,,,,Duloc,,Duloc,Duloc,Duloc,,,,Old knight,,,,,Rat-Rockette,,,Rat-Rockette,,,,,,,,Storyteller 3,Storyteller 3
@@ -86,7 +86,7 @@ Storybook,Storytellers,Lydia Norton,Storyteller 5,,,Storyteller 5,,,,Duloc,,Dulo
 Storybook,Storytellers,Elodie DeHaven,,Storyteller 6,,Storyteller 6,,,,Duloc,,Duloc,Duloc,Duloc,,,,Dragon Dancer,,,,Storyteller 6,Storyteller 6,,,Storyteller 6,,,,,,,,Storyteller 6,Storyteller 6
 Storybook,Blind Mice,Sophia Harper,,Blind Mouse 1,,,Blind Mouse 1,,Blind Mouse 1,,,,,,,,,Dragon Dancer,,,,,Blind Mouse 1,,,Blind Mouse 1,,,,Blind Mouse 1,,,Blind Mouse 1,,Blind Mouse 1
 Storybook,Blind Mice,Amelia Fish,,Blind Mouse 2,,,Blind Mouse 2,,Blind Mouse 2,,,,,,,,,Dragon Dancer,,,,,Blind Mouse 2,,,Blind Mouse 2,,,,Blind Mouse 2,,,Blind Mouse 2,,Blind Mouse 2
-Storybook,Blind Mice,Jeremy Manley,,Blind Mouse 3,,,Blind Mouse 3,,Blind Mouse 3,,,,,,,,,Old Knight,,,,,Blind Mouse 3 ((conducting)),,,Blind Mouse 3,,,,Blind Mouse 3,,,Blind Mouse 3,,Blind Mouse 3
+Storybook,Blind Mice,Jeremy Manley,,Blind Mouse 3,,,Blind Mouse 3,,Blind Mouse 3,,,,,,,,,Old knight,,,,,Blind Mouse 3 ((conducting)),,,Blind Mouse 3,,,,Blind Mouse 3,,,Blind Mouse 3,,Blind Mouse 3
 Storybook,Duloc & the castle,Jackson Chesney,,Papa Ogre,,Papa Ogre,Captain Of The Guard,Captain Of The Guard,,,Captain Of The Guard,Captain Of The Guard,Captain Of The Guard,Captain Of The Guard,,,,,,,,,,,,,,,,,,Captain Of The Guard,,Captain Of The Guard,Captain Of The Guard
 Storybook,Duloc & the castle,Ian Skousen,,,,,Guard 1,Guard 1,,,Guard 1,Guard 1,Guard 1,Guard 1,,,,,,,,,,,,,,,,,,Guard 1,,Guard 1,Guard 1
 Storybook,Duloc & the castle,Charlotte Speights,,,,,Guard 2,Guard 2,Guard 2,,Guard 2,Guard 2,Guard 2,Guard 2,,,,,,,,,Rat-Rockette,,,,,,,,,Guard 2,,Guard 2,Guard 2
@@ -95,9 +95,9 @@ Storybook,Duloc & the castle,Kayson Nguyen,,,,,Guard 4,Guard 4,,,Guard 4,Guard 4
 Storybook,Duloc & the castle,Paul Ibrahim,,Guard 5,,,Guard 5,Guard 5,,,Guard 5,Guard 5,Guard 5,Guard 5,,,,,,,,,,,,,,,,,,Guard 5,,Guard 5,Guard 5
 Storybook,Duloc & the castle,Reed Roberts,,,,,,,,Jeeves,Jeeves,Jeeves,Jeeves,Jeeves,,,,Old knight,,,,,,,,,,,,,,Jeeves,,Bishop,Bishop
 Storybook,Duloc & the castle,Gema Hernandez,,,,,,,,,,,Magic Mirror,Magic Mirror,,,Magic Mirror,,,,,,,,,,,,,Magic Mirror,,,Magic Mirror,Magic Mirror,Magic Mirror
-Storybook,Dance Team & ensemble,Cameron Johnson,,Mama Ogre,,Mama Ogre,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,,,Rat-Rockette,,,,,,,,,,,Duloc Dancer,Duloc Dancer
-Storybook,Dance Team & ensemble,Elijah Kersee,,,,,,Guard (Guard),,,,,,,,,,,,,,,,,,,,,,,,Guard (Guard),,Guard,Guard
-Storybook,Dance Team & ensemble,Emerson Turner,,,,,,Guard (Guard),,,Guard (Guard),Guard (Guard),Guard (Guard),Guard (Guard),,,,,,,,,,,,,,,,,,,,Guard,Guard
+Storybook,Duloc & the castle,David Yauch,,,,,,Guard (Guard),,,,,,,,,,,,,,,,,,,,,,,,Guard (Guard),,,Guard
+Storybook,Duloc & the castle,Elijah Kersee,,,,,,Guard (Guard),,,,,,,,,,,,,,,,,,,,,,,,Guard (Guard),,Guard,Guard
+Storybook,Duloc & the castle,Emerson Turner,,,,,,Guard (Guard),,,Guard (Guard),Guard (Guard),Guard (Guard),Guard (Guard),,,,,,,,,,,,,,,,,,,,Guard,Guard
 Storybook,Fairytale creatures,Clara Cornia,,Baby Bear,,,Baby Bear,,,,,,,,,,,,,,,Baby Bear,,,,,,,,Baby Bear,,,Baby Bear,,Baby Bear
 Storybook,Fairytale creatures,Mason Polito,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,Big Bad Wolf aka: Wolfie
 Storybook,Fairytale creatures,Molly Green,Bo Peep,,,,Bo Peep,,,,,,,,,,Bo Peep,,,,,,,,,,,,,Bo Peep,,,Bo Peep,,Bo Peep
