@@ -825,15 +825,15 @@
     "groups": [
       { "title": "Shrek & Fiona", "roles": ["Shrek", "Little Shrek", "Papa Ogre", "Mama Ogre", "Human Fiona", "Ogre Fiona", "Teen Fiona", "Young Fiona"] },
       { "title": "Storytellers", "roles": ["Storyteller 1", "Storyteller 2", "Storyteller 3", "Storyteller 4", "Storyteller 5", "Storyteller 6"] },
-      { "title": "Duloc & the castle", "roles": ["Lord Farquaad", "Captain Of The Guard", "Guard 1", "Guard 2", "Guard 3", "Guard 4", "Guard 5", "Guard 6", "Jeeves", "Magic Mirror"] },
-      { "title": "Fairytale creatures", "roles": ["Donkey", "Dragon", "Pinocchio", "Gingy", "Snap", "Big Bad Wolf aka: Wolfie", "Little Pig 1", "Little Pig 2", "Little Pig 3", "Blind Mouse 1", "Blind Mouse 2", "Blind Mouse 3", "Papa Bear", "Mama Bear", "Baby Bear", "Peter Pan", "Tinkerbell", "Wicked Witch", "Evil Queen", "Pied Piper", "Puss in Boots", "Peter Rabbit", "Cottontail", "Flopsy", "Mopsy", "Hansel", "Gretel", "Bo Peep", "Red Riding Hood", "Ugly Duckling", "Frog Prince", "Jiminy Cricket", "Dwarf", "Edna the Elf", "Elf", "Fox or Hound", "Rumpelstiltskin", "Thumbelina", "Swan Princess", "Flora", "Fauna", "Merryweather", "Parrot", "Pirate"] },
+      { "title": "Duloc & the castle", "roles": ["Lord Farquaad", "Captain Of The Guard", "Guard 1", "Guard 2", "Guard 3", "Guard 4", "Guard 5", "Guard 6", "Guard 7", "Guard 8", "Jeeves", "Magic Mirror"] },
+      { "title": "Fairytale creatures", "roles": ["Donkey", "Dragon", "Pinocchio", "Gingy", "Snap", "Big Bad Wolf aka: Wolfie", "Little Pig 1", "Little Pig 2", "Little Pig 3", "Blind Mouse 1", "Blind Mouse 2", "Blind Mouse 3", "Papa Bear", "Mama Bear", "Baby Bear", "Peter Pan", "Tinkerbell", "Wicked Witch", "Evil Queen", "Pied Piper", "Puss in Boots", "Peter Rabbit", "Cottontail", "Flopsy", "Mopsy", "Hansel", "Gretel", "Bo Peep", "Red Riding Hood", "Ugly Duckling", "Frog Prince", "Jiminy Cricket", "Dwarf", "Edna the Elf", "Elf", "Fox or Hound", "Rumpelstiltskin", "Thumbelina", "The March Hare", "Swan Princess", "Flora", "Fauna", "Merryweather", "Parrot", "Pirate"] },
       { "title": "Dance Team", "roles": ["Duloc Dancer", "Rat-Rockette"] }
     ],
     "cards": [
       { "name": "Princess Fiona", "roles": ["Human Fiona", "Ogre Fiona"] },
       { "name": "Fiona, growing up", "roles": ["Teen Fiona", "Young Fiona"] },
       { "name": "Storytellers", "roles": ["Storyteller 1", "Storyteller 2", "Storyteller 3", "Storyteller 4", "Storyteller 5", "Storyteller 6"] },
-      { "name": "Guards", "roles": ["Guard 1", "Guard 2", "Guard 3", "Guard 4", "Guard 5", "Guard 6"] },
+      { "name": "Guards", "roles": ["Guard 1", "Guard 2", "Guard 3", "Guard 4", "Guard 5", "Guard 6", "Guard 7", "Guard 8"] },
       { "name": "Duloc Dancers", "roles": ["Duloc Dancer"] },
       { "name": "The Three Little Pigs", "roles": ["Little Pig 1", "Little Pig 2", "Little Pig 3"] },
       { "name": "The Three Blind Mice", "roles": ["Blind Mouse 1", "Blind Mouse 2", "Blind Mouse 3"] },
@@ -886,7 +886,7 @@
       "Elf": "🧝",
       "The Fox & The Hound": "🦊",
       "Rumpelstiltskin": "🧵",
-      "Thumbelina": "🌷",
+      "Thumbelina": "🌷", "The March Hare": "🐰",
       "Swan Princess": "🦢",
       "Flora & Fauna": "🌸",
       "Parrot": "🦜",
