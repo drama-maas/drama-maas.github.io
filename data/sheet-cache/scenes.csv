@@ -3,7 +3,7 @@ Castle or Storybook,Shown as a heading in the grid,"Their name, as on the Cast t
 Castle,Leads,David Yauch,,,,Shrek,,Shrek,,,,,Shrek,,Shrek,,Shrek,,Shrek,Shrek,,,,Shrek,Shrek,Shrek,Shrek,,,,,Shrek,Shrek,,Shrek
 Castle,Leads,Emerson Turner,,,,,,Donkey,,,,,Donkey,,Donkey,,Donkey,Donkey,Donkey,Donkey,,,,Donkey,Donkey,Donkey,Donkey,,,,,Donkey,,,Donkey
 Castle,Leads,Abbi Lara,,Human Fiona,,,,,,,,,,,,Human Fiona,,,Human Fiona,Human Fiona,,Human Fiona,Human Fiona,Human Fiona,Human Fiona,Human Fiona,,,,,Human Fiona,,,Wedding dress,Wedding dress
-Castle,Leads,Alexis Pantier,,Duloc (No wig),,,Fauna,,,,,Duloc Dancer,,,,,,,,,,,,,,,Ogre Fiona,,,,Ogre Fiona,,,Wedding dress,Wedding dress
+Castle,Leads,Alexis Pantier,,Duloc Dancer,,,Fauna,,,,,Duloc Dancer,,,,,,,,,,,,,,,Ogre Fiona,,,,Ogre Fiona,,,Wedding dress,Wedding dress
 Castle,Leads,Cameron Johnson,,Duloc Dancer,,Duloc Dancer,,,,Duloc Dancer,,Duloc Dancer,,,,Teen Fiona,,,,,,,,,,,,,,,,,,,Teen Fiona
 Castle,Leads,Bianca Baker,,Young Fiona,,,,,,Duloc Dancer,,Duloc Dancer,,,,Young Fiona,,,,,,,,,Young Fiona,,,,,,,,,,Young Fiona
 Castle,Leads,Elijah Kersee,,,,,,,,,Lord Farquaad,Lord Farquaad,Lord Farquaad,Lord Farquaad,,,,,,,,,,,,,,,,,,Lord Farquaad,,Lord Farquaad,Lord Farquaad
@@ -25,11 +25,11 @@ Castle,Duloc & the castle,Charlotte Speights,,,,,Guard 2,Guard 2,Guard 2,,Guard 
 Castle,Duloc & the castle,Hunter Linford,,,,Guard pitchforker,,Guard 3,,,Guard 3,Guard 3,Guard 3,Guard 3,,,,,,,,,,,,,,,,,,Guard 3,,Guard 3,Guard 3
 Castle,Duloc & the castle,Kayson Nguyen,,,,Guard pitchforker,,Guard 4,,,Guard 4,Guard 4,Guard 4,Guard 4,,,,,,,,,,,,,,,,,,Guard 4,,Guard 4,Guard 4
 Castle,Duloc & the castle,Paul Ibrahim,,Guard 5,,Guard pitchforker,,Guard 5,,,Guard 5,Guard 5,Guard 5,Guard 5,,,,,,,,,,,,,,,,,,Guard 5,,Guard 5,Guard 5
-Castle,Duloc & the castle,Reed Roberts,,,,,,,,Jeeves,Jeeves,Jeeves,Jeeves,Jeeves,,,,Old knight,,,,,,,,,,,,,,Jeeves,,Bishop (Bishop),Bishop
+Castle,Duloc & the castle,Reed Roberts,,,,,,,,Jeeves,Jeeves,Jeeves,Jeeves,Jeeves,,,,Old knight,,,,,,,,,,,,,,Jeeves,,Bishop,Bishop
 Castle,Duloc & the castle,Gema Hernandez,,,,,,,,,,Magic Mirror,Magic Mirror,Magic Mirror,,,Magic Mirror,,,,,,,,,,,,,Magic Mirror,,,Magic Mirror,,Magic Mirror
-Castle,Fairytale creatures,Anna Margalis,,Duloc Dancer,,,,,,,,,,,,,Merryweather ,,,,,Merryweather ,,,,,,,,Merryweather ,,,Duloc Dancer,,Duloc Dancer
-Castle,Duloc & the castle,Roman Esmaeili,,,,Pitchforker,,,,,,,,,,,,Old man,,,,,,,,,,,,,,,Ensemble,,Ensemble
-Castle,Duloc & the castle,Juliette Habeeb,,Duloc (No wig),,,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,,,Rat-Rockette,,,,,,,,,,,Duloc Dancer,Duloc Dancer
+Castle,Fairytale creatures,Anna Margalis,,Duloc Dancer,,,,,,,,,,,,,Merryweather ,,,,,Merryweather ,,,,,,,,Merryweather ,,,,Duloc Dancer,Duloc Dancer
+Castle,Duloc & the castle,Roman Esmaeili,,,,Pitchforker,,,,,,,,,,,,Old man,,,,,,,,,,,,,,,The March Hare,,The March Hare
+Castle,Duloc & the castle,Juliette Habeeb,,Duloc Dancer,,,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,,,Rat-Rockette,,,,,,,,,,,Duloc Dancer,Duloc Dancer
 Castle,Fairytale creatures,Clara Cornia,,Baby Bear,,,Baby Bear,,,,,,,,,,,,,,,Baby Bear,,,,,,,,Baby Bear,,,Baby Bear,,Baby Bear
 Castle,Fairytale creatures,Mason Polito,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,Big Bad Wolf aka: Wolfie
 Castle,Fairytale creatures,Molly Green,Bo Peep,,,,Bo Peep,,,,,,,,,,Bo Peep,,,,,,,,,,,,,Bo Peep,,,Bo Peep,,Bo Peep
@@ -57,7 +57,7 @@ Castle,Fairytale creatures,Brock Clayton,,Peter Pan,,,Peter Pan,,,,,,,,,,,Old kn
 Castle,Fairytale creatures,James Carter III,,,,,Peter Rabbit,,,,,,,,,,,Old knight,,,Peter Rabbit,,Peter Rabbit,,,,,,,Peter Rabbit,,,Peter Rabbit,,Peter Rabbit
 Castle,Fairytale creatures,Revelle Abernethy,,,,,Pied Piper,,,,,,,,,,,,,,,Pied Piper,Pied Piper,,,,,,,,,,Pied Piper,,Pied Piper
 Castle,Fairytale creatures,Brixton Berlet,,Pinocchio,,,Pinocchio,,,,,,,,,,,,,,,Pinocchio,,,,,,,,,,,Pinocchio,,Pinocchio
-Castle,Fairytale creatures,Evie Porath,,,,,Pirate,,,,,Duloc (Duloc Dancer),,,,,,,,,,,,,,,,,,Pirate,,,,Duloc Dancer,Duloc Dancer
+Castle,Fairytale creatures,Evie Porath,,,,,Pirate,,,,,Duloc Dancer,,,,,,,,,,,,,,,,,,Pirate,,,,Duloc Dancer,Duloc Dancer
 Castle,Fairytale creatures,Claire Petersen,,,Puss in Boots,,,,Puss in Boots,,,,,,,,Puss in Boots,,,,,,Puss in Boots,,,,,Puss in Boots,,,,,Puss in Boots,,Puss in Boots
 Castle,Fairytale creatures,Eden Jess,Red Riding Hood,,,,Red Riding Hood,,,,,,,,,,Red Riding Hood,,,,,,,,,,,,,Red Riding Hood,,,Red Riding Hood,,Red Riding Hood
 Castle,Fairytale creatures,Ethan Tevis,,,,,Rumpelstiltskin,,,,,,,,,,,Skeleton,,,,,,,,,,,,Rumpelstiltskin,,,Rumpelstiltskin,,Rumpelstiltskin
@@ -101,12 +101,12 @@ Storybook,Duloc & the castle,Emerson Turner,,,,,,Guard 8,,,Guard 8,Guard 8,Guard
 Storybook,Fairytale creatures,Clara Cornia,,Baby Bear,,,Baby Bear,,,,,,,,,,,,,,,Baby Bear,,,,,,,,Baby Bear,,,Baby Bear,,Baby Bear
 Storybook,Fairytale creatures,Mason Polito,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,,,,,,,,,,,Big Bad Wolf aka: Wolfie,,,Big Bad Wolf aka: Wolfie,,Big Bad Wolf aka: Wolfie
 Storybook,Fairytale creatures,Molly Green,Bo Peep,,,,Bo Peep,,,,,,,,,,Bo Peep,,,,,,,,,,,,,Bo Peep,,,Bo Peep,,Bo Peep
-Storybook,Fairytale creatures,Andrea Beas,Duloc Dancer (No wig),,,,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,Cottontail,Cottontail,Cottontail,,,,,,,Cottontail,,,Cottontail,,Cottontail
+Storybook,Fairytale creatures,Andrea Beas,Duloc Dancer,,,,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,Cottontail,Cottontail,Cottontail,,,,,,,Cottontail,,,Cottontail,,Cottontail
 Storybook,Fairytale creatures,Grant Roberts,,Dwarf,,,,,,,,,,,,,Dwarf,,,,,Rooster,,,,,,,,,,,Dwarf,,Dwarf
 Storybook,Fairytale creatures,Essara Macias,,,,,Edna the Elf,,,,,,,,,,Edna the Elf,,,,,,,,,,,,,,,,Edna the Elf,,Edna the Elf
 Storybook,Fairytale creatures,Delainey Abajian,,Evil Queen,,,Evil Queen,,,,,,,,,,Evil Queen,,,,,,,,,,,,,,,,Evil Queen,,Evil Queen
 Storybook,Fairytale creatures,Tajna Luthera,,,,,Flora ,,,,,,,,,,,,,,,Flora ,,,,,,,,Flora ,,,Flora ,,Flora 
-Storybook,Fairytale creatures,Alexis Pantier,,Duloc (No wig),,,Fauna,,,,,Duloc Dancer,,,,,,,,,,Fauna,,,,,,,,Fauna,,,,Duloc Dancer,Duloc Dancer
+Storybook,Fairytale creatures,Alexis Pantier,,Duloc Dancer,,,Fauna,,,,,Duloc Dancer,,,,,,,,,,Fauna,,,,,,,,Fauna,,,,Duloc Dancer,Duloc Dancer
 Storybook,Fairytale creatures,Bianca Baker,,Duloc Dancer,,,,,,Duloc Dancer,,Duloc Dancer,,,,,Flopsy,,,,Flopsy,Flopsy,Flopsy,,,,,,,,,,,Duloc Dancer,Duloc Dancer
 Storybook,Fairytale creatures,Abbi Lara,,Merryweather,,,Merryweather,,,,,Duloc Dancer,,,,,,,,,,Merryweather ,,,,,,,,Merryweather,,,,Duloc Dancer,Duloc Dancer
 Storybook,Fairytale creatures,Zoe Ogle,,,,,,,,Duloc Dancer,,Duloc Dancer,,,,,Fox or Hound,,,,,Fox or Hound,,,,,,,,,,,,Duloc Dancer,Duloc Dancer
@@ -131,6 +131,6 @@ Storybook,Fairytale creatures,Eden Jess,Red Riding Hood,,,,Red Riding Hood,,,,,,
 Storybook,Fairytale creatures,Ethan Tevis,,,,,Rumpelstiltskin,,,,,,,,,,,Skeleton,,,,,,,,,,,,Rumpelstiltskin,,,Rumpelstiltskin,,Rumpelstiltskin
 Storybook,Fairytale creatures,Paisley Kelly,,Snap,,,Snap,,,,,,,,,,,Duloc Dancer,,,,,Rat-Rockette,,,,,,,Snap,,,Snap,,Snap
 Storybook,Fairytale creatures,Robyn Zakharov,,Thumbelina,,,Thumbelina,,,,,,,,,,,,,,,Thumbelina,,,,,,,,,,,Thumbelina,,Thumbelina
-Storybook,Fairytale creatures,Mia Harper,Duloc Dancer (No Wig),,,,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,,,,,,,,,,,,,Tinkerbell,,Tinkerbell
+Storybook,Fairytale creatures,Mia Harper,Duloc Dancer,,,,,,,Duloc Dancer,,Duloc Dancer,,,,,,,,,,,,,,,,,,,,,Tinkerbell,,Tinkerbell
 Storybook,Fairytale creatures,Valerie Van Dine,,Ugly Duckling,,,Ugly Duckling,,,,,,,,,,,,,,,Ugly Duckling,,,,,,,,Ugly Duckling,,,Ugly Duckling,,Ugly Duckling
 Storybook,Fairytale creatures,Holly Hom,Wicked Witch,,,,Wicked Witch,,,,,,,,,,,Old knight,,,,,,,,,,,,Wicked Witch,,,Wicked Witch,,Wicked Witch
