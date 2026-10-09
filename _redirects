@@ -1,0 +1,8 @@
+# The club's address is drama-maas.org. This file is read only by Netlify,
+# which keeps serving the old drama-maas.netlify.app name; it sends every
+# request there on to the real site, keeping the path, so links already handed
+# out — the mystery page in the dinner form, for one — still land in the right
+# place. The "!" forces the redirect; without it Netlify serves the file that
+# happens to sit at that path instead. GitHub Pages ignores this file.
+https://drama-maas.netlify.app/*  https://drama-maas.org/:splat  301!
+http://drama-maas.netlify.app/*   https://drama-maas.org/:splat  301!
