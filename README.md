@@ -56,12 +56,22 @@ STILL-TO-BE-CONFIRMED.md  Boosters' running to-do list, repo only
 ## Hosting
 
 The site is served by GitHub Pages from the `main` branch, root folder
-(**Settings → Pages**), at <https://drama-maas.github.io/>. Every push to `main` redeploys it
+(**Settings → Pages**), at <https://drama-maas.org/>. Every push to `main` redeploys it
 within a minute or two.
 
+The address comes from the `CNAME` file in the root of this repository, which holds the one
+line `drama-maas.org`. Deleting or changing that file moves the site, so leave it alone. The
+domain is registered to Mesa Academy Drama Boosters, Inc. at Cloudflare, where the apex points
+at GitHub Pages' four A and four AAAA addresses. `drama-maas.github.io` still works and
+redirects to the custom domain.
+
+Mesa Public Schools blocks `github.io` on school devices, which is why the club owns a domain
+of its own: a name the district can allowlist. If the site ever stops opening at school, that
+is a filtering question for the district help desk, not a hosting one.
+
 The repository belongs to the drama club's own GitHub account, `drama-maas`, and is named
-`drama-maas.github.io`. That name is what puts the site at the root address, so renaming the
-repository would move the site.
+`drama-maas.github.io`. That name is what put the site at the root address before the custom
+domain, so renaming the repository would still move the fallback address.
 
 - Give anyone who edits the JSON files **Write** access under **Settings → Collaborators**.
   People who only edit the Google Sheet need edit access to the Sheet, not the repository.
