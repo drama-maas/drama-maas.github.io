@@ -21,6 +21,32 @@ const link = (href, text, cls) => {
   return a;
 };
 
+// A web address written in the middle of a sentence, so an editor can type
+// "the site is now drama-maas.org" and have it come out clickable. Two things
+// it deliberately leaves alone: an ending we do not recognise, or "5:30 p.m."
+// would become a link, and an email address, or the gmail.com in a club
+// address would. Anything unmatched stays plain text, so a stray full stop
+// costs nothing.
+const WEB_ADDRESS =
+  /([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})|((?:https?:\/\/)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:com|org|net|edu|gov|io|app)(?:\/[^\s,;)]*)?)/gi;
+
+function linkify(text) {
+  const out = document.createDocumentFragment();
+  const str = String(text);
+  let at = 0;
+  str.replace(WEB_ADDRESS, (match, email, addr, i) => {
+    // A full stop that ends the sentence is punctuation, not part of the address.
+    const found = email ? match : addr.replace(/\.+$/, '');
+    if (i > at) out.appendChild(document.createTextNode(str.slice(at, i)));
+    if (email) out.appendChild(document.createTextNode(found));
+    else out.appendChild(link(/^https?:/i.test(found) ? found : 'https://' + found, found));
+    at = i + found.length;
+    return match;
+  });
+  if (at < str.length) out.appendChild(document.createTextNode(str.slice(at)));
+  return out;
+}
+
 async function loadJSON(path) {
   const res = await fetch(path + '?v=' + Date.now(), { cache: 'no-store' });
   if (!res.ok) throw new Error(path + ' returned ' + res.status);
@@ -409,7 +435,7 @@ function renderAnnouncements(site, calendarData) {
     card.appendChild(el('div', 'title', (item.icon ? item.icon + '  ' : '') + item.title));
     if (item.detail) {
       const d = el('div', 'detail');
-      d.appendChild(item.url ? link(item.url, item.detail) : document.createTextNode(item.detail));
+      d.appendChild(item.url ? link(item.url, item.detail) : linkify(item.detail));
       card.appendChild(d);
     }
     grid.appendChild(card);

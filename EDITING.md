@@ -66,6 +66,15 @@ On the **Announcements** tab, each row is one box at the top of the Home page.
 | Detail | The line under the title |
 | Link | Optional web address. `cast.html` or `calendar.html` links to a page on the site |
 
+A web address typed inside **Detail** becomes a link on its own, so you can write
+"the site is now drama-maas.org" and the address comes out clickable. It only does this
+for addresses ending in .com, .org, .net, .edu, .gov, .io or .app, and it leaves email
+addresses alone, so "5:30 p.m." and "drama.maas@gmail.com" stay as plain words.
+
+Filling in **Link** instead turns the whole Detail line into one link, which is the right
+choice when the line is pointing at a page rather than naming an address. Use one or the
+other, not both.
+
 The **Coming up** cards below the announcements fill themselves in from the Calendar tab.
 
 ### Add a rehearsal or show date
