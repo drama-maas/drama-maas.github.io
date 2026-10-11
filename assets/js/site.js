@@ -1305,6 +1305,12 @@ function renderCast(data, sceneData, songData) {
     group: el('tbody', 'member'),
     search: (m.actor + ' ' + (m.parts || []).map(p => p.role).join(' ')).toLowerCase()
   }));
+  // Alphabetical by the name as it is printed, so a parent scanning the column
+  // reads A to Z. Sorting by surname would scramble those first letters. Roles
+  // still waiting on a name go to the bottom.
+  members.sort((a, b) =>
+    (/^tbd$/i.test(a.actor) - /^tbd$/i.test(b.actor)) ||
+    a.actor.localeCompare(b.actor, undefined, { sensitivity: 'base' }));
   members.forEach(m => table.appendChild(m.group));
 
   // A scene list per track, from runs of { track, on: [{ i, name, bits }] }.
