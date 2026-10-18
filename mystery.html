@@ -230,8 +230,6 @@
     color: var(--tag-ink);
   }
   .card p { margin: 0 0 10px; }
-  .quirks { margin: 0 0 12px; padding-left: 1.1em; color: var(--ink-soft); font-size: .93rem; }
-  .quirks li { margin-bottom: 3px; }
   .facts { margin: auto 0 0; display: grid; gap: 6px; font-size: .9rem; border-top: 1px dashed var(--line); padding-top: 10px; }
   .facts div { display: grid; grid-template-columns: 92px 1fr; gap: 8px; }
   .facts dt { font-weight: 600; color: var(--ink-soft); }
@@ -270,18 +268,21 @@
   .team h3 { margin: 0 0 12px; font-size: 1.05rem; color: var(--team); }
   .team h3 .tables { display: block; font-family: Lexend, system-ui, sans-serif; font-size: .78rem; font-weight: 400; color: var(--ink-soft); letter-spacing: .02em; }
   .team-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
-  .team-list li { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline; }
+  .team-list li {
+    display: grid; grid-template-columns: 1.4em 1fr; gap: 1px 8px; align-items: baseline;
+    padding-bottom: 9px; border-bottom: 1px solid var(--bg-sunken);
+  }
+  .team-list li:last-child { padding-bottom: 0; border-bottom: 0; }
+  .team-list li.is-detective + li:not(.is-detective) { margin-top: 3px; padding-top: 10px; border-top: 2px solid var(--bg-sunken); }
+  .team-list .emoji { font-size: 1.05rem; line-height: 1.2; }
   .team-list .who { font-weight: 600; }
-  .team-list .as { font-size: .9rem; color: var(--accent); text-align: right; }
+  .team-list .as { grid-column: 2; font-size: .9rem; color: var(--accent); }
   .team-list .as.tbc { color: var(--ink-soft); font-style: italic; }
-  .team-list small { grid-column: 1 / -1; color: var(--ink-soft); font-size: .82rem; }
+  .team-list .as small { display: block; color: var(--ink-soft); font-size: .82rem; }
   .cta .when { font-weight: 600; color: #ffe6a3; margin-bottom: 10px; }
   .cta .small a { color: #ffe6a3; }
   .ticket-embed { background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); }
-  @media (max-width: 480px) {
-    .team-list li { grid-template-columns: 1fr; }
-    .team-list .as { text-align: left; }
-  }
+
 </style>
 </head>
 <body>
@@ -305,7 +306,7 @@
       <h2>The story</h2>
       <p>The Mystic Falls Talent Show is days away, and contestants are arriving from all over for a shot at the grand prize: a spot on <em>World Talent Search</em>.</p>
       <p>But the contest organizer, Dr. Black, has a problem. Someone keeps trying to wreck the show. Posters have gone missing, the show's website and social media were hacked, and the local paper even reported that the contest was cancelled.</p>
-      <p>You are one of the contestants. You've practiced your act all year, and you really want the saboteur caught. The trouble is, the saboteur is one of you.</p>
+      <p>Every contestant swears it wasn't them. One of them is lying, and by the end of the night it is your job to work out which one.</p>
     </div>
 
     <div class="panel cta">
@@ -317,16 +318,361 @@
     </div>
   </section>
 
+  <section id="tickets">
+    <h2>Tickets</h2>
+    <p class="section-intro">Friday 23 October, 6:00–8:00pm, in the MAAS multipurpose room. Tickets are sold through Zeffy, which passes the whole ticket price to the drama club.</p>
+    <div class="ticket-embed">
+      <div data-zeffy-embed data-form-url="/embed/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show"></div>
+      <div data-zeffy-embed-fallback style="display:none;">
+        <div style="position:relative;overflow:hidden;height:450px;width:100%;padding-top:450px;"><iframe title="Ticketing form powered by Zeffy" style="position:absolute;border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%" data-zeffy-embed-src="https://www.zeffy.com/embed/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show" allowpaymentrequest allowTransparency="true"></iframe></div>
+      </div>
+      <script
+        src="https://www.zeffy.com/embed/v2/zeffy-embed.js"
+        onerror="document.querySelectorAll('[data-zeffy-embed-fallback]').forEach(function(el){el.style.display='block';el.querySelectorAll('iframe[data-zeffy-embed-src]').forEach(function(f){f.src=f.getAttribute('data-zeffy-embed-src');});});">
+      </script>
+    </div>
+    <p class="note">If the form does not load, <a href="https://www.zeffy.com/en-US/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show" target="_blank" rel="noopener">open it on Zeffy directly »</a></p>
+  </section>
+
   <section>
     <h2>How the night works</h2>
     <ol class="steps">
-      <li><strong>Mingle and snoop</strong>You get a card with things to share and secrets to keep. Talk to everyone and figure out who's hiding what.</li>
-      <li><strong>Talent show, Act One</strong>Half the contestants perform a short act, about one to two minutes.</li>
-      <li><strong>The plot thickens</strong>The saboteur strikes again. New clues come out and the questioning gets serious.</li>
-      <li><strong>Accuse and reveal</strong>Everyone makes their guess, then each character tells their side until the saboteur confesses.</li>
+      <li><strong>Find your table</strong>Every table has its own full cast of suspects, so the mystery plays out around you rather than on a stage. Dinner is served while it does.</li>
+      <li><strong>Meet the suspects</strong>The contestants introduce themselves and mingle. Ask them anything. Every one of them is hiding something, and every one has a habit or two they cannot help — spotting those is half the game.</li>
+      <li><strong>Talent show, Act One</strong>Half the contestants perform their acts.</li>
+      <li><strong>The plot thickens</strong>The saboteur strikes again. Fresh clues come out and the questioning gets serious.</li>
+      <li><strong>Make your accusation</strong>Everyone names the culprit they think did it, and then each character tells their side until the saboteur confesses.</li>
       <li><strong>Talent show, Act Two</strong>The rest of the contestants perform to close out the night.</li>
     </ol>
-    <p class="note"><strong>You don't need a real talent.</strong> Performing is optional, and you can do any act you like. Each character's act from last year is listed below only as an idea. Stay in character all night, and have fun with your character's odd habits!</p>
+    <p class="note">The suspects stay in character all evening and will not break for anything. Question them, compare notes with your table, and see who gets it right.</p>
+  </section>
+
+  <section id="cast">
+    <h2>Who is playing who</h2>
+    <p class="section-intro">Each team plays the whole mystery at its own pair of tables, so every table has its own detective, its own Nobel Umbridge and its own saboteur. Tap a character to read about them.</p>
+    <div class="teams">
+      <article class="team team-blue">
+        <h3>Blue team <span class="tables">Tables 2 and 3</span></h3>
+        <ul class="team-list">
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🤠</span>
+            <span class="who">Cameron Johnson</span>
+            <span class="as"><a href="#sam">Samantha Gerard</a><small>FBI investigator</small></span>
+          </li>
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🔍</span>
+            <span class="who">Jackson Chesney</span>
+            <span class="as"><a href="#jack">Jack Cleusseu</a><small>Detective</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🦒</span>
+            <span class="who">Anna Margalis</span>
+            <span class="as"><a href="#henley">Henley Hexx</a><small>Zoologist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🪶</span>
+            <span class="who">Bianca Baker</span>
+            <span class="as"><a href="#finn">Finn Frost</a><small>Author</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">💼</span>
+            <span class="who">Estelle Addison</span>
+            <span class="as"><a href="#nobel">Nobel Umbridge</a><small>Talent agent</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">👩‍🍳</span>
+            <span class="who">Holly Hom</span>
+            <span class="as"><a href="#north">North Blitz</a><small>Chef</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎭</span>
+            <span class="who">Hunter Linford</span>
+            <span class="as"><a href="#max">Max Moreau</a><small>Actor</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🧘</span>
+            <span class="who">Kate Schnuelle</span>
+            <span class="as"><a href="#eden">Eden Crimson</a><small>Fitness guru</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎸</span>
+            <span class="who">Piper Garrison</span>
+            <span class="as"><a href="#kipling">Kipling Zorg</a><small>Guitarist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">💼</span>
+            <span class="who">Robyn Zakharov</span>
+            <span class="as"><a href="#nobel">Nobel Umbridge</a><small>Talent agent</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">❓</span>
+            <span class="who">Ryan Cramer</span>
+            <span class="as tbc">Character still to be confirmed</span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🍦</span>
+            <span class="who">Tajna Luthera</span>
+            <span class="as"><a href="#nox">Nox Nocturne</a><small>Ice cream truck driver</small></span>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-green">
+        <h3>Green team <span class="tables">Tables 4 and 5</span></h3>
+        <ul class="team-list">
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🔍</span>
+            <span class="who">Essara Macias</span>
+            <span class="as"><a href="#jack">Jaqueline Cleusseu</a><small>Detective</small></span>
+          </li>
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🤠</span>
+            <span class="who">Rya Atanasova</span>
+            <span class="as"><a href="#sam">Samantha Gerard</a><small>FBI investigator</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎸</span>
+            <span class="who">Abbi Lara</span>
+            <span class="as"><a href="#kipling">Kipling Zorg</a><small>Guitarist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">👗</span>
+            <span class="who">Alexis Pantier</span>
+            <span class="as"><a href="#sage">Sage Tempus</a><small>Fashion designer</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🧘</span>
+            <span class="who">Amelia Fish</span>
+            <span class="as"><a href="#eden">Eden Crimson</a><small>Fitness guru</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎭</span>
+            <span class="who">Brixton Berlet</span>
+            <span class="as"><a href="#max">Max Moreau</a><small>Actor</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🍦</span>
+            <span class="who">Claire Petersen</span>
+            <span class="as"><a href="#nox">Nox Nocturne</a><small>Ice cream truck driver</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">💼</span>
+            <span class="who">Elodie DeHaven</span>
+            <span class="as"><a href="#nobel">Nobel Umbridge</a><small>Talent agent</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🩰</span>
+            <span class="who">Evie Porath</span>
+            <span class="as"><a href="#stass">Stass Sweeney</a><small>Dance instructor</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🦒</span>
+            <span class="who">Gema Hernandez</span>
+            <span class="as"><a href="#henley">Henley Hexx</a><small>Zoologist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">👩‍🍳</span>
+            <span class="who">Lydia Norton</span>
+            <span class="as"><a href="#north">North Blitz</a><small>Chef</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🪶</span>
+            <span class="who">Reagan Ducommun</span>
+            <span class="as"><a href="#finn">Finn Frost</a><small>Author</small></span>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-red">
+        <h3>Red team <span class="tables">Tables 6 and 7</span></h3>
+        <ul class="team-list">
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🤠</span>
+            <span class="who">Raelynn Hanna</span>
+            <span class="as"><a href="#sam">Sam Gerard</a><small>FBI investigator</small></span>
+          </li>
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🔍</span>
+            <span class="who">Zemira Carr</span>
+            <span class="as"><a href="#jack">Jaqueline Cleusseu</a><small>Detective</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎸</span>
+            <span class="who">Brock Clayton</span>
+            <span class="as"><a href="#kipling">Kipling Zorg</a><small>Guitarist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🍦</span>
+            <span class="who">Ian Skousen</span>
+            <span class="as"><a href="#nox">Nox Nocturne</a><small>Ice cream truck driver</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎭</span>
+            <span class="who">James Carter III</span>
+            <span class="as"><a href="#max">Max Moreau</a><small>Actor</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">💼</span>
+            <span class="who">Mia Harper</span>
+            <span class="as"><a href="#nobel">Nobel Umbridge</a><small>Talent agent</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🪶</span>
+            <span class="who">Noah Barnett</span>
+            <span class="as"><a href="#finn">Finn Frost</a><small>Author</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🦒</span>
+            <span class="who">Paisley Kelly</span>
+            <span class="as"><a href="#henley">Henley Hexx</a><small>Zoologist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">✈️</span>
+            <span class="who">Roman Esmaeili</span>
+            <span class="as"><a href="#binx">Binx Buttons</a><small>Pilot</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">👩‍🍳</span>
+            <span class="who">Salome Goitom</span>
+            <span class="as"><a href="#north">North Blitz</a><small>Chef</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🧘</span>
+            <span class="who">Sophia Harper</span>
+            <span class="as"><a href="#eden">Eden Crimson</a><small>Fitness guru</small></span>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-purple">
+        <h3>Purple team <span class="tables">Tables 8 and 9</span></h3>
+        <ul class="team-list">
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🔍</span>
+            <span class="who">Aurora Jensen</span>
+            <span class="as"><a href="#jack">Jaqueline Cleusseu</a><small>Detective</small></span>
+          </li>
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🤠</span>
+            <span class="who">Reed Roberts</span>
+            <span class="as"><a href="#sam">Sam Gerard</a><small>FBI investigator</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🩺</span>
+            <span class="who">Camille Pineda</span>
+            <span class="as"><a href="#dree">Dree Deville</a><small>Nurse</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🍔</span>
+            <span class="who">David Yauch</span>
+            <span class="as"><a href="#reed">Reed Mudlark</a><small>Fast food cook</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🪶</span>
+            <span class="who">Eden Jess</span>
+            <span class="as"><a href="#finn">Finn Frost</a><small>Author</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🧘</span>
+            <span class="who">Ellie Yauch</span>
+            <span class="as"><a href="#eden">Eden Crimson</a><small>Fitness guru</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎭</span>
+            <span class="who">Grant Roberts</span>
+            <span class="as"><a href="#max">Max Moreau</a><small>Actor</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🦒</span>
+            <span class="who">Jeremy Manley</span>
+            <span class="as"><a href="#henley">Henley Hexx</a><small>Zoologist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎸</span>
+            <span class="who">Mason Polito</span>
+            <span class="as"><a href="#kipling">Kipling Zorg</a><small>Guitarist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">👗</span>
+            <span class="who">Molly Green</span>
+            <span class="as"><a href="#sage">Sage Tempus</a> or <a href="#stass">Stass Sweeney</a><small>Fashion designer or dance instructor</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">💼</span>
+            <span class="who">Revelle Abernethy</span>
+            <span class="as"><a href="#nobel">Nobel Umbridge</a><small>Talent agent</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">✈️</span>
+            <span class="who">Skylar Phillips</span>
+            <span class="as"><a href="#binx">Binx Buttons</a><small>Pilot</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🍦</span>
+            <span class="who">Valerie Van Dine</span>
+            <span class="as"><a href="#nox">Nox Nocturne</a><small>Ice cream truck driver</small></span>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-black">
+        <h3>Black team <span class="tables">Tables 10 and 11</span></h3>
+        <ul class="team-list">
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🔍</span>
+            <span class="who">Emerson Turner</span>
+            <span class="as"><a href="#jack">Jack Cleusseu</a><small>Detective</small></span>
+          </li>
+          <li class="is-detective">
+            <span class="emoji" aria-hidden="true">🤠</span>
+            <span class="who">Isaac Russo</span>
+            <span class="as"><a href="#sam">Sam Gerard</a><small>FBI investigator</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🦒</span>
+            <span class="who">Andrea Beas</span>
+            <span class="as"><a href="#henley">Henley Hexx</a><small>Zoologist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎭</span>
+            <span class="who">Clara Cornia</span>
+            <span class="as"><a href="#max">Max Moreau</a><small>Actor</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🪶</span>
+            <span class="who">Elizabeth Decker</span>
+            <span class="as"><a href="#finn">Finn Frost</a><small>Author</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🍦</span>
+            <span class="who">Juliette Habeeb</span>
+            <span class="as"><a href="#nox">Nox Nocturne</a><small>Ice cream truck driver</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🎸</span>
+            <span class="who">Kayson Nguyen</span>
+            <span class="as"><a href="#kipling">Kipling Zorg</a><small>Guitarist</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🍔</span>
+            <span class="who">Nikki Taylor</span>
+            <span class="as"><a href="#reed">Reed Mudlark</a><small>Fast food cook</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">🧘</span>
+            <span class="who">Olive Rhodes</span>
+            <span class="as"><a href="#eden">Eden Crimson</a><small>Fitness guru</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">👩‍🍳</span>
+            <span class="who">Paul Ibrahim</span>
+            <span class="as"><a href="#north">North Blitz</a><small>Chef</small></span>
+          </li>
+          <li>
+            <span class="emoji" aria-hidden="true">💼</span>
+            <span class="who">Rachel Cornia</span>
+            <span class="as"><a href="#nobel">Nobel Umbridge</a><small>Talent agent</small></span>
+          </li>
+        </ul>
+      </article>
+    </div>
+    <p class="note">A few cast members are working the food table rather than playing a suspect, so they are not listed here.</p>
   </section>
 
   <section id="characters">
@@ -347,20 +693,17 @@
       <li><a href="#sage">Sage Tempus</a></li>
       <li><a href="#binx">Binx Buttons</a></li>
       <li><a href="#dree">Dree Deville</a></li>
-      <li><a href="#olly">Olly Omega</a></li>
-      <li><a href="#quinn">Quinn Doom</a></li>
       <li><a href="#reed">Reed Mudlark</a></li>
-      <li><a href="#salvy">Salvy Vader</a></li>
     </ul>
 
     <h3 class="group">The detectives</h3>
-    <p class="group-intro">The detectives aren't suspects. They know every clue, and they field the audience's questions without giving the answer away.</p>
+    <p class="group-intro">The detectives aren't suspects. Put your questions to them — they have seen every clue, though they will not hand you the answer.</p>
     <div class="cards">
 
       <article class="card detective" id="jack">
         <header><span class="emoji" aria-hidden="true">🔍</span><div><h3>Jack/Jaqueline Cleusseu</h3><span class="role">Detective</span></div></header>
         <span class="badge">Knows all the clues</span>
-        <p>Your job is to answer the audience's questions with more than an ounce of suspicious remarks, preferably in a French accent. But be careful not to be too obvious!</p>
+        <p>A French detective with a sharp eye and an even sharper accent, brought in to get to the bottom of the sabotage. Ask them anything — whether you get a straight answer is another matter.</p>
         <dl class="facts">
           <div><dt>Accent</dt><dd>French, s'il vous plaît</dd></div>
         </dl>
@@ -369,7 +712,7 @@
       <article class="card detective" id="sam">
         <header><span class="emoji" aria-hidden="true">🤠</span><div><h3>Sam/Samantha Gerard</h3><span class="role">FBI investigator</span></div></header>
         <span class="badge">Knows all the clues</span>
-        <p>This one-armed FBI investigator adds tidbits of ridiculous Southern wisdom to every answer for our tediously inadequate audience. Keep them guessing, but also keep it Texan.</p>
+        <p>A one-armed FBI investigator with a piece of Southern wisdom for every occasion, most of it beside the point. Knows more than they are letting on.</p>
         <dl class="facts">
           <div><dt>Accent</dt><dd>Texan, y'all</dd></div>
         </dl>
@@ -383,511 +726,116 @@
       <article class="card" id="max">
         <header><span class="emoji" aria-hidden="true">🎭</span><div><h3>Max Moreau</h3><span class="role">Actor</span></div></header>
         <p>A hometown actor who is always on stage at the local playhouse, and who can't keep a secret to save their life.</p>
-        <ul class="quirks">
-          <li>Terrified of table salt</li>
-          <li>Eats very slowly, and in alphabetical order</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>3rd place: a dramatic reading of <em>Green Eggs and Ham</em></dd></div>
-          <div><dt>Costume idea</dt><dd>Something Dr. Seuss</dd></div>
         </dl>
       </article>
 
       <article class="card" id="nobel">
         <header><span class="emoji" aria-hidden="true">💼</span><div><h3>Nobel Umbridge</h3><span class="role">Talent agent</span></div></header>
         <p>A talent agent who will argue about anything with anyone, even the experts. Gets bored easily, and boredom leads to trouble.</p>
-        <ul class="quirks">
-          <li>Afraid of germs</li>
-          <li>Holds their breath whenever someone coughs or sneezes</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: the dance from <em>Napoleon Dynamite</em></dd></div>
-          <div><dt>Costume idea</dt><dd>Napoleon Dynamite</dd></div>
         </dl>
       </article>
 
       <article class="card" id="eden">
         <header><span class="emoji" aria-hidden="true">🧘</span><div><h3>Eden Crimson</h3><span class="role">Fitness guru</span></div></header>
         <p>A high-energy yoga teacher who can't get enough reality TV.</p>
-        <ul class="quirks">
-          <li>Taps on tables and walls to burn off extra energy</li>
-          <li>Likes things messy and thinks too clean is unhealthy</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: a workout routine to hip-hop music</dd></div>
-          <div><dt>Costume idea</dt><dd>'80s workout gear</dd></div>
         </dl>
       </article>
 
       <article class="card" id="nox">
         <header><span class="emoji" aria-hidden="true">🍦</span><div><h3>Nox Nocturne</h3><span class="role">Ice cream truck driver</span></div></header>
         <p>Runs the ice cream truck in Mystic Falls, and is the reigning champion of the talent show.</p>
-        <ul class="quirks">
-          <li>Can't get things clean enough, and washes the truck at sunrise</li>
-          <li>A night owl who hardly sleeps and loves candlelight</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd><strong>Won</strong> with a stand-up comedy routine</dd></div>
-          <div><dt>Costume idea</dt><dd>Anything ice cream</dd></div>
         </dl>
       </article>
 
       <article class="card" id="finn">
         <header><span class="emoji" aria-hidden="true">🪶</span><div><h3>Finn Frost</h3><span class="role">Author</span></div></header>
         <p>A gloomy writer who always wears black and keeps a pet raven.</p>
-        <ul class="quirks">
-          <li>Scared of cracks, like the ones in the sidewalk</li>
-          <li>Always doodling and scribbling</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Gold star mention: read from a murder mystery novel</dd></div>
-          <div><dt>Costume idea</dt><dd>Gothic poet, all in black</dd></div>
         </dl>
       </article>
 
       <article class="card" id="henley">
         <header><span class="emoji" aria-hidden="true">🦒</span><div><h3>Henley Hexx</h3><span class="role">Zoologist</span></div></header>
         <p>Head zookeeper at the Mystic Falls Zoo, and can quote a movie for any occasion.</p>
-        <ul class="quirks">
-          <li>Looks up at the ceiling while talking, as if reading a teleprompter</li>
-          <li>Colorblind, so their clothes never match</li>
-          <li>Has a very hard time making decisions</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: brought in five animals and talked about them</dd></div>
-          <div><dt>Costume idea</dt><dd>Safari explorer, mismatched on purpose</dd></div>
         </dl>
       </article>
 
       <article class="card" id="north">
         <header><span class="emoji" aria-hidden="true">👩‍🍳</span><div><h3>North Blitz</h3><span class="role">Chef</span></div></header>
         <p>An executive chef and environmentalist who never wastes anything. Nobody knows where North grew up, and the accent keeps changing.</p>
-        <ul class="quirks">
-          <li>Only eats at the top of the hour</li>
-          <li>Can't stand anything set out in odd numbers</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: one-minute guacamole, with a taste test for the judges</dd></div>
-          <div><dt>Costume idea</dt><dd>Chef's whites</dd></div>
         </dl>
       </article>
 
       <article class="card" id="kipling">
         <header><span class="emoji" aria-hidden="true">🎸</span><div><h3>Kipling Zorg</h3><span class="role">Guitarist</span></div></header>
         <p>A rock guitarist who laughs at everything, funny or not.</p>
-        <ul class="quirks">
-          <li>Has to sniff everything, people included</li>
-          <li>Does a headstand every morning</li>
-          <li>Gets the hiccups when nervous</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>2nd place: Beethoven's 5th on electric guitar</dd></div>
-          <div><dt>Costume idea</dt><dd>Rock and roll</dd></div>
         </dl>
       </article>
 
       <article class="card" id="stass">
         <header><span class="emoji" aria-hidden="true">🩰</span><div><h3>Stass Sweeney</h3><span class="role">Dance instructor</span></div></header>
         <p>A classically trained dancer who acts like an expert on every subject.</p>
-        <ul class="quirks">
-          <li>Walks on tiptoe out of habit</li>
-          <li>Fixes anyone's messy hair with their fingers</li>
-          <li>Cries at the smallest thing</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>4th place: a jazz dance to "Memory" from <em>Cats</em></dd></div>
-          <div><dt>Costume idea</dt><dd>Dance costume</dd></div>
         </dl>
       </article>
 
       <article class="card" id="sage">
         <header><span class="emoji" aria-hidden="true">👗</span><div><h3>Sage Tempus</h3><span class="role">Fashion designer</span></div></header>
         <p>A rising fashion star from Paris.</p>
-        <ul class="quirks">
-          <li>Shakes out both legs before sitting down</li>
-          <li>Never walks back the way they came</li>
-          <li>Can't stand silence, and curls up on the floor until the noise comes back</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: modeled their own fashion line</dd></div>
-          <div><dt>Costume idea</dt><dd>The trendiest outfit you can put together</dd></div>
         </dl>
       </article>
 
       <article class="card" id="binx">
         <header><span class="emoji" aria-hidden="true">✈️</span><div><h3>Binx Buttons</h3><span class="role">Pilot</span></div></header>
         <p>Captain Buttons flies for Budget Airlines, and speaks very properly.</p>
-        <ul class="quirks">
-          <li>Avoids anything warm: hot showers, cocoa, soup</li>
-          <li>A loud chewer</li>
-          <li>Never uses slang, and corrects anyone who does</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Gold star mention: a lecture on how to fly a plane</dd></div>
-          <div><dt>Costume idea</dt><dd>Pilot's uniform</dd></div>
         </dl>
       </article>
 
       <article class="card" id="dree">
         <header><span class="emoji" aria-hidden="true">🩺</span><div><h3>Dree Deville</h3><span class="role">Nurse</span></div></header>
         <p>An emergency room nurse at Mystic Falls General Hospital, with lots of close friends.</p>
-        <ul class="quirks">
-          <li>A daydreamer who often zones out</li>
-          <li>Always wants a hug</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: showed how to give stitches on an orange</dd></div>
-          <div><dt>Costume idea</dt><dd>Nurse's scrubs</dd></div>
         </dl>
       </article>
 
-      <article class="card" id="olly">
-        <header><span class="emoji" aria-hidden="true">🍼</span><div><h3>Olly Omega</h3><span class="role">Nanny</span></div></header>
-        <p>A nanny who holds whole conversations with themselves, and insists it is only to remember the day's schedules. They say talking to yourself is a sign of intelligence, so Olly must be a genius.</p>
-        <ul class="quirks">
-          <li>Talks aloud to keep every detail straight</li>
-          <li>Bites their fingernails when nervous</li>
-        </ul>
-        <dl class="facts">
-          <div><dt>Last year</dt><dd>Did not place: Hard Knock Life from Annie</dd></div>
-          <div><dt>Costume idea</dt><dd>Something Little Orphan Annie</dd></div>
-        </dl>
-      </article>
 
-      <article class="card" id="quinn">
-        <header><span class="emoji" aria-hidden="true">🏁</span><div><h3>Quinn Doom</h3><span class="role">Racecar driver</span></div></header>
-        <p>A professional stock car racer for Smirshy Motorsports, and a risk-taker with a Southern accent.</p>
-        <ul class="quirks">
-          <li>Smacks a huge wad of bubblegum, and will not share the stash</li>
-          <li>Grunts constantly</li>
-        </ul>
-        <dl class="facts">
-          <div><dt>Last year</dt><dd>5th place: an a cappella Bohemian Rhapsody</dd></div>
-          <div><dt>Costume idea</dt><dd>A racing suit</dd></div>
-        </dl>
-      </article>
 
       <article class="card" id="reed">
         <header><span class="emoji" aria-hidden="true">🍔</span><div><h3>Reed Mudlark</h3><span class="role">Fast food cook</span></div></header>
         <p>Cooks at the Food Barn, and is known around town for bright clothes and huge sunbonnets.</p>
-        <ul class="quirks">
-          <li>Outgoing, but always looks angry while insisting they're in a great mood</li>
-          <li>Avoids mirrors, and covers them with sheets every night</li>
-        </ul>
         <dl class="facts">
           <div><dt>Last year</dt><dd>Did not place: a Shakespeare monologue</dd></div>
-          <div><dt>Costume idea</dt><dd>Something Shakespearean</dd></div>
         </dl>
       </article>
 
-      <article class="card" id="salvy">
-        <header><span class="emoji" aria-hidden="true">🧪</span><div><h3>Salvy Vader</h3><span class="role">Biologist</span></div></header>
-        <p>A modern-day mad scientist with a genius IQ, working at Medline, Incorporated, a company that researches medicines.</p>
-        <ul class="quirks">
-          <li>Remembers everything they see</li>
-          <li>Only eats green candy</li>
-          <li>Performs as a mime on Main Street every Saturday, just for fun</li>
-        </ul>
-        <dl class="facts">
-          <div><dt>Last year</dt><dd>Gold star mention: a mime routine</dd></div>
-          <div><dt>Costume idea</dt><dd>Mime</dd></div>
-        </dl>
-      </article>
 
     </div>
 
     <p class="note">Every character can be played by anyone. Casting is finished — <a href="#cast"><strong>see who is playing who »</strong></a></p>
   </section>
 
-  <section id="cast">
-    <h2>Who is playing who</h2>
-    <p class="section-intro">Each team plays the whole mystery at its own pair of tables, so every table has its own Nobel Umbridge, its own Finn Frost and its own saboteur. Tap a character to read about them.</p>
-    <div class="teams">
-      <article class="team team-blue">
-        <h3>Blue team <span class="tables">Tables 2 and 3</span></h3>
-        <ul class="team-list">
-          <li>
-            <span class="who">Anna Margalis</span>
-            <a class="as" href="#henley">Henley Hexx</a>
-          </li>
-          <li>
-            <span class="who">Bianca Baker</span>
-            <a class="as" href="#finn">Finn Frost</a>
-          </li>
-          <li>
-            <span class="who">Cameron Johnson</span>
-            <a class="as" href="#sam">Sam/Samantha Gerard</a>
-          </li>
-          <li>
-            <span class="who">Estelle Addison</span>
-            <a class="as" href="#nobel">Nobel Umbridge</a>
-          </li>
-          <li>
-            <span class="who">Holly Hom</span>
-            <a class="as" href="#north">North Blitz</a>
-          </li>
-          <li>
-            <span class="who">Hunter Linford</span>
-            <a class="as" href="#max">Max Moreau</a>
-          </li>
-          <li>
-            <span class="who">Jackson Chesney</span>
-            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
-          </li>
-          <li>
-            <span class="who">Kate Schnuelle</span>
-            <a class="as" href="#eden">Eden Crimson</a>
-            <small>Still a dancer, but focused on Jazzercise rather than classical dance.</small>
-          </li>
-          <li>
-            <span class="who">Piper Garrison</span>
-            <a class="as" href="#kipling">Kipling Zorg</a>
-          </li>
-          <li>
-            <span class="who">Robyn Zakharov</span>
-            <a class="as" href="#nobel">Nobel Umbridge</a>
-          </li>
-          <li>
-            <span class="who">Ryan Cramer</span>
-            <span class="as tbc">Character still to be confirmed</span>
-          </li>
-          <li>
-            <span class="who">Tajna Luthera</span>
-            <a class="as" href="#nox">Nox Nocturne</a>
-          </li>
-        </ul>
-      </article>
-      <article class="team team-green">
-        <h3>Green team <span class="tables">Tables 4 and 5</span></h3>
-        <ul class="team-list">
-          <li>
-            <span class="who">Abbi Lara</span>
-            <a class="as" href="#kipling">Kipling Zorg</a>
-          </li>
-          <li>
-            <span class="who">Alexis Pantier</span>
-            <a class="as" href="#sage">Sage Tempus</a>
-          </li>
-          <li>
-            <span class="who">Amelia Fish</span>
-            <a class="as" href="#eden">Eden Crimson</a>
-          </li>
-          <li>
-            <span class="who">Brixton Berlet</span>
-            <a class="as" href="#max">Max Moreau</a>
-          </li>
-          <li>
-            <span class="who">Claire Petersen</span>
-            <a class="as" href="#nox">Nox Nocturne</a>
-          </li>
-          <li>
-            <span class="who">Elodie DeHaven</span>
-            <a class="as" href="#nobel">Nobel Umbridge</a>
-          </li>
-          <li>
-            <span class="who">Essara Macias</span>
-            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
-          </li>
-          <li>
-            <span class="who">Evie Porath</span>
-            <a class="as" href="#stass">Stass Sweeney</a>
-            <small>Still super stylish, but now a dance instructor obsessed with high fashion.</small>
-          </li>
-          <li>
-            <span class="who">Gema Hernandez</span>
-            <a class="as" href="#henley">Henley Hexx</a>
-          </li>
-          <li>
-            <span class="who">Lydia Norton</span>
-            <a class="as" href="#north">North Blitz</a>
-          </li>
-          <li>
-            <span class="who">Reagan Ducommun</span>
-            <a class="as" href="#finn">Finn Frost</a>
-          </li>
-          <li>
-            <span class="who">Rya Atanasova</span>
-            <a class="as" href="#sam">Sam/Samantha Gerard</a>
-          </li>
-        </ul>
-      </article>
-      <article class="team team-red">
-        <h3>Red team <span class="tables">Tables 6 and 7</span></h3>
-        <ul class="team-list">
-          <li>
-            <span class="who">Brock Clayton</span>
-            <a class="as" href="#kipling">Kipling Zorg</a>
-          </li>
-          <li>
-            <span class="who">Ian Skousen</span>
-            <a class="as" href="#nox">Nox Nocturne</a>
-          </li>
-          <li>
-            <span class="who">James Carter III</span>
-            <a class="as" href="#max">Max Moreau</a>
-          </li>
-          <li>
-            <span class="who">Mia Harper</span>
-            <a class="as" href="#nobel">Nobel Umbridge</a>
-          </li>
-          <li>
-            <span class="who">Noah Barnett</span>
-            <a class="as" href="#finn">Finn Frost</a>
-          </li>
-          <li>
-            <span class="who">Paisley Kelly</span>
-            <a class="as" href="#henley">Henley Hexx</a>
-          </li>
-          <li>
-            <span class="who">Raelynn Hanna</span>
-            <a class="as" href="#sam">Sam/Samantha Gerard</a>
-          </li>
-          <li>
-            <span class="who">Roman Esmaeili</span>
-            <a class="as" href="#binx">Binx Buttons</a>
-            <small>Same outfit, but now afraid of everything.</small>
-          </li>
-          <li>
-            <span class="who">Salome Goitom</span>
-            <a class="as" href="#north">North Blitz</a>
-            <small>The nurse in charge of hospital food — still a nurse, just one who cooks.</small>
-          </li>
-          <li>
-            <span class="who">Sophia Harper</span>
-            <a class="as" href="#eden">Eden Crimson</a>
-          </li>
-          <li>
-            <span class="who">Zemira Carr</span>
-            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
-          </li>
-        </ul>
-      </article>
-      <article class="team team-purple">
-        <h3>Purple team <span class="tables">Tables 8 and 9</span></h3>
-        <ul class="team-list">
-          <li>
-            <span class="who">Aurora Jensen</span>
-            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
-          </li>
-          <li>
-            <span class="who">Camille Pineda</span>
-            <a class="as" href="#dree">Dree Deville</a>
-          </li>
-          <li>
-            <span class="who">David Yauch</span>
-            <a class="as" href="#reed">Reed Mudlark</a>
-          </li>
-          <li>
-            <span class="who">Eden Jess</span>
-            <a class="as" href="#finn">Finn Frost</a>
-          </li>
-          <li>
-            <span class="who">Ellie Yauch</span>
-            <a class="as" href="#eden">Eden Crimson</a>
-          </li>
-          <li>
-            <span class="who">Grant Roberts</span>
-            <a class="as" href="#max">Max Moreau</a>
-          </li>
-          <li>
-            <span class="who">Jeremy Manley</span>
-            <a class="as" href="#henley">Henley Hexx</a>
-          </li>
-          <li>
-            <span class="who">Mason Polito</span>
-            <a class="as" href="#kipling">Kipling Zorg</a>
-          </li>
-          <li>
-            <span class="who">Molly Green</span>
-            <span class="as">Sage Tempus or Stass Sweeney</span>
-            <small>Choosing between the two.</small>
-          </li>
-          <li>
-            <span class="who">Reed Roberts</span>
-            <a class="as" href="#sam">Sam/Samantha Gerard</a>
-          </li>
-          <li>
-            <span class="who">Revelle Abernethy</span>
-            <a class="as" href="#nobel">Nobel Umbridge</a>
-          </li>
-          <li>
-            <span class="who">Skylar Phillips</span>
-            <a class="as" href="#binx">Binx Buttons</a>
-          </li>
-          <li>
-            <span class="who">Valerie Van Dine</span>
-            <a class="as" href="#nox">Nox Nocturne</a>
-          </li>
-        </ul>
-      </article>
-      <article class="team team-black">
-        <h3>Black team <span class="tables">Tables 10 and 11</span></h3>
-        <ul class="team-list">
-          <li>
-            <span class="who">Andrea Beas</span>
-            <a class="as" href="#henley">Henley Hexx</a>
-          </li>
-          <li>
-            <span class="who">Clara Cornia</span>
-            <a class="as" href="#max">Max Moreau</a>
-          </li>
-          <li>
-            <span class="who">Elizabeth Decker</span>
-            <a class="as" href="#finn">Finn Frost</a>
-          </li>
-          <li>
-            <span class="who">Emerson Turner</span>
-            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
-          </li>
-          <li>
-            <span class="who">Isaac Russo</span>
-            <a class="as" href="#sam">Sam/Samantha Gerard</a>
-          </li>
-          <li>
-            <span class="who">Juliette Habeeb</span>
-            <a class="as" href="#nox">Nox Nocturne</a>
-          </li>
-          <li>
-            <span class="who">Kayson Nguyen</span>
-            <a class="as" href="#kipling">Kipling Zorg</a>
-          </li>
-          <li>
-            <span class="who">Nikki Taylor</span>
-            <a class="as" href="#reed">Reed Mudlark</a>
-          </li>
-          <li>
-            <span class="who">Olive Rhodes</span>
-            <a class="as" href="#eden">Eden Crimson</a>
-          </li>
-          <li>
-            <span class="who">Paul Ibrahim</span>
-            <a class="as" href="#north">North Blitz</a>
-          </li>
-          <li>
-            <span class="who">Rachel Cornia</span>
-            <a class="as" href="#nobel">Nobel Umbridge</a>
-          </li>
-        </ul>
-      </article>
-    </div>
-    <p class="note">A few cast members are working the food table rather than playing a suspect, so they are not listed here.</p>
-  </section>
 
-  <section id="tickets">
-    <h2>Tickets</h2>
-    <p class="section-intro">Friday 23 October, 6:00–8:00pm, in the MAAS multipurpose room. Tickets are sold through Zeffy, which passes the whole ticket price to the drama club.</p>
-    <div class="ticket-embed">
-      <div data-zeffy-embed data-form-url="/embed/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show"></div>
-      <div data-zeffy-embed-fallback style="display:none;">
-        <div style="position:relative;overflow:hidden;height:450px;width:100%;padding-top:450px;"><iframe title="Ticketing form powered by Zeffy" style="position:absolute;border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%" data-zeffy-embed-src="https://www.zeffy.com/embed/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show" allowpaymentrequest allowTransparency="true"></iframe></div>
-      </div>
-      <script
-        src="https://www.zeffy.com/embed/v2/zeffy-embed.js"
-        onerror="document.querySelectorAll('[data-zeffy-embed-fallback]').forEach(function(el){el.style.display='block';el.querySelectorAll('iframe[data-zeffy-embed-src]').forEach(function(f){f.src=f.getAttribute('data-zeffy-embed-src');});});">
-      </script>
-    </div>
-    <p class="note">If the form does not load, <a href="https://www.zeffy.com/en-US/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show" target="_blank" rel="noopener">open it on Zeffy directly »</a></p>
-  </section>
 
 </main>
 
