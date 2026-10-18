@@ -1115,6 +1115,14 @@ table.scene-grid tr.band-start td.cell, table.scene-grid tr.band-start th.who { 
 .song-scene.warm-up { border-color: var(--gold); background: var(--gold-soft); }
 .music-link { margin: 12px 0 0; font-size: .92rem; color: var(--ink-soft); }
 
+/* A show with a Link on the Calendar tab gets a button of its own, for tickets. */
+.show-link { margin-top: 10px; }
+a.btn-show {
+  display: inline-block; padding: 9px 16px; border-radius: 999px; font-weight: 600;
+  font-size: .92rem; text-decoration: none; background: var(--accent); color: #fff;
+}
+a.btn-show:hover { filter: brightness(1.07); }
+
 @media print {
   .nav, .banner, .search-row, .legend, footer.site { display: none; }
   body { background: #fff; }

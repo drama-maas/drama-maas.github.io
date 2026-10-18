@@ -255,6 +255,33 @@
     .panel { padding: 18px; }
     .facts div { grid-template-columns: 84px 1fr; }
   }
+
+  /* Who is playing who. One panel per team, colour-keyed to the table cloths. */
+  .teams { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+  .team {
+    background: var(--bg-raised); border: 1px solid var(--line); border-top: 4px solid var(--team, var(--curtain));
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px;
+  }
+  .team-blue { --team: #2f6fb3; }
+  .team-green { --team: #2e7d55; }
+  .team-red { --team: #b3332f; }
+  .team-purple { --team: #6b4196; }
+  .team-black { --team: #3b3238; }
+  .team h3 { margin: 0 0 12px; font-size: 1.05rem; color: var(--team); }
+  .team h3 .tables { display: block; font-family: Lexend, system-ui, sans-serif; font-size: .78rem; font-weight: 400; color: var(--ink-soft); letter-spacing: .02em; }
+  .team-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .team-list li { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline; }
+  .team-list .who { font-weight: 600; }
+  .team-list .as { font-size: .9rem; color: var(--accent); text-align: right; }
+  .team-list .as.tbc { color: var(--ink-soft); font-style: italic; }
+  .team-list small { grid-column: 1 / -1; color: var(--ink-soft); font-size: .82rem; }
+  .cta .when { font-weight: 600; color: #ffe6a3; margin-bottom: 10px; }
+  .cta .small a { color: #ffe6a3; }
+  .ticket-embed { background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); }
+  @media (max-width: 480px) {
+    .team-list li { grid-template-columns: 1fr; }
+    .team-list .as { text-align: left; }
+  }
 </style>
 </head>
 <body>
@@ -282,14 +309,11 @@
     </div>
 
     <div class="panel cta">
-      <h2>Choose your character</h2>
-      <ol>
-        <li>Read about the characters below.</li>
-        <li>Pick your first, second and third choices.</li>
-        <li>Send them in on the form.</li>
-      </ol>
-      <p><a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSf3EBzs9ZBKfhs0nLMcVWNcclII2fw8GexahsZ34ltKCD7fnQ/viewform" target="_blank" rel="noopener">Fill out the form »</a></p>
-      <p class="small">Would rather help behind the scenes? The form has a background and usher option too, and a "put me where you need me" choice.</p>
+      <h2>Friday 23 October</h2>
+      <p class="when">Doors at 6:00pm · the show runs until 8:00pm</p>
+      <p>Dinner, a talent show and a saboteur to catch. Every seat is at a table with its own cast of suspects.</p>
+      <p><a class="btn" href="https://www.zeffy.com/en-US/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show" target="_blank" rel="noopener">Get tickets »</a></p>
+      <p class="small">Casting is finished — see <a href="#cast">who is playing who</a> further down.</p>
     </div>
   </section>
 
@@ -572,7 +596,297 @@
 
     </div>
 
-    <p class="note">Every character can be played by anyone. Ready to choose? <a href="https://docs.google.com/forms/d/e/1FAIpQLSf3EBzs9ZBKfhs0nLMcVWNcclII2fw8GexahsZ34ltKCD7fnQ/viewform" target="_blank" rel="noopener"><strong>Fill out the character form »</strong></a></p>
+    <p class="note">Every character can be played by anyone. Casting is finished — <a href="#cast"><strong>see who is playing who »</strong></a></p>
+  </section>
+
+  <section id="cast">
+    <h2>Who is playing who</h2>
+    <p class="section-intro">Each team plays the whole mystery at its own pair of tables, so every table has its own Nobel Umbridge, its own Finn Frost and its own saboteur. Tap a character to read about them.</p>
+    <div class="teams">
+      <article class="team team-blue">
+        <h3>Blue team <span class="tables">Tables 2 and 3</span></h3>
+        <ul class="team-list">
+          <li>
+            <span class="who">Anna Margalis</span>
+            <a class="as" href="#henley">Henley Hexx</a>
+          </li>
+          <li>
+            <span class="who">Bianca Baker</span>
+            <a class="as" href="#finn">Finn Frost</a>
+          </li>
+          <li>
+            <span class="who">Cameron Johnson</span>
+            <a class="as" href="#sam">Sam/Samantha Gerard</a>
+          </li>
+          <li>
+            <span class="who">Estelle Addison</span>
+            <a class="as" href="#nobel">Nobel Umbridge</a>
+          </li>
+          <li>
+            <span class="who">Holly Hom</span>
+            <a class="as" href="#north">North Blitz</a>
+          </li>
+          <li>
+            <span class="who">Hunter Linford</span>
+            <a class="as" href="#max">Max Moreau</a>
+          </li>
+          <li>
+            <span class="who">Jackson Chesney</span>
+            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
+          </li>
+          <li>
+            <span class="who">Kate Schnuelle</span>
+            <a class="as" href="#eden">Eden Crimson</a>
+            <small>Still a dancer, but focused on Jazzercise rather than classical dance.</small>
+          </li>
+          <li>
+            <span class="who">Piper Garrison</span>
+            <a class="as" href="#kipling">Kipling Zorg</a>
+          </li>
+          <li>
+            <span class="who">Robyn Zakharov</span>
+            <a class="as" href="#nobel">Nobel Umbridge</a>
+          </li>
+          <li>
+            <span class="who">Ryan Cramer</span>
+            <span class="as tbc">Character still to be confirmed</span>
+          </li>
+          <li>
+            <span class="who">Tajna Luthera</span>
+            <a class="as" href="#nox">Nox Nocturne</a>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-green">
+        <h3>Green team <span class="tables">Tables 4 and 5</span></h3>
+        <ul class="team-list">
+          <li>
+            <span class="who">Abbi Lara</span>
+            <a class="as" href="#kipling">Kipling Zorg</a>
+          </li>
+          <li>
+            <span class="who">Alexis Pantier</span>
+            <a class="as" href="#sage">Sage Tempus</a>
+          </li>
+          <li>
+            <span class="who">Amelia Fish</span>
+            <a class="as" href="#eden">Eden Crimson</a>
+          </li>
+          <li>
+            <span class="who">Brixton Berlet</span>
+            <a class="as" href="#max">Max Moreau</a>
+          </li>
+          <li>
+            <span class="who">Claire Petersen</span>
+            <a class="as" href="#nox">Nox Nocturne</a>
+          </li>
+          <li>
+            <span class="who">Elodie DeHaven</span>
+            <a class="as" href="#nobel">Nobel Umbridge</a>
+          </li>
+          <li>
+            <span class="who">Essara Macias</span>
+            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
+          </li>
+          <li>
+            <span class="who">Evie Porath</span>
+            <a class="as" href="#stass">Stass Sweeney</a>
+            <small>Still super stylish, but now a dance instructor obsessed with high fashion.</small>
+          </li>
+          <li>
+            <span class="who">Gema Hernandez</span>
+            <a class="as" href="#henley">Henley Hexx</a>
+          </li>
+          <li>
+            <span class="who">Lydia Norton</span>
+            <a class="as" href="#north">North Blitz</a>
+          </li>
+          <li>
+            <span class="who">Reagan Ducommun</span>
+            <a class="as" href="#finn">Finn Frost</a>
+          </li>
+          <li>
+            <span class="who">Rya Atanasova</span>
+            <a class="as" href="#sam">Sam/Samantha Gerard</a>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-red">
+        <h3>Red team <span class="tables">Tables 6 and 7</span></h3>
+        <ul class="team-list">
+          <li>
+            <span class="who">Brock Clayton</span>
+            <a class="as" href="#kipling">Kipling Zorg</a>
+          </li>
+          <li>
+            <span class="who">Ian Skousen</span>
+            <a class="as" href="#nox">Nox Nocturne</a>
+          </li>
+          <li>
+            <span class="who">James Carter III</span>
+            <a class="as" href="#max">Max Moreau</a>
+          </li>
+          <li>
+            <span class="who">Mia Harper</span>
+            <a class="as" href="#nobel">Nobel Umbridge</a>
+          </li>
+          <li>
+            <span class="who">Noah Barnett</span>
+            <a class="as" href="#finn">Finn Frost</a>
+          </li>
+          <li>
+            <span class="who">Paisley Kelly</span>
+            <a class="as" href="#henley">Henley Hexx</a>
+          </li>
+          <li>
+            <span class="who">Raelynn Hanna</span>
+            <a class="as" href="#sam">Sam/Samantha Gerard</a>
+          </li>
+          <li>
+            <span class="who">Roman Esmaeili</span>
+            <a class="as" href="#binx">Binx Buttons</a>
+            <small>Same outfit, but now afraid of everything.</small>
+          </li>
+          <li>
+            <span class="who">Salome Goitom</span>
+            <a class="as" href="#north">North Blitz</a>
+            <small>The nurse in charge of hospital food — still a nurse, just one who cooks.</small>
+          </li>
+          <li>
+            <span class="who">Sophia Harper</span>
+            <a class="as" href="#eden">Eden Crimson</a>
+          </li>
+          <li>
+            <span class="who">Zemira Carr</span>
+            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-purple">
+        <h3>Purple team <span class="tables">Tables 8 and 9</span></h3>
+        <ul class="team-list">
+          <li>
+            <span class="who">Aurora Jensen</span>
+            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
+          </li>
+          <li>
+            <span class="who">Camille Pineda</span>
+            <a class="as" href="#dree">Dree Deville</a>
+          </li>
+          <li>
+            <span class="who">David Yauch</span>
+            <a class="as" href="#reed">Reed Mudlark</a>
+          </li>
+          <li>
+            <span class="who">Eden Jess</span>
+            <a class="as" href="#finn">Finn Frost</a>
+          </li>
+          <li>
+            <span class="who">Ellie Yauch</span>
+            <a class="as" href="#eden">Eden Crimson</a>
+          </li>
+          <li>
+            <span class="who">Grant Roberts</span>
+            <a class="as" href="#max">Max Moreau</a>
+          </li>
+          <li>
+            <span class="who">Jeremy Manley</span>
+            <a class="as" href="#henley">Henley Hexx</a>
+          </li>
+          <li>
+            <span class="who">Mason Polito</span>
+            <a class="as" href="#kipling">Kipling Zorg</a>
+          </li>
+          <li>
+            <span class="who">Molly Green</span>
+            <span class="as">Sage Tempus or Stass Sweeney</span>
+            <small>Choosing between the two.</small>
+          </li>
+          <li>
+            <span class="who">Reed Roberts</span>
+            <a class="as" href="#sam">Sam/Samantha Gerard</a>
+          </li>
+          <li>
+            <span class="who">Revelle Abernethy</span>
+            <a class="as" href="#nobel">Nobel Umbridge</a>
+          </li>
+          <li>
+            <span class="who">Skylar Phillips</span>
+            <a class="as" href="#binx">Binx Buttons</a>
+          </li>
+          <li>
+            <span class="who">Valerie Van Dine</span>
+            <a class="as" href="#nox">Nox Nocturne</a>
+          </li>
+        </ul>
+      </article>
+      <article class="team team-black">
+        <h3>Black team <span class="tables">Tables 10 and 11</span></h3>
+        <ul class="team-list">
+          <li>
+            <span class="who">Andrea Beas</span>
+            <a class="as" href="#henley">Henley Hexx</a>
+          </li>
+          <li>
+            <span class="who">Clara Cornia</span>
+            <a class="as" href="#max">Max Moreau</a>
+          </li>
+          <li>
+            <span class="who">Elizabeth Decker</span>
+            <a class="as" href="#finn">Finn Frost</a>
+          </li>
+          <li>
+            <span class="who">Emerson Turner</span>
+            <a class="as" href="#jack">Jack/Jaqueline Cleusseu</a>
+          </li>
+          <li>
+            <span class="who">Isaac Russo</span>
+            <a class="as" href="#sam">Sam/Samantha Gerard</a>
+          </li>
+          <li>
+            <span class="who">Juliette Habeeb</span>
+            <a class="as" href="#nox">Nox Nocturne</a>
+          </li>
+          <li>
+            <span class="who">Kayson Nguyen</span>
+            <a class="as" href="#kipling">Kipling Zorg</a>
+          </li>
+          <li>
+            <span class="who">Nikki Taylor</span>
+            <a class="as" href="#reed">Reed Mudlark</a>
+          </li>
+          <li>
+            <span class="who">Olive Rhodes</span>
+            <a class="as" href="#eden">Eden Crimson</a>
+          </li>
+          <li>
+            <span class="who">Paul Ibrahim</span>
+            <a class="as" href="#north">North Blitz</a>
+          </li>
+          <li>
+            <span class="who">Rachel Cornia</span>
+            <a class="as" href="#nobel">Nobel Umbridge</a>
+          </li>
+        </ul>
+      </article>
+    </div>
+    <p class="note">A few cast members are working the food table rather than playing a suspect, so they are not listed here.</p>
+  </section>
+
+  <section id="tickets">
+    <h2>Tickets</h2>
+    <p class="section-intro">Friday 23 October, 6:00–8:00pm, in the MAAS multipurpose room. Tickets are sold through Zeffy, which passes the whole ticket price to the drama club.</p>
+    <div class="ticket-embed">
+      <div data-zeffy-embed data-form-url="/embed/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show"></div>
+      <div data-zeffy-embed-fallback style="display:none;">
+        <div style="position:relative;overflow:hidden;height:450px;width:100%;padding-top:450px;"><iframe title="Ticketing form powered by Zeffy" style="position:absolute;border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%" data-zeffy-embed-src="https://www.zeffy.com/embed/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show" allowpaymentrequest allowTransparency="true"></iframe></div>
+      </div>
+      <script
+        src="https://www.zeffy.com/embed/v2/zeffy-embed.js"
+        onerror="document.querySelectorAll('[data-zeffy-embed-fallback]').forEach(function(el){el.style.display='block';el.querySelectorAll('iframe[data-zeffy-embed-src]').forEach(function(f){f.src=f.getAttribute('data-zeffy-embed-src');});});">
+      </script>
+    </div>
+    <p class="note">If the form does not load, <a href="https://www.zeffy.com/en-US/ticketing/mystery-dinner-theatre-turmoil-at-the-talent-show" target="_blank" rel="noopener">open it on Zeffy directly »</a></p>
   </section>
 
 </main>

@@ -918,6 +918,13 @@ function renderPerformances(data, site) {
       });
       body.appendChild(blocks);
     }
+    // A Link on the Calendar tab becomes the show's own button, so tickets can
+    // be put up from the Sheet without touching the page.
+    if (ev.titleUrl) {
+      const p = el('div', 'show-link');
+      p.appendChild(link(ev.titleUrl, (ev.titleUrlLabel || 'More info') + ' »', 'btn-show'));
+      body.appendChild(p);
+    }
     box.appendChild(body);
     return box;
   };
