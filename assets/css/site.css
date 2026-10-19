@@ -1128,6 +1128,14 @@ a.btn-show:hover { filter: brightness(1.07); }
    painted on the velvet. Pull them and the season is back. Everything here is
    dormant until data/site.json carries a "takeover" block. */
 .masthead.has-takeover { position: relative; overflow: hidden; }
+/* The banner underneath dims as the panels sweep across, so the strip still in
+   view goes down with the house lights rather than staying lit to the last. */
+.masthead.has-takeover > *:not(.curtain) {
+  transition: opacity 1.3s ease, filter 1.3s ease;
+}
+.masthead.has-takeover.is-closed > *:not(.curtain) {
+  opacity: .3; filter: brightness(.45) saturate(.65);
+}
 
 .curtain { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 .masthead.is-closed .curtain { pointer-events: auto; }
@@ -1137,7 +1145,7 @@ a.btn-show:hover { filter: brightness(1.07); }
   background:
     repeating-linear-gradient(90deg, rgba(0,0,0,.2) 0 10px, rgba(255,255,255,.045) 10px 22px, rgba(0,0,0,.2) 22px 30px),
     linear-gradient(180deg, #8e1b2b, #4a0b16);
-  transition: transform .95s cubic-bezier(.5, .05, .3, 1);
+  transition: transform 1.5s cubic-bezier(.45, .03, .3, 1);
   will-change: transform;
 }
 .curtain-panel.is-left { left: 0; transform: translateX(-101%); box-shadow: 8px 0 22px rgba(0, 0, 0, .4); }
@@ -1150,7 +1158,7 @@ a.btn-show:hover { filter: brightness(1.07); }
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; padding: 12px 16px 22px; color: #fff;
   background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(255, 214, 140, .28), transparent 70%);
-  opacity: 0; transition: opacity .45s ease .55s;
+  opacity: 0; transition: opacity .5s ease 1.15s;
 }
 .masthead.is-closed .curtain-bill { opacity: 1; }
 .masthead.is-open .curtain-bill { opacity: 0; transition-delay: 0s; transition-duration: .25s; }
@@ -1239,7 +1247,7 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
 .curtain-lights {
   position: absolute; left: 0; right: 0; bottom: 8px; height: 8px; z-index: 1;
   background: radial-gradient(circle, #ffe6a3 0 3px, transparent 4px) 0 0 / 22px 8px repeat-x;
-  opacity: 0; transition: opacity .45s ease .55s;
+  opacity: 0; transition: opacity .5s ease 1.15s;
 }
 .masthead.is-closed .curtain-lights { opacity: .9; }
 .masthead.is-open .curtain-lights { opacity: 0; transition-delay: 0s; }
@@ -1286,7 +1294,8 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
 @keyframes bulb-chase { to { stroke-dashoffset: -5; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .curtain-panel, .curtain-bill, .curtain-lights, .curtain-cord { transition: none; }
+  .curtain-panel, .curtain-bill, .curtain-lights, .curtain-cord,
+  .masthead.has-takeover > *:not(.curtain) { transition: none; }
   .curtain-cord:hover { animation: none; }
   .nav-show-bulbs rect { animation: none; }
 }
