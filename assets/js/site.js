@@ -376,10 +376,99 @@ function castFromSheet(rows, saved) {
 
 /* ---------- shared chrome ---------- */
 
+// A show close enough to need the top of every page. The page opens on the
+// season's own banner, then the curtains close across it and the show that is
+// next is painted on the velvet. Pull them and the season is back; the cord on
+// the left shuts them again. The "takeover" block in data/site.json carries the
+// wording and the date it stops; past that date nothing here runs at all.
+function showTakeover(site) {
+  const t = site.takeover;
+  if (!t || !t.title) return;
+  if (t.until && todayISO() > t.until) return;
+
+  const nav = document.querySelector('.nav .wrap');
+  if (nav && t.url && !nav.querySelector('.nav-show')) {
+    const a = link(t.url, '', 'nav-show');
+    const bulbs = el('span', 'nav-show-bulbs');
+    // Dots set out along a rounded rectangle. pathLength makes the spacing the
+    // same fraction of the outline whatever the tab measures, so they stay even
+    // all the way round and the corners get a bulb like every other turn.
+    bulbs.innerHTML = '<svg aria-hidden="true" focusable="false"><rect pathLength="100" /></svg>';
+    a.appendChild(bulbs);
+    a.appendChild(el('span', 'nav-show-text', t.tab || t.title));
+    // First, not last: on a phone the menu scrolls sideways, and a tab on the
+    // end is off the screen for anyone who does not think to swipe it.
+    nav.insertBefore(a, nav.firstChild);
+  }
+
+  const head = document.querySelector('.masthead');
+  if (!head) return;
+  head.classList.add('has-takeover');
+
+  const curtain = el('div', 'curtain');
+  curtain.appendChild(el('span', 'curtain-panel is-left'));
+  curtain.appendChild(el('span', 'curtain-panel is-right'));
+
+  const bill = el('div', 'curtain-bill');
+  const badge = head.querySelector('.logo-club');
+  if (badge) {
+    const img = el('img', 'curtain-badge');
+    img.src = badge.getAttribute('src');
+    img.alt = '';
+    bill.appendChild(img);
+  }
+  bill.appendChild(el('p', 'curtain-club', site.school));
+  if (t.kicker) bill.appendChild(el('p', 'curtain-kicker', t.kicker));
+  bill.appendChild(el('p', 'curtain-title', t.title));
+  if (t.when) bill.appendChild(el('p', 'curtain-when', t.when));
+  if (t.ticketsUrl) {
+    // A cloakroom ticket: a stub at each end with the date down it, the way
+    // a raffle ticket carries its serial number.
+    const stub = link(t.ticketsUrl, '', 'curtain-ticket');
+    const end = t.ticketStub || '';
+    stub.appendChild(el('span', 'curtain-ticket-end', end));
+    stub.appendChild(el('span', 'curtain-ticket-text', t.ticketsLabel || 'Admit one'));
+    stub.appendChild(el('span', 'curtain-ticket-end', end));
+    bill.appendChild(stub);
+  }
+  curtain.appendChild(bill);
+  curtain.appendChild(el('span', 'curtain-lights'));
+
+  // The whole curtain is the control, so say so to a screen reader too.
+  const pull = el('button', 'curtain-pull');
+  pull.type = 'button';
+  pull.setAttribute('aria-label', 'Open the curtains');
+  curtain.appendChild(pull);
+
+  // Once they are open, the cord on the left is the way to shut them again.
+  const cord = el('button', 'curtain-cord');
+  cord.type = 'button';
+  cord.setAttribute('aria-label', 'Close the curtains');
+  cord.appendChild(el('span', 'cord-rope'));
+  cord.appendChild(el('span', 'cord-tassel'));
+  curtain.appendChild(cord);
+
+  const shut = () => { head.classList.remove('is-open'); head.classList.add('is-closed'); };
+  pull.addEventListener('click', () => {
+    head.classList.remove('is-closed');
+    head.classList.add('is-open');
+  });
+  cord.addEventListener('click', shut);
+
+  head.appendChild(curtain);
+
+  // Anyone who would rather not watch it move gets the curtains already shut.
+  const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still) shut();
+  else setTimeout(shut, Math.max(0, (t.delaySeconds || 2.4) * 1000));
+}
+
 function renderChrome(site) {
   document.querySelectorAll('[data-site="school"]').forEach(n => n.textContent = site.school);
   document.querySelectorAll('[data-site="season"]').forEach(n => n.textContent = site.season);
   document.querySelectorAll('[data-site="showTitle"]').forEach(n => n.textContent = site.showTitle);
+
+  showTakeover(site);
 
   const footer = slot('footer-note');
   if (footer && site.footerNote) footer.textContent = site.footerNote;
