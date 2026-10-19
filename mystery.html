@@ -312,6 +312,27 @@
   .cta .small a { color: #ffe6a3; }
   .ticket-embed { background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); }
 
+
+  /* Find a student, and the picker that lights one up. */
+  .cast-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+    gap: 10px 20px; margin-bottom: 6px;
+  }
+  .cast-head h2 { margin: 0; }
+  .find-student { display: flex; align-items: center; gap: 8px; font-size: .84rem; color: var(--ink-soft); }
+  .find-student select {
+    font: inherit; font-size: .9rem; padding: 7px 10px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--bg-raised); color: var(--ink);
+  }
+  .find-student select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .team.is-found { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft), var(--shadow); }
+  .team-list li.is-found { background: var(--tag-bg); border-radius: 8px; }
+  .team-list li.is-found .who-name.is-found {
+    background: var(--gold); color: #3b2a05; padding: 1px 6px; border-radius: 5px; font-weight: 700;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .team.is-found { transition: box-shadow .3s ease, border-color .3s ease; }
+  }
 </style>
 </head>
 <body>
@@ -373,378 +394,455 @@
   </section>
 
   <section id="cast">
-    <h2>Who is playing who</h2>
+    <div class="cast-head">
+      <h2>Who is playing who</h2>
+      <label class="find-student">
+        <span>Find a student</span>
+        <select id="student-finder">
+          <option value="">Choose a name…</option>
+        <optgroup label="Blue team">
+          <option value="Anna Margalis">Anna Margalis</option>
+          <option value="Bianca Baker">Bianca Baker</option>
+          <option value="Cameron Johnson">Cameron Johnson</option>
+          <option value="Estelle Addison">Estelle Addison</option>
+          <option value="Holly Hom">Holly Hom</option>
+          <option value="Hunter Linford">Hunter Linford</option>
+          <option value="Jackson Chesney">Jackson Chesney</option>
+          <option value="Kate Schnuelle">Kate Schnuelle</option>
+          <option value="Piper Garrison">Piper Garrison</option>
+          <option value="Robyn Zakharov">Robyn Zakharov</option>
+          <option value="Ryan Cramer">Ryan Cramer</option>
+          <option value="Tajna Luthera">Tajna Luthera</option>
+        </optgroup>
+        <optgroup label="Green team">
+          <option value="Abbi Lara">Abbi Lara</option>
+          <option value="Alexis Pantier">Alexis Pantier</option>
+          <option value="Amelia Fish">Amelia Fish</option>
+          <option value="Brixton Berlet">Brixton Berlet</option>
+          <option value="Claire Petersen">Claire Petersen</option>
+          <option value="Elodie DeHaven">Elodie DeHaven</option>
+          <option value="Essara Macias">Essara Macias</option>
+          <option value="Evie Porath">Evie Porath</option>
+          <option value="Gema Hernandez">Gema Hernandez</option>
+          <option value="Lydia Norton">Lydia Norton</option>
+          <option value="Reagan Ducommun">Reagan Ducommun</option>
+          <option value="Rya Atanasova">Rya Atanasova</option>
+        </optgroup>
+        <optgroup label="Red team">
+          <option value="Brock Clayton">Brock Clayton</option>
+          <option value="Ian Skousen">Ian Skousen</option>
+          <option value="James Carter III">James Carter III</option>
+          <option value="Mia Harper">Mia Harper</option>
+          <option value="Noah Barnett">Noah Barnett</option>
+          <option value="Paisley Kelly">Paisley Kelly</option>
+          <option value="Raelynn Hanna">Raelynn Hanna</option>
+          <option value="Roman Esmaeili">Roman Esmaeili</option>
+          <option value="Salome Goitom">Salome Goitom</option>
+          <option value="Sophia Harper">Sophia Harper</option>
+          <option value="Zemira Carr">Zemira Carr</option>
+        </optgroup>
+        <optgroup label="Purple team">
+          <option value="Aurora Jensen">Aurora Jensen</option>
+          <option value="Camille Pineda">Camille Pineda</option>
+          <option value="David Yauch">David Yauch</option>
+          <option value="Eden Jess">Eden Jess</option>
+          <option value="Ellie Yauch">Ellie Yauch</option>
+          <option value="Grant Roberts">Grant Roberts</option>
+          <option value="Jeremy Manley">Jeremy Manley</option>
+          <option value="Mason Polito">Mason Polito</option>
+          <option value="Molly Green">Molly Green</option>
+          <option value="Reed Roberts">Reed Roberts</option>
+          <option value="Revelle Abernethy">Revelle Abernethy</option>
+          <option value="Skylar Phillips">Skylar Phillips</option>
+          <option value="Valerie Van Dine">Valerie Van Dine</option>
+        </optgroup>
+        <optgroup label="Black team">
+          <option value="Andrea Beas">Andrea Beas</option>
+          <option value="Clara Cornia">Clara Cornia</option>
+          <option value="Elizabeth Decker">Elizabeth Decker</option>
+          <option value="Emerson Turner">Emerson Turner</option>
+          <option value="Isaac Russo">Isaac Russo</option>
+          <option value="Juliette Habeeb">Juliette Habeeb</option>
+          <option value="Kayson Nguyen">Kayson Nguyen</option>
+          <option value="Nikki Taylor">Nikki Taylor</option>
+          <option value="Olive Rhodes">Olive Rhodes</option>
+          <option value="Paul Ibrahim">Paul Ibrahim</option>
+          <option value="Rachel Cornia">Rachel Cornia</option>
+        </optgroup>
+        </select>
+      </label>
+    </div>
     <p class="section-intro">Each team plays the whole mystery at its own pair of tables, so every table has its own detective and its own saboteur. Tap a character to read about them.</p>
     <div class="teams">
-      <article class="team team-blue">
+      <article class="team team-blue" id="team-blue">
         <h3>Blue team <span class="tables">Tables 2 and 3</span></h3>
         <ul class="team-list">
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🔍</span>
             <span class="as"><a href="#jack">Jack Cleusseu</a></span>
             <span class="job">Detective</span>
-            <span class="who">Jackson Chesney</span>
+            <span class="who"><span class="who-name" data-student="Jackson Chesney">Jackson Chesney</span></span>
           </li>
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🤠</span>
             <span class="as"><a href="#sam">Samantha Gerard</a></span>
             <span class="job">FBI investigator</span>
-            <span class="who">Cameron Johnson</span>
+            <span class="who"><span class="who-name" data-student="Cameron Johnson">Cameron Johnson</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🧘</span>
             <span class="as"><a href="#eden">Eden Crimson</a></span>
             <span class="job">Fitness guru</span>
-            <span class="who">Kate Schnuelle</span>
+            <span class="who"><span class="who-name" data-student="Kate Schnuelle">Kate Schnuelle</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🪶</span>
             <span class="as"><a href="#finn">Finn Frost</a></span>
             <span class="job">Author</span>
-            <span class="who">Bianca Baker</span>
+            <span class="who"><span class="who-name" data-student="Bianca Baker">Bianca Baker</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🦒</span>
             <span class="as"><a href="#henley">Henley Hexx</a></span>
             <span class="job">Zoologist</span>
-            <span class="who">Anna Margalis</span>
+            <span class="who"><span class="who-name" data-student="Anna Margalis">Anna Margalis</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎸</span>
             <span class="as"><a href="#kipling">Kipling Zorg</a></span>
             <span class="job">Guitarist</span>
-            <span class="who">Piper Garrison</span>
+            <span class="who"><span class="who-name" data-student="Piper Garrison">Piper Garrison</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎭</span>
             <span class="as"><a href="#max">Max Moreau</a></span>
             <span class="job">Actor</span>
-            <span class="who">Hunter Linford</span>
+            <span class="who"><span class="who-name" data-student="Hunter Linford">Hunter Linford</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">💼</span>
             <span class="as"><a href="#nobel">Nobel Umbridge</a></span>
             <span class="job">Talent agent</span>
-            <span class="who">Estelle Addison, Robyn Zakharov</span>
+            <span class="who"><span class="who-name" data-student="Estelle Addison">Estelle Addison</span>, <span class="who-name" data-student="Robyn Zakharov">Robyn Zakharov</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">👩‍🍳</span>
             <span class="as"><a href="#north">North Blitz</a></span>
             <span class="job">Chef</span>
-            <span class="who">Holly Hom</span>
+            <span class="who"><span class="who-name" data-student="Holly Hom">Holly Hom</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🍦</span>
             <span class="as"><a href="#nox">Nox Nocturne</a></span>
             <span class="job">Ice cream truck driver</span>
-            <span class="who">Tajna Luthera</span>
+            <span class="who"><span class="who-name" data-student="Tajna Luthera">Tajna Luthera</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">❓</span>
             <span class="as tbc">Character still to be confirmed</span>
-            <span class="who">Ryan Cramer</span>
+            <span class="who"><span class="who-name" data-student="Ryan Cramer">Ryan Cramer</span></span>
           </li>
         </ul>
       </article>
-      <article class="team team-green">
+      <article class="team team-green" id="team-green">
         <h3>Green team <span class="tables">Tables 4 and 5</span></h3>
         <ul class="team-list">
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🔍</span>
             <span class="as"><a href="#jack">Jaqueline Cleusseu</a></span>
             <span class="job">Detective</span>
-            <span class="who">Essara Macias</span>
+            <span class="who"><span class="who-name" data-student="Essara Macias">Essara Macias</span></span>
           </li>
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🤠</span>
             <span class="as"><a href="#sam">Samantha Gerard</a></span>
             <span class="job">FBI investigator</span>
-            <span class="who">Rya Atanasova</span>
+            <span class="who"><span class="who-name" data-student="Rya Atanasova">Rya Atanasova</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🧘</span>
             <span class="as"><a href="#eden">Eden Crimson</a></span>
             <span class="job">Fitness guru</span>
-            <span class="who">Amelia Fish</span>
+            <span class="who"><span class="who-name" data-student="Amelia Fish">Amelia Fish</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🪶</span>
             <span class="as"><a href="#finn">Finn Frost</a></span>
             <span class="job">Author</span>
-            <span class="who">Reagan Ducommun</span>
+            <span class="who"><span class="who-name" data-student="Reagan Ducommun">Reagan Ducommun</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🦒</span>
             <span class="as"><a href="#henley">Henley Hexx</a></span>
             <span class="job">Zoologist</span>
-            <span class="who">Gema Hernandez</span>
+            <span class="who"><span class="who-name" data-student="Gema Hernandez">Gema Hernandez</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎸</span>
             <span class="as"><a href="#kipling">Kipling Zorg</a></span>
             <span class="job">Guitarist</span>
-            <span class="who">Abbi Lara</span>
+            <span class="who"><span class="who-name" data-student="Abbi Lara">Abbi Lara</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎭</span>
             <span class="as"><a href="#max">Max Moreau</a></span>
             <span class="job">Actor</span>
-            <span class="who">Brixton Berlet</span>
+            <span class="who"><span class="who-name" data-student="Brixton Berlet">Brixton Berlet</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">💼</span>
             <span class="as"><a href="#nobel">Nobel Umbridge</a></span>
             <span class="job">Talent agent</span>
-            <span class="who">Elodie DeHaven</span>
+            <span class="who"><span class="who-name" data-student="Elodie DeHaven">Elodie DeHaven</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">👩‍🍳</span>
             <span class="as"><a href="#north">North Blitz</a></span>
             <span class="job">Chef</span>
-            <span class="who">Lydia Norton</span>
+            <span class="who"><span class="who-name" data-student="Lydia Norton">Lydia Norton</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🍦</span>
             <span class="as"><a href="#nox">Nox Nocturne</a></span>
             <span class="job">Ice cream truck driver</span>
-            <span class="who">Claire Petersen</span>
+            <span class="who"><span class="who-name" data-student="Claire Petersen">Claire Petersen</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">👗</span>
             <span class="as"><a href="#sage">Sage Tempus</a></span>
             <span class="job">Fashion designer</span>
-            <span class="who">Alexis Pantier</span>
+            <span class="who"><span class="who-name" data-student="Alexis Pantier">Alexis Pantier</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🩰</span>
             <span class="as"><a href="#stass">Stass Sweeney</a></span>
             <span class="job">Dance instructor</span>
-            <span class="who">Evie Porath</span>
+            <span class="who"><span class="who-name" data-student="Evie Porath">Evie Porath</span></span>
           </li>
         </ul>
       </article>
-      <article class="team team-red">
+      <article class="team team-red" id="team-red">
         <h3>Red team <span class="tables">Tables 6 and 7</span></h3>
         <ul class="team-list">
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🔍</span>
             <span class="as"><a href="#jack">Jaqueline Cleusseu</a></span>
             <span class="job">Detective</span>
-            <span class="who">Zemira Carr</span>
+            <span class="who"><span class="who-name" data-student="Zemira Carr">Zemira Carr</span></span>
           </li>
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🤠</span>
-            <span class="as"><a href="#sam">Sam Gerard</a></span>
+            <span class="as"><a href="#sam">Samantha Gerard</a></span>
             <span class="job">FBI investigator</span>
-            <span class="who">Raelynn Hanna</span>
+            <span class="who"><span class="who-name" data-student="Raelynn Hanna">Raelynn Hanna</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">✈️</span>
             <span class="as"><a href="#binx">Binx Buttons</a></span>
             <span class="job">Pilot</span>
-            <span class="who">Roman Esmaeili</span>
+            <span class="who"><span class="who-name" data-student="Roman Esmaeili">Roman Esmaeili</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🧘</span>
             <span class="as"><a href="#eden">Eden Crimson</a></span>
             <span class="job">Fitness guru</span>
-            <span class="who">Sophia Harper</span>
+            <span class="who"><span class="who-name" data-student="Sophia Harper">Sophia Harper</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🪶</span>
             <span class="as"><a href="#finn">Finn Frost</a></span>
             <span class="job">Author</span>
-            <span class="who">Noah Barnett</span>
+            <span class="who"><span class="who-name" data-student="Noah Barnett">Noah Barnett</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🦒</span>
             <span class="as"><a href="#henley">Henley Hexx</a></span>
             <span class="job">Zoologist</span>
-            <span class="who">Paisley Kelly</span>
+            <span class="who"><span class="who-name" data-student="Paisley Kelly">Paisley Kelly</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎸</span>
             <span class="as"><a href="#kipling">Kipling Zorg</a></span>
             <span class="job">Guitarist</span>
-            <span class="who">Brock Clayton</span>
+            <span class="who"><span class="who-name" data-student="Brock Clayton">Brock Clayton</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎭</span>
             <span class="as"><a href="#max">Max Moreau</a></span>
             <span class="job">Actor</span>
-            <span class="who">James Carter III</span>
+            <span class="who"><span class="who-name" data-student="James Carter III">James Carter III</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">💼</span>
             <span class="as"><a href="#nobel">Nobel Umbridge</a></span>
             <span class="job">Talent agent</span>
-            <span class="who">Mia Harper</span>
+            <span class="who"><span class="who-name" data-student="Mia Harper">Mia Harper</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">👩‍🍳</span>
             <span class="as"><a href="#north">North Blitz</a></span>
             <span class="job">Chef</span>
-            <span class="who">Salome Goitom</span>
+            <span class="who"><span class="who-name" data-student="Salome Goitom">Salome Goitom</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🍦</span>
             <span class="as"><a href="#nox">Nox Nocturne</a></span>
             <span class="job">Ice cream truck driver</span>
-            <span class="who">Ian Skousen</span>
+            <span class="who"><span class="who-name" data-student="Ian Skousen">Ian Skousen</span></span>
           </li>
         </ul>
       </article>
-      <article class="team team-purple">
+      <article class="team team-purple" id="team-purple">
         <h3>Purple team <span class="tables">Tables 8 and 9</span></h3>
         <ul class="team-list">
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🔍</span>
             <span class="as"><a href="#jack">Jaqueline Cleusseu</a></span>
             <span class="job">Detective</span>
-            <span class="who">Aurora Jensen</span>
+            <span class="who"><span class="who-name" data-student="Aurora Jensen">Aurora Jensen</span></span>
           </li>
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🤠</span>
             <span class="as"><a href="#sam">Sam Gerard</a></span>
             <span class="job">FBI investigator</span>
-            <span class="who">Reed Roberts</span>
+            <span class="who"><span class="who-name" data-student="Reed Roberts">Reed Roberts</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">✈️</span>
             <span class="as"><a href="#binx">Binx Buttons</a></span>
             <span class="job">Pilot</span>
-            <span class="who">Skylar Phillips</span>
+            <span class="who"><span class="who-name" data-student="Skylar Phillips">Skylar Phillips</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🩺</span>
             <span class="as"><a href="#dree">Dree Deville</a></span>
             <span class="job">Nurse</span>
-            <span class="who">Camille Pineda</span>
+            <span class="who"><span class="who-name" data-student="Camille Pineda">Camille Pineda</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🧘</span>
             <span class="as"><a href="#eden">Eden Crimson</a></span>
             <span class="job">Fitness guru</span>
-            <span class="who">Ellie Yauch</span>
+            <span class="who"><span class="who-name" data-student="Ellie Yauch">Ellie Yauch</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🪶</span>
             <span class="as"><a href="#finn">Finn Frost</a></span>
             <span class="job">Author</span>
-            <span class="who">Eden Jess</span>
+            <span class="who"><span class="who-name" data-student="Eden Jess">Eden Jess</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🦒</span>
             <span class="as"><a href="#henley">Henley Hexx</a></span>
             <span class="job">Zoologist</span>
-            <span class="who">Jeremy Manley</span>
+            <span class="who"><span class="who-name" data-student="Jeremy Manley">Jeremy Manley</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎸</span>
             <span class="as"><a href="#kipling">Kipling Zorg</a></span>
             <span class="job">Guitarist</span>
-            <span class="who">Mason Polito</span>
+            <span class="who"><span class="who-name" data-student="Mason Polito">Mason Polito</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎭</span>
             <span class="as"><a href="#max">Max Moreau</a></span>
             <span class="job">Actor</span>
-            <span class="who">Grant Roberts</span>
+            <span class="who"><span class="who-name" data-student="Grant Roberts">Grant Roberts</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">💼</span>
             <span class="as"><a href="#nobel">Nobel Umbridge</a></span>
             <span class="job">Talent agent</span>
-            <span class="who">Revelle Abernethy</span>
+            <span class="who"><span class="who-name" data-student="Revelle Abernethy">Revelle Abernethy</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🍦</span>
             <span class="as"><a href="#nox">Nox Nocturne</a></span>
             <span class="job">Ice cream truck driver</span>
-            <span class="who">Valerie Van Dine</span>
+            <span class="who"><span class="who-name" data-student="Valerie Van Dine">Valerie Van Dine</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🍔</span>
             <span class="as"><a href="#reed">Reed Mudlark</a></span>
             <span class="job">Fast food cook</span>
-            <span class="who">David Yauch</span>
+            <span class="who"><span class="who-name" data-student="David Yauch">David Yauch</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">👗</span>
             <span class="as"><a href="#sage">Sage Tempus</a> or <a href="#stass">Stass Sweeney</a></span>
             <span class="job">Fashion designer or dance instructor</span>
-            <span class="who">Molly Green</span>
+            <span class="who"><span class="who-name" data-student="Molly Green">Molly Green</span></span>
           </li>
         </ul>
       </article>
-      <article class="team team-black">
+      <article class="team team-black" id="team-black">
         <h3>Black team <span class="tables">Tables 10 and 11</span></h3>
         <ul class="team-list">
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🔍</span>
             <span class="as"><a href="#jack">Jack Cleusseu</a></span>
             <span class="job">Detective</span>
-            <span class="who">Emerson Turner</span>
+            <span class="who"><span class="who-name" data-student="Emerson Turner">Emerson Turner</span></span>
           </li>
           <li class="is-detective">
             <span class="emoji" aria-hidden="true">🤠</span>
             <span class="as"><a href="#sam">Sam Gerard</a></span>
             <span class="job">FBI investigator</span>
-            <span class="who">Isaac Russo</span>
+            <span class="who"><span class="who-name" data-student="Isaac Russo">Isaac Russo</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🧘</span>
             <span class="as"><a href="#eden">Eden Crimson</a></span>
             <span class="job">Fitness guru</span>
-            <span class="who">Olive Rhodes</span>
+            <span class="who"><span class="who-name" data-student="Olive Rhodes">Olive Rhodes</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🪶</span>
             <span class="as"><a href="#finn">Finn Frost</a></span>
             <span class="job">Author</span>
-            <span class="who">Elizabeth Decker</span>
+            <span class="who"><span class="who-name" data-student="Elizabeth Decker">Elizabeth Decker</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🦒</span>
             <span class="as"><a href="#henley">Henley Hexx</a></span>
             <span class="job">Zoologist</span>
-            <span class="who">Andrea Beas</span>
+            <span class="who"><span class="who-name" data-student="Andrea Beas">Andrea Beas</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎸</span>
             <span class="as"><a href="#kipling">Kipling Zorg</a></span>
             <span class="job">Guitarist</span>
-            <span class="who">Kayson Nguyen</span>
+            <span class="who"><span class="who-name" data-student="Kayson Nguyen">Kayson Nguyen</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🎭</span>
             <span class="as"><a href="#max">Max Moreau</a></span>
             <span class="job">Actor</span>
-            <span class="who">Clara Cornia</span>
+            <span class="who"><span class="who-name" data-student="Clara Cornia">Clara Cornia</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">💼</span>
             <span class="as"><a href="#nobel">Nobel Umbridge</a></span>
             <span class="job">Talent agent</span>
-            <span class="who">Rachel Cornia</span>
+            <span class="who"><span class="who-name" data-student="Rachel Cornia">Rachel Cornia</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">👩‍🍳</span>
             <span class="as"><a href="#north">North Blitz</a></span>
             <span class="job">Chef</span>
-            <span class="who">Paul Ibrahim</span>
+            <span class="who"><span class="who-name" data-student="Paul Ibrahim">Paul Ibrahim</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🍦</span>
             <span class="as"><a href="#nox">Nox Nocturne</a></span>
             <span class="job">Ice cream truck driver</span>
-            <span class="who">Juliette Habeeb</span>
+            <span class="who"><span class="who-name" data-student="Juliette Habeeb">Juliette Habeeb</span></span>
           </li>
           <li>
             <span class="emoji" aria-hidden="true">🍔</span>
             <span class="as"><a href="#reed">Reed Mudlark</a></span>
             <span class="job">Fast food cook</span>
-            <span class="who">Nikki Taylor</span>
+            <span class="who"><span class="who-name" data-student="Nikki Taylor">Nikki Taylor</span></span>
           </li>
         </ul>
       </article>
@@ -1018,5 +1116,31 @@
   </div>
 </footer>
 
+<script>
+  // Picking a name lifts that student's team to the top of the screen and lights
+  // up their row, which beats hunting through five panels for it.
+  (function () {
+    var finder = document.getElementById('student-finder');
+    if (!finder) return;
+    var lit = [];
+    function clear() {
+      lit.forEach(function (n) { n.classList.remove('is-found'); });
+      lit = [];
+    }
+    finder.addEventListener('change', function () {
+      clear();
+      var who = finder.value;
+      if (!who) return;
+      var name = document.querySelector('.who-name[data-student="' + who.replace(/"/g, '\\"') + '"]');
+      if (!name) return;
+      var row = name.closest('li');
+      var team = name.closest('.team');
+      [name, row, team].forEach(function (n) {
+        if (n) { n.classList.add('is-found'); lit.push(n); }
+      });
+      team.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  })();
+</script>
 </body>
 </html>
