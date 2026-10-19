@@ -1220,7 +1220,8 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
    curtains are open, lowers into reach, and flies back up when it is pulled. */
 .curtain-cord {
   position: absolute; left: clamp(10px, 4vw, 42px); top: 0; z-index: 3;
-  width: 26px; height: 58%; min-height: 54px;
+  --cord-h: 58%;
+  width: 26px; height: var(--cord-h); min-height: 54px;
   background: none; border: 0; padding: 0; cursor: pointer;
   display: flex; flex-direction: column; align-items: center;
   transform: translateY(-115%); pointer-events: none;
@@ -1242,19 +1243,26 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
 }
 .curtain-cord:hover { animation: cord-sway .6s ease-in-out; }
 .curtain-cord:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px; border-radius: 6px; }
-/* Pulled: down on the tug, then up and away. */
+/* Pulled: the rope pays out from above the frame, then the whole thing goes up.
+   The tug lengthens it rather than moving it, so its top stays off the top of
+   the header and it still reads as hanging from something. */
 .curtain-cord.is-pulling {
-  animation: cord-pull .95s cubic-bezier(.4, 0, .25, 1) forwards;
+  animation:
+    cord-tug .42s cubic-bezier(.3, 0, .2, 1),
+    cord-away .5s cubic-bezier(.5, 0, .75, .6) .42s forwards;
   pointer-events: none;
 }
 @keyframes cord-sway {
   30% { transform: rotate(3.5deg); }
   70% { transform: rotate(-2deg); }
 }
-@keyframes cord-pull {
+@keyframes cord-tug {
+  0% { height: var(--cord-h); }
+  48% { height: calc(var(--cord-h) + 24px); }
+  100% { height: var(--cord-h); }
+}
+@keyframes cord-away {
   0% { transform: translateY(0); }
-  20% { transform: translateY(20px); }
-  32% { transform: translateY(15px); }
   100% { transform: translateY(-115%); }
 }
 .curtain-lights {
@@ -1281,7 +1289,7 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
 .masthead.is-compact .curtain-badge,
 .masthead.is-compact .curtain-club,
 .masthead.is-compact .curtain-ticket { display: none; }
-.masthead.is-compact .curtain-cord { height: 70%; min-height: 40px; }
+.masthead.is-compact .curtain-cord { --cord-h: 70%; min-height: 40px; }
 .masthead.is-compact .cord-tassel { width: 11px; height: 16px; }
 .masthead.is-compact .curtain-kicker { margin: 0; font-size: .58rem; letter-spacing: .2em; }
 .masthead.is-compact .curtain-title { font-size: clamp(1.05rem, 3.4vw, 1.5rem); }
