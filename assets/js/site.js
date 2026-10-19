@@ -448,17 +448,24 @@ function showTakeover(site) {
   cord.appendChild(el('span', 'cord-tassel'));
   curtain.appendChild(cord);
 
+  // Anyone who would rather not watch it move gets none of this.
+  const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const shut = () => { head.classList.remove('is-open'); head.classList.add('is-closed'); };
   pull.addEventListener('click', () => {
     head.classList.remove('is-closed');
     head.classList.add('is-open');
   });
-  cord.addEventListener('click', shut);
+  cord.addEventListener('click', () => {
+    if (still || cord.classList.contains('is-pulling')) { shut(); return; }
+    cord.classList.add('is-pulling');
+    const loose = () => cord.classList.remove('is-pulling');
+    cord.addEventListener('animationend', loose, { once: true });
+    setTimeout(loose, 1400);   // in case a hidden tab never runs the animation
+    setTimeout(shut, 190);     // the curtains answer the tug
+  });
 
   head.appendChild(curtain);
 
-  // Anyone who would rather not watch it move gets the curtains already shut.
-  const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (still) shut();
   else setTimeout(shut, Math.max(0, (t.delaySeconds || 2.4) * 1000));
 }

@@ -1216,16 +1216,18 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
   color: #ffe9b4; text-shadow: 0 1px 0 rgba(0, 0, 0, .35);
 }
 
-/* The pull cord, for shutting them again. */
+/* The pull cord, for shutting them again. It waits above the header until the
+   curtains are open, lowers into reach, and flies back up when it is pulled. */
 .curtain-cord {
   position: absolute; left: clamp(10px, 4vw, 42px); top: 0; z-index: 3;
   width: 26px; height: 58%; min-height: 54px;
   background: none; border: 0; padding: 0; cursor: pointer;
   display: flex; flex-direction: column; align-items: center;
-  opacity: 0; pointer-events: none; transition: opacity .4s ease .35s;
+  transform: translateY(-115%); pointer-events: none;
+  transition: transform .8s cubic-bezier(.33, 1.2, .6, 1) .5s;
   transform-origin: 50% 0;
 }
-.masthead.is-open .curtain-cord { opacity: 1; pointer-events: auto; }
+.masthead.is-open .curtain-cord { transform: translateY(0); pointer-events: auto; }
 .cord-rope {
   flex: 1; width: 3px; border-radius: 2px;
   background: linear-gradient(180deg, #c9972f, #8c6416);
@@ -1240,9 +1242,20 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
 }
 .curtain-cord:hover { animation: cord-sway .6s ease-in-out; }
 .curtain-cord:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px; border-radius: 6px; }
+/* Pulled: down on the tug, then up and away. */
+.curtain-cord.is-pulling {
+  animation: cord-pull .95s cubic-bezier(.4, 0, .25, 1) forwards;
+  pointer-events: none;
+}
 @keyframes cord-sway {
   30% { transform: rotate(3.5deg); }
   70% { transform: rotate(-2deg); }
+}
+@keyframes cord-pull {
+  0% { transform: translateY(0); }
+  20% { transform: translateY(20px); }
+  32% { transform: translateY(15px); }
+  100% { transform: translateY(-115%); }
 }
 .curtain-lights {
   position: absolute; left: 0; right: 0; bottom: 8px; height: 8px; z-index: 1;
@@ -1296,7 +1309,7 @@ a.curtain-ticket:focus-visible { outline: 3px solid #ffe6a3; outline-offset: 4px
 @media (prefers-reduced-motion: reduce) {
   .curtain-panel, .curtain-bill, .curtain-lights, .curtain-cord,
   .masthead.has-takeover > *:not(.curtain) { transition: none; }
-  .curtain-cord:hover { animation: none; }
+  .curtain-cord:hover, .curtain-cord.is-pulling { animation: none; }
   .nav-show-bulbs rect { animation: none; }
 }
 
