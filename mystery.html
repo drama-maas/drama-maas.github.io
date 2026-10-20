@@ -389,7 +389,16 @@
     filter: drop-shadow(0 9px 14px rgba(0, 0, 0, .55));
   }
   .ogre-sign:hover { transform: translateY(calc(100% - 68px)) rotate(-4deg); }
-  .ogre-sign.is-up, .ogre-sign.is-up:hover { transform: translateY(8%) rotate(-3deg); }
+  /* Up far enough that a hand's width of stake shows under the board, then a
+     slow sway, as if it were never driven in all that straight. */
+  .ogre-sign.is-up, .ogre-sign.is-up:hover {
+    transform: translateY(-30px) rotate(-3deg);
+    animation: sign-sway 5.5s ease-in-out .7s infinite;
+  }
+  @keyframes sign-sway {
+    0%, 100% { transform: translateY(-30px) rotate(-3.2deg); }
+    50% { transform: translateY(-30px) rotate(1.4deg); }
+  }
   .ogre-sign:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
   /* the stake runs from above the board down past the bottom of the header */
   .ogre-sign-stake {
@@ -430,6 +439,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .ogre-sign { transition: none; }
+    .ogre-sign.is-up, .ogre-sign.is-up:hover { animation: none; }
   }
 </style>
 </head>
