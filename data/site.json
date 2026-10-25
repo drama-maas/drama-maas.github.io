@@ -5,19 +5,6 @@
   "season": "2026-27 spring musical",
   "showTitle": "Shrek The Musical JR.",
 
-  "_takeover": "A show close enough to need the top of every page. The curtains close on the season banner a moment after the page loads and open on this one, and a lit-up tab is added to the menu. Delete this whole block, or let \"until\" pass, and every page goes back to normal on its own.",
-  "takeover": {
-    "until": "2026-10-24",
-    "url": "mystery.html",
-    "tab": "Mystery Dinner",
-    "kicker": "Mystery Dinner",
-    "title": "Turmoil at the Talent Show",
-    "when": "Friday, October 23 · 6:00 PM",
-    "ticketsUrl": "mystery.html#tickets",
-    "ticketsLabel": "Get tickets",
-    "ticketStub": "OCT 23",
-    "delaySeconds": 1.7
-  },
 
   "studyHallSignupUrl": "https://www.signupgenius.com/go/60B0C4DAAAC2AA3F49-65327333-study#/",
   "sheet": {
